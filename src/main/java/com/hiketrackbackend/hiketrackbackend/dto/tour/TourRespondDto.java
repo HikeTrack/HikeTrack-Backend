@@ -11,5 +11,5 @@ public class TourRespondDto {
     private String name;
     private int length;
     private ZonedDateTime date;
-    private String countryName;
+    private Long countryId;
 }

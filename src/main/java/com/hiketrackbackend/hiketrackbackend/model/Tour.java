@@ -38,7 +38,7 @@ public class Tour {
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Details details;
 
     @Column(nullable = false)
