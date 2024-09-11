@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-tours-table
+      author: Vadym P
+      changes:
+        - createTable:
+            tableName: tours
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: length
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: TIMESTAMP
+              - column:
+                  name: country_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: TINYINT(1)
+                  constraints:
+                    nullable: false

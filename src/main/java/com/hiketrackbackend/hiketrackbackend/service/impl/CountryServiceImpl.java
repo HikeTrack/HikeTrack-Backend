@@ -1,8 +1,8 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
-import com.hiketrackbackend.hiketrackbackend.dto.country.RequestCountryDto;
-import com.hiketrackbackend.hiketrackbackend.dto.country.RespondCountryDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
 import com.hiketrackbackend.hiketrackbackend.mapper.CountryMapper;
 import com.hiketrackbackend.hiketrackbackend.model.Country;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
@@ -22,13 +22,13 @@ public class CountryServiceImpl implements CountryService {
     private final CountrySpecificationBuilder countrySpecificationBuilder;
 
     @Override
-    public RespondCountryDto createCountry(RequestCountryDto requestDto) {
+    public CountryRespondDto createCountry(CountryRequestDto requestDto) {
         Country country = countryMapper.toEntity(requestDto);
         return countryMapper.toDto(countryRepository.save(country));
     }
 
     @Override
-    public List<RespondCountryDto> search(CountrySearchParameters params, Pageable pageable) {
+    public List<CountryRespondDto> search(CountrySearchParameters params, Pageable pageable) {
         Specification<Country> countrySpecification = countrySpecificationBuilder.build(params);
         return countryRepository.findAll(countrySpecification, pageable)
                 .stream()

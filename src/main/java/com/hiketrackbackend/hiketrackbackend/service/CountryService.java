@@ -1,13 +1,13 @@
 package com.hiketrackbackend.hiketrackbackend.service;
 
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
-import com.hiketrackbackend.hiketrackbackend.dto.country.RequestCountryDto;
-import com.hiketrackbackend.hiketrackbackend.dto.country.RespondCountryDto;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface CountryService {
-    RespondCountryDto createCountry(RequestCountryDto requestDto);
+    CountryRespondDto createCountry(CountryRequestDto requestDto);
 
-    List<RespondCountryDto> search(CountrySearchParameters params, Pageable pageable);
+    List<CountryRespondDto> search(CountrySearchParameters params, Pageable pageable);
 }

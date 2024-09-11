@@ -1,14 +1,14 @@
 package com.hiketrackbackend.hiketrackbackend.mapper;
 
 import com.hiketrackbackend.hiketrackbackend.config.MapperConfig;
-import com.hiketrackbackend.hiketrackbackend.dto.country.RequestCountryDto;
-import com.hiketrackbackend.hiketrackbackend.dto.country.RespondCountryDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.Country;
 import org.mapstruct.Mapper;
 
 @Mapper(config = MapperConfig.class)
 public interface CountryMapper {
-    Country toEntity(RequestCountryDto requestDto);
+    Country toEntity(CountryRequestDto requestDto);
 
-    RespondCountryDto toDto(Country country);
+    CountryRespondDto toDto(Country country);
 }

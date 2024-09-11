@@ -14,14 +14,16 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "countries")
-@SQLDelete(sql = "UPDATE countries SET is_deleted = true WHERE id = ?")
-@SQLRestriction("is_deleted=false")
+//@SQLDelete(sql = "UPDATE countries SET is_deleted = true WHERE id = ?")
+//@SQLRestriction("is_deleted=false") activate after adding delete endpoint functionality
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +37,7 @@ public class Country {
     private Continent continent;
 
     @OneToMany(mappedBy = "country")
-    private List<Tour> tours = new ArrayList<>();
+    private Set<Tour> tours = new HashSet<>();
 
     @Column(nullable = false)
     private boolean isDeleted;
@@ -45,6 +47,7 @@ public class Country {
         ASIA,
         SOUTH_AMERICA,
         NORTH_AMERICA,
-        AFRICA
+        AFRICA,
+        AUSTRALIA
     }
 }

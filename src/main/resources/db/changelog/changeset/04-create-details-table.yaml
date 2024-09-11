@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-details-table
+      author: Vadym P
+      changes:
+        - createTable:
+            tableName: details
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: photo
+                  type: VARCHAR(255)
+              - column:
+                  name: difficulty
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: elevation_gain
+                  type: INT
+              - column:
+                  name: route_type
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: map
+                  type: VARCHAR(255)
+              - column:
+                  name: activity
+                  type: VARCHAR(255)
+              - column:
+                  name: tour_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: TINYINT(1)
+                  constraints:
+                    nullable: false
