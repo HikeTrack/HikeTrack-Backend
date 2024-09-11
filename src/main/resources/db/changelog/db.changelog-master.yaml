@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/changeset/01-create-countries-table.yaml
   - include:
       file: db/changelog/changeset/02-insert-data-to-countries-table.yaml
+  - include:
+      file: db/changelog/changeset/03-create-tours-table.yaml

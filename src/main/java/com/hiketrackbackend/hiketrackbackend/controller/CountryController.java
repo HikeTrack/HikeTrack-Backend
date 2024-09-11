@@ -1,8 +1,8 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
-import com.hiketrackbackend.hiketrackbackend.dto.country.RespondCountryDto;
-import com.hiketrackbackend.hiketrackbackend.dto.country.RequestCountryDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
 import com.hiketrackbackend.hiketrackbackend.service.CountryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,7 +30,7 @@ public class CountryController {
 //    @PreAuthorize("hasRole('ADMIN')") add after adding auth feature
     @PostMapping("/new")
     @Operation(summary = "Create a new country", description = "Add new country to DB")
-    public RespondCountryDto createCountry(@RequestBody @Valid RequestCountryDto requestDto) {
+    public CountryRespondDto createCountry(@RequestBody @Valid CountryRequestDto requestDto) {
         return countryService.createCountry(requestDto);
     }
 
@@ -38,8 +38,8 @@ public class CountryController {
     @GetMapping("/search")
     @Operation(summary = "Search by param",
             description = "Get list of all countries sorted by chosen continent or country")
-    public List<RespondCountryDto> searchByContinent(@Valid CountrySearchParameters params,
-                                          @ParameterObject @PageableDefault Pageable pageable) {
+    public List<CountryRespondDto> searchByContinent(@Valid CountrySearchParameters params,
+                                                     @ParameterObject @PageableDefault Pageable pageable) {
         return countryService.search(params, pageable);
     }
 }
