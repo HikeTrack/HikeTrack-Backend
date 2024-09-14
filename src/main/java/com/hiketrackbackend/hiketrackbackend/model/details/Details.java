@@ -1,7 +1,6 @@
-package com.hiketrackbackend.hiketrackbackend.model;
+package com.hiketrackbackend.hiketrackbackend.model.details;
 
-import com.hiketrackbackend.hiketrackbackend.model.enam.Activity;
-import com.hiketrackbackend.hiketrackbackend.model.enam.RouteType;
+import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,9 +21,6 @@ public class Details {
     private String photo; //link for photo
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Difficulty difficulty;
-
     private int elevationGain;
 
     @Column(nullable = false)
@@ -32,9 +28,13 @@ public class Details {
     private RouteType routeType;
 
     @Column(nullable = false)
+    private int duration;
+
+    @Column(nullable = false)
     private String map; // link for map photo(later add map api?)
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Activity activity;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -43,8 +43,4 @@ public class Details {
 
     @Column(nullable = false)
     private boolean isDeleted;
-
-    public enum Difficulty {
-        Easy, Medium, Hard
-    }
 }

@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.model.enam;
+package com.hiketrackbackend.hiketrackbackend.model.details;
 
 public enum RouteType {
     Point_to_Point,

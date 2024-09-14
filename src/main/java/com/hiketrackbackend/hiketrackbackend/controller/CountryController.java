@@ -38,8 +38,8 @@ public class CountryController {
     @GetMapping("/search")
     @Operation(summary = "Search by param",
             description = "Get list of all countries sorted by chosen continent or country")
-    public List<CountryRespondDto> searchByContinent(@Valid CountrySearchParameters params,
-                                                     @ParameterObject @PageableDefault Pageable pageable) {
+    public List<CountryRespondDto> search(@Valid CountrySearchParameters params,
+                                          @ParameterObject @PageableDefault Pageable pageable) {
         return countryService.search(params, pageable);
     }
 }

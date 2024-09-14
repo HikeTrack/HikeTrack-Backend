@@ -1,9 +1,11 @@
 package com.hiketrackbackend.hiketrackbackend.dto.tour;
 
+import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -16,7 +18,15 @@ public class TourRequestDto {
     @Min(0)
     private int length;
 
+    @NotBlank
+    @Min(0)
+    private BigDecimal price;
+
+    @NotBlank
     private ZonedDateTime date;
+
+    @NotBlank
+    private Difficulty difficulty;
 
     @NotBlank
     @Min(0)

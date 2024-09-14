@@ -1,5 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.model;
 
+import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
