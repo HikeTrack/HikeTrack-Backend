@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.dto.tour;
 
-import com.hiketrackbackend.hiketrackbackend.model.Tour;
+import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
 import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
@@ -14,6 +14,6 @@ public class TourRespondDto {
     private int length;
     private BigDecimal price;
     private ZonedDateTime date;
-    private Tour.Difficulty difficulty;
+    private Difficulty difficulty;
     private Long countryId;
 }

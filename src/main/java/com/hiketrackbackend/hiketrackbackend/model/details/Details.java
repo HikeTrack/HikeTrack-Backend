@@ -1,14 +1,11 @@
-package com.hiketrackbackend.hiketrackbackend.model;
+package com.hiketrackbackend.hiketrackbackend.model.details;
 
-import com.hiketrackbackend.hiketrackbackend.model.enam.Activity;
-import com.hiketrackbackend.hiketrackbackend.model.enam.RouteType;
+import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -31,7 +28,7 @@ public class Details {
     private RouteType routeType;
 
     @Column(nullable = false)
-    private LocalDateTime duration;
+    private int duration;
 
     @Column(nullable = false)
     private String map; // link for map photo(later add map api?)

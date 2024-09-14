@@ -4,7 +4,6 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import org.springframework.data.domain.Pageable;
-
 import java.util.List;
 
 public interface TourService {
@@ -17,4 +16,6 @@ public interface TourService {
     TourRespondDto getById(Long id);
 
     List<TourRespondDto> search(TourSearchParameters params, Pageable pageable);
+
+    List<TourRespondDto> getByLikes();
 }

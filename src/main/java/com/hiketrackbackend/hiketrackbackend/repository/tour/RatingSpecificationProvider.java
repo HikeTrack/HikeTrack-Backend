@@ -1,16 +1,14 @@
 package com.hiketrackbackend.hiketrackbackend.repository.tour;
 
-import com.hiketrackbackend.hiketrackbackend.model.Country;
-import com.hiketrackbackend.hiketrackbackend.model.Tour;
+import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.repository.SpecificationProvider;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-
 import java.util.Arrays;
 
 @Component
-public class LikesSpecificationProvider implements SpecificationProvider<Tour> {
-    private static final String NAME_PARAMETER = "likes";
+public class RatingSpecificationProvider implements SpecificationProvider<Tour> {
+    private static final String NAME_PARAMETER = "rating";
 
     @Override
     public String getKey() {

@@ -1,7 +1,5 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
-import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
@@ -15,8 +13,13 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
@@ -56,6 +59,14 @@ public class TourController {
         return tourService.getById(id);
     }
 
+    //    @PreAuthorize("hasRole('USER')") add after adding auth feature
+    @GetMapping("/popular")
+    @Operation(summary = "Get tour by likes",
+            description = "Get a list of 7th tours with the most popular(likes) value")
+    public List<TourRespondDto> getMostLikesTour() {
+        return tourService.getByLikes();
+    }
+
     //    @PreAuthorize("hasAnyRole('USER')") add after adding auth feature
     @GetMapping("/search")
     @Operation(summary = "Search by param",
@@ -64,6 +75,4 @@ public class TourController {
                                           @ParameterObject @PageableDefault Pageable pageable) {
         return tourService.search(params, pageable);
     }
-
-
 }

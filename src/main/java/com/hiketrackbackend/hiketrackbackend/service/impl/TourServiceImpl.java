@@ -6,7 +6,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
 import com.hiketrackbackend.hiketrackbackend.model.Country;
-import com.hiketrackbackend.hiketrackbackend.model.Tour;
+import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourSpecificationBuilder;
@@ -56,6 +56,15 @@ public class TourServiceImpl implements TourService {
     public List<TourRespondDto> search(TourSearchParameters params, Pageable pageable) {
         Specification<Tour> tourSpecification = tourSpecificationBuilder.build(params);
         return tourRepository.findAll(tourSpecification, pageable)
+                .stream()
+                .map(tourMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<TourRespondDto> getByLikes() {
+        return tourRepository
+                .findTop7ByRatingGreaterThanOrderByRatingDesc(0)
                 .stream()
                 .map(tourMapper::toDto)
                 .toList();

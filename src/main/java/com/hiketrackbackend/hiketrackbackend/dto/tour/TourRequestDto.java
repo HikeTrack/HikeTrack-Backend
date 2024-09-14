@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.dto.tour;
 
-import com.hiketrackbackend.hiketrackbackend.model.Tour;
+import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class TourRequestDto {
     private ZonedDateTime date;
 
     @NotBlank
-    private Tour.Difficulty difficulty;
+    private Difficulty difficulty;
 
     @NotBlank
     @Min(0)

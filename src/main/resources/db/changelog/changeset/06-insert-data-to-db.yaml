@@ -1,0 +1,147 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-data-to-db
+      author: Vadym P
+      changes:
+        - insert:
+            tableName: tours
+            columns:
+              - column: {name: id, value: 1 }
+              - column: {name: name, value: "Test tour name" }
+              - column: {name: length, value: 1600 }
+              - column: {name: price, value: 500 }
+              - column: {name: rating, value: 30 }
+              - column: { name: difficulty, value: "Medium" }
+              - column: {name: date, value: 2024-10-22 08:00:00 }
+              - column: {name: country_id, value: 2}
+              - column: { name: saved_to_bookmarks, value: 0 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: tours
+            columns:
+              - column: { name: id, value: 2 }
+              - column: { name: name, value: "Test tour name2" }
+              - column: { name: length, value: 1700 }
+              - column: { name: price, value: 200 }
+              - column: { name: rating, value: 55 }
+              - column: { name: difficulty, value: "Easy" }
+              - column: { name: date, value: 2024-10-22 07:00:00 }
+              - column: { name: country_id, value: 2 }
+              - column: { name: saved_to_bookmarks, value: 0 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: details
+            columns:
+              - column: { name: id, value: 1 }
+              - column: { name: photo, value: "link for photo" }
+              - column: { name: duration, value: 320 }
+              - column: { name: elevation_gain, value: 500 }
+              - column: { name: route_type, value: "Point_to_Point" }
+              - column: { name: map, value: "link for map" }
+              - column: { name: activity, value: "HIKING" }
+              - column: { name: tour_id, value: 1 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: details
+            columns:
+              - column: { name: id, value: 2 }
+              - column: { name: photo, value: "link for photo2" }
+              - column: { name: duration, value: 210 }
+              - column: { name: elevation_gain, value: 300 }
+              - column: { name: route_type, value: "Point_to_Point" }
+              - column: { name: map, value: "link for map2" }
+              - column: { name: activity, value: "HIKING" }
+              - column: { name: tour_id, value: 2 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, value: 1 }
+              - column: { name: content, value: "verrrrrrrrrrrrrry good hike" }
+              - column: { name: tour_id, value: 2 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, value: 2 }
+              - column: { name: content, value: "verrrrrrrrrrrrrry good hike aggggggaaaaaaaaain" }
+              - column: { name: tour_id, value: 1 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: tours
+            columns:
+              - column: { name: id, value: 3 }
+              - column: { name: name, value: "Test tour name3" }
+              - column: { name: length, value: 1330 }
+              - column: { name: price, value: 300 }
+              - column: { name: rating, value: 220 }
+              - column: { name: difficulty, value: "Medium" }
+              - column: { name: date, value: 2024-10-22 08:00:00 }
+              - column: { name: country_id, value: 4 }
+              - column: { name: saved_to_bookmarks, value: 0 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: tours
+            columns:
+              - column: { name: id, value: 4 }
+              - column: { name: name, value: "Test tour name4" }
+              - column: { name: length, value: 1400 }
+              - column: { name: price, value: 440 }
+              - column: { name: rating, value: 44 }
+              - column: { name: difficulty, value: "Hard" }
+              - column: { name: date, value: 2024-10-22 08:00:00 }
+              - column: { name: country_id, value: 3 }
+              - column: { name: saved_to_bookmarks, value: 1 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: tours
+            columns:
+              - column: { name: id, value: 5 }
+              - column: { name: name, value: "Test tour name5" }
+              - column: { name: length, value: 4300 }
+              - column: { name: price, value: 600 }
+              - column: { name: rating, value: 0 }
+              - column: { name: difficulty, value: "Easy" }
+              - column: { name: date, value: 2024-10-22 08:00:00 }
+              - column: { name: country_id, value: 5 }
+              - column: { name: saved_to_bookmarks, value: 0 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: tours
+            columns:
+              - column: { name: id, value: 6 }
+              - column: { name: name, value: "Test tour name6" }
+              - column: { name: length, value: 6600 }
+              - column: { name: price, value: 1500 }
+              - column: { name: rating, value: 0 }
+              - column: { name: difficulty, value: "Hard" }
+              - column: { name: date, value: 2024-10-22 08:00:00 }
+              - column: { name: country_id, value: 6 }
+              - column: { name: saved_to_bookmarks, value: 2 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: tours
+            columns:
+              - column: { name: id, value: 7 }
+              - column: { name: name, value: "Test tour name7" }
+              - column: { name: length, value: 2300 }
+              - column: { name: price, value: 200 }
+              - column: { name: rating, value: 340 }
+              - column: { name: difficulty, value: "Medium" }
+              - column: { name: date, value: 2024-10-22 08:00:00 }
+              - column: { name: country_id, value: 7 }
+              - column: { name: saved_to_bookmarks, value: 0 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: tours
+            columns:
+              - column: { name: id, value: 8 }
+              - column: { name: name, value: "Test tour name8" }
+              - column: { name: length, value: 1430 }
+              - column: { name: price, value: 450 }
+              - column: { name: rating, value: 7 }
+              - column: { name: difficulty, value: "Medium" }
+              - column: { name: date, value: 2024-10-22 08:00:00 }
+              - column: { name: country_id, value: 1 }
+              - column: { name: saved_to_bookmarks, value: 0 }
+              - column: { name: is_deleted, valueBoolean: false }
