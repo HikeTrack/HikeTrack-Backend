@@ -17,16 +17,18 @@ databaseChangeLog:
                   name: photo
                   type: VARCHAR(255)
               - column:
-                  name: difficulty
+                  name: elevation_gain
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: route_type
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
               - column:
-                  name: elevation_gain
-                  type: INT
-              - column:
-                  name: route_type
-                  type: VARCHAR(255)
+                  name: duration
+                  type: TIMESTAMP
                   constraints:
                     nullable: false
               - column:
@@ -35,6 +37,8 @@ databaseChangeLog:
               - column:
                   name: activity
                   type: VARCHAR(255)
+                  constraints:
+                    nullable: false
               - column:
                   name: tour_id
                   type: BIGINT

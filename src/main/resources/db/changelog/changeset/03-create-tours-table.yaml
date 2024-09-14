@@ -25,8 +25,26 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: price
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+              - column:
                   name: date
                   type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: likes
+                  type: INT
+              - column:
+                  name: saved_to_bookmarks
+                  type: INT
+              - column:
+                  name: difficulty
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
               - column:
                   name: country_id
                   type: BIGINT

@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -22,9 +24,6 @@ public class Details {
     private String photo; //link for photo
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Difficulty difficulty;
-
     private int elevationGain;
 
     @Column(nullable = false)
@@ -32,9 +31,13 @@ public class Details {
     private RouteType routeType;
 
     @Column(nullable = false)
+    private LocalDateTime duration;
+
+    @Column(nullable = false)
     private String map; // link for map photo(later add map api?)
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Activity activity;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -43,8 +46,4 @@ public class Details {
 
     @Column(nullable = false)
     private boolean isDeleted;
-
-    public enum Difficulty {
-        Easy, Medium, Hard
-    }
 }

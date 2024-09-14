@@ -6,8 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
@@ -29,7 +28,19 @@ public class Tour {
     @Min(0)
     private int length;
 
+    @Column(nullable = false)
+    private BigDecimal price;
+
+    @Column(nullable = false)
     private ZonedDateTime date;
+
+    private int likes;
+
+    private int savedToBookmarks;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Difficulty difficulty;
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private Set<Review> reviews;
@@ -43,4 +54,8 @@ public class Tour {
 
     @Column(nullable = false)
     private boolean isDeleted;
+
+    public enum Difficulty {
+        Easy, Medium, Hard
+    }
 }

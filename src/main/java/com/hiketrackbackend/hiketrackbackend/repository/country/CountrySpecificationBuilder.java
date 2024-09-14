@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class CountrySpecificationBuilder implements SpecificationBuilder<Country> {
+public class CountrySpecificationBuilder implements SpecificationBuilder<Country, CountrySearchParameters> {
     private static final String CONTINENT_KEYWORD = "continent";
     private static final String NAME_KEYWORD = "name";
     private final SpecificationProviderManager<Country> countrySpecificationProviderManager;
@@ -23,10 +23,10 @@ public class CountrySpecificationBuilder implements SpecificationBuilder<Country
                     .getSpecificationProvider(CONTINENT_KEYWORD)
                     .getSpecification(searchParameters.continent()));
         }
-        if (searchParameters.country() != null && searchParameters.country().length > 0) {
+        if (searchParameters.countryName() != null && searchParameters.countryName().length > 0) {
             spec = spec.and(countrySpecificationProviderManager
                     .getSpecificationProvider(NAME_KEYWORD)
-                    .getSpecification(searchParameters.country()));
+                    .getSpecification(searchParameters.countryName()));
         }
         return spec;
     }
