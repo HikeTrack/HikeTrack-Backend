@@ -28,7 +28,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: duration
-                  type: BIGINT
+                  type: INTEGER
                   constraints:
                     nullable: false
               - column:
