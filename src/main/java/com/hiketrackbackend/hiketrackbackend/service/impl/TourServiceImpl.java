@@ -2,6 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetails;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
@@ -40,16 +41,17 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourRespondDto> getAll(Pageable pageable) {
+    public List<TourRespondWithoutDetails> getAll(Pageable pageable) {
         return tourRepository.findAll(pageable)
                 .stream()
-                .map(tourMapper::toDto)
+                .map(tourMapper::toDtoWithoutDetails)
                 .toList();
     }
 
     @Override
     public TourRespondDto getById(Long id) {
-        return tourMapper.toDto(findTour(id));
+        Tour tour = findTour(id);
+        return tourMapper.toDto(tour);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourRespondDto> getByLikes() {
+    public List<TourRespondDto> getByRating() {
         return tourRepository
                 .findTop7ByRatingGreaterThanOrderByRatingDesc(0)
                 .stream()

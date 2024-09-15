@@ -2,6 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetails;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,7 +49,7 @@ public class TourController {
 //    @PreAuthorize("hasRole('USER')") add after adding auth feature
     @GetMapping
     @Operation(summary = "Get list of all tours")
-    public List<TourRespondDto> getAll(@ParameterObject @PageableDefault Pageable pageable) {
+    public List<TourRespondWithoutDetails> getAll(@ParameterObject @PageableDefault Pageable pageable) {
         return tourService.getAll(pageable);
     }
 
@@ -62,9 +63,9 @@ public class TourController {
     //    @PreAuthorize("hasRole('USER')") add after adding auth feature
     @GetMapping("/popular")
     @Operation(summary = "Get tour by likes",
-            description = "Get a list of 7th tours with the most popular(likes) value")
-    public List<TourRespondDto> getMostLikesTour() {
-        return tourService.getByLikes();
+            description = "Get a list of 7th tours with the most popular(rated) value")
+    public List<TourRespondDto> getMostRatedTour() {
+        return tourService.getByRating();
     }
 
     //    @PreAuthorize("hasAnyRole('USER')") add after adding auth feature
@@ -72,7 +73,7 @@ public class TourController {
     @Operation(summary = "Search by param",
             description = "Get list of all countries sorted by chosen parameter")
     public List<TourRespondDto> search(@Valid TourSearchParameters params,
-                                          @ParameterObject @PageableDefault Pageable pageable) {
+                                       @ParameterObject @PageableDefault Pageable pageable) {
         return tourService.search(params, pageable);
     }
 }

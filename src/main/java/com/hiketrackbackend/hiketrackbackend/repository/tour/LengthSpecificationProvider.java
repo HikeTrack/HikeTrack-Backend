@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 @Component
-public class RatingSpecificationProvider implements SpecificationProvider<Tour> {
-    private static final String NAME_PARAMETER = "rating";
+public class LengthSpecificationProvider implements SpecificationProvider<Tour> {
+    private static final String NAME_PARAMETER = "length";
 
     @Override
     public String getKey() {
