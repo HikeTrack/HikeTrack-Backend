@@ -12,7 +12,7 @@ databaseChangeLog:
               - column: {name: price, value: 350 }
               - column: {name: rating, value: 30 }
               - column: { name: difficulty, value: "Medium" }
-              - column: { name: main_photo, value: "img/tours/china/tour-china-00" }
+              - column: { name: main_photo, value: "img/tours/china/tour-china-00.png" }
               - column: {name: date, value: 2024-10-22 08:00:00 }
               - column: {name: country_id, value: 8}
               - column: { name: saved_to_bookmarks, value: 0 }
@@ -21,7 +21,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 2 }
-              - column: { name: main_photo, value: "img/tours/china/tour-china-01" }
+              - column: { name: main_photo, value: "img/tours/china/tour-china-01.png" }
               - column: { name: name, value: "Mount Hua" }
               - column: { name: length, value: 12000 }
               - column: { name: price, value: 400 }
@@ -35,7 +35,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 3 }
-              - column: { name: main_photo, value: "img/tours/china/tour-china-02" }
+              - column: { name: main_photo, value: "img/tours/china/tour-china-02.png" }
               - column: { name: name, value: "Yangshuo Mountains" }
               - column: { name: length, value: 9500 }
               - column: { name: price, value: 200 }
@@ -49,7 +49,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 4 }
-              - column: { name: main_photo, value: "img/tours/india/tour-india-00" }
+              - column: { name: main_photo, value: "img/tours/india/tour-india-00.png" }
               - column: { name: name, value: "Roopkund Trek" }
               - column: { name: length, value: 53000 }
               - column: { name: price, value: 500 }
@@ -63,7 +63,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 5 }
-              - column: { name: main_photo, value: "img/tours/india/tour-india-01" }
+              - column: { name: main_photo, value: "img/tours/india/tour-india-01.png" }
               - column: { name: name, value: "Chadar Trek" }
               - column: { name: length, value: 105000 }
               - column: { name: price, value: 850 }
@@ -77,7 +77,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 6 }
-              - column: { name: main_photo, value: "img/tours/india/tour-india-02" }
+              - column: { name: main_photo, value: "img/tours/india/tour-india-02.png" }
               - column: { name: name, value: "Triund Trek" }
               - column: { name: length, value: 9000 }
               - column: { name: price, value: 150 }
@@ -91,7 +91,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 7 }
-              - column: { name: main_photo, value: "img/tours/indonesia/tour-indonesia-00" }
+              - column: { name: main_photo, value: "img/tours/indonesia/tour-indonesia-00.png" }
               - column: { name: name, value: "Mount Rinjani" }
               - column: { name: length, value: 50000 }
               - column: { name: price, value: 600 }
@@ -105,7 +105,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 8 }
-              - column: { name: main_photo, value: "img/tours/indonesia/tour-indonesia-01" }
+              - column: { name: main_photo, value: "img/tours/indonesia/tour-indonesia-01.png" }
               - column: { name: name, value: "Mount Bromo" }
               - column: { name: length, value: 16000 }
               - column: { name: price, value: 300 }
@@ -119,7 +119,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 9 }
-              - column: { name: main_photo, value: "img/tours/indonesia/tour-indonesia-02" }
+              - column: { name: main_photo, value: "img/tours/indonesia/tour-indonesia-02.png" }
               - column: { name: name, value: "Mount Batur" }
               - column: { name: length, value: 11000 }
               - column: { name: price, value: 150 }
@@ -133,7 +133,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 10 }
-              - column: { name: main_photo, value: "img/tours/italy/tour-italy-00" }
+              - column: { name: main_photo, value: "img/tours/italy/tour-italy-00.png" }
               - column: { name: name, value: "Path of the Gods / Sentiero degli Dei" }
               - column: { name: length, value: 8000 }
               - column: { name: price, value: 300 }
@@ -147,7 +147,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 11 }
-              - column: { name: main_photo, value: "img/tours/italy/tour-italy-01" }
+              - column: { name: main_photo, value: "img/tours/italy/tour-italy-01.png" }
               - column: { name: name, value: "Tre Cime di Lavaredo" }
               - column: { name: length, value: 10000 }
               - column: { name: price, value: 250 }
@@ -161,7 +161,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 12 }
-              - column: { name: main_photo, value: "img/tours/italy/tour-italy-02" }
+              - column: { name: main_photo, value: "img/tours/italy/tour-italy-02.png" }
               - column: { name: name, value: "Gran Paradiso" }
               - column: { name: length, value: 45000 }
               - column: { name: price, value: 950 }
@@ -175,7 +175,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 13 }
-              - column: { name: main_photo, value: "img/tours/nepal/tour-nepal-00" }
+              - column: { name: main_photo, value: "img/tours/nepal/tour-nepal-00.png" }
               - column: { name: name, value: "Everest Base Camp Trek" }
               - column: { name: length, value: 130000 }
               - column: { name: price, value: 1500 }
@@ -189,7 +189,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 14 }
-              - column: { name: main_photo, value: "img/tours/nepal/tour-nepal-01" }
+              - column: { name: main_photo, value: "img/tours/nepal/tour-nepal-01.png" }
               - column: { name: name, value: "Annapurna Circuit Trek" }
               - column: { name: length, value: 230000 }
               - column: { name: price, value: 1800 }
@@ -203,7 +203,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 15 }
-              - column: { name: main_photo, value: "img/tours/nepal/tour-nepal-02" }
+              - column: { name: main_photo, value: "img/tours/nepal/tour-nepal-02.png" }
               - column: { name: name, value: "Gokyo Lakes Trek" }
               - column: { name: length, value: 92000 }
               - column: { name: price, value: 1800 }
@@ -217,7 +217,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 16 }
-              - column: { name: main_photo, value: "img/tours/turkey/tour-turkey-00" }
+              - column: { name: main_photo, value: "img/tours/turkey/tour-turkey-00.png" }
               - column: { name: name, value: "Lycian Way" }
               - column: { name: length, value: 540000 }
               - column: { name: price, value: 2500 }
@@ -231,7 +231,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 17 }
-              - column: { name: main_photo, value: "img/tours/turkey/tour-turkey-01" }
+              - column: { name: main_photo, value: "img/tours/turkey/tour-turkey-01.png" }
               - column: { name: name, value: "Mount Ararat" }
               - column: { name: length, value: 35000 }
               - column: { name: price, value: 850 }
@@ -245,7 +245,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 18 }
-              - column: { name: main_photo, value: "img/tours/turkey/tour-turkey-02" }
+              - column: { name: main_photo, value: "img/tours/turkey/tour-turkey-02.png" }
               - column: { name: name, value: "St. Paul Trail" }
               - column: { name: length, value: 500000 }
               - column: { name: price, value: 1500 }
@@ -259,7 +259,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 19 }
-              - column: { name: main_photo, value: "img/tours/ukraine/tour-ukraine-00" }
+              - column: { name: main_photo, value: "img/tours/ukraine/tour-ukraine-00.png" }
               - column: { name: name, value: "Hoverla" }
               - column: { name: length, value: 8000 }
               - column: { name: price, value: 300 }
@@ -273,7 +273,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 20 }
-              - column: { name: main_photo, value: "img/tours/ukraine/tour-ukraine-01" }
+              - column: { name: main_photo, value: "img/tours/ukraine/tour-ukraine-01.png" }
               - column: { name: name, value: "Synevyr Lake" }
               - column: { name: length, value: 15000 }
               - column: { name: price, value: 250 }
@@ -287,7 +287,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 21 }
-              - column: { name: main_photo, value: "img/tours/ukraine/tour-ukraine-02" }
+              - column: { name: main_photo, value: "img/tours/ukraine/tour-ukraine-02.png" }
               - column: { name: name, value: "Chornohora Ridge" }
               - column: { name: length, value: 35000 }
               - column: { name: price, value: 320 }
@@ -301,7 +301,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 22 }
-              - column: { name: main_photo, value: "img/tours/canada/tour-canada-00" }
+              - column: { name: main_photo, value: "img/tours/canada/tour-canada-00.png" }
               - column: { name: name, value: "West Coast Trail" }
               - column: { name: length, value: 75000 }
               - column: { name: price, value: 350 }
@@ -315,7 +315,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 23 }
-              - column: { name: main_photo, value: "img/tours/canada/tour-canada-01" }
+              - column: { name: main_photo, value: "img/tours/canada/tour-canada-01.png" }
               - column: { name: name, value: "Plain of Six Glaciers Trail" }
               - column: { name: length, value: 14000 }
               - column: { name: price, value: 250 }
@@ -329,7 +329,7 @@ databaseChangeLog:
             tableName: tours
             columns:
               - column: { name: id, value: 24 }
-              - column: { name: main_photo, value: "img/tours/canada/tour-canada-02" }
+              - column: { name: main_photo, value: "img/tours/canada/tour-canada-02.png" }
               - column: { name: name, value: "Gros Morne Mountain Trail" }
               - column: { name: length, value: 16000 }
               - column: { name: price, value: 300 }
