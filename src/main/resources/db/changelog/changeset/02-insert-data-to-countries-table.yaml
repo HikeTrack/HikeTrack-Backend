@@ -8,40 +8,47 @@ databaseChangeLog:
             columns:
               - column: {name: name, value: "Ukraine"}
               - column: {name: continent, value: "EUROPE"}
+              - column: {name: photo, value: "link for photo Ukraine"}
               - column: {name: is_deleted, valueBoolean: false}
         - insert:
             tableName: countries
             columns:
               - column: { name: name, value: "Poland" }
+              - column: {name: photo, value: "link for photo Poland"}
               - column: { name: continent, value: "EUROPE" }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: countries
             columns:
               - column: { name: name, value: "Czech Republic" }
+              - column: {name: photo, value: "link for photo Czech Republic"}
               - column: { name: continent, value: "EUROPE" }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: countries
             columns:
               - column: { name: name, value: "China" }
+              - column: {name: photo, value: "link for photo China"}
               - column: { name: continent, value: "ASIA" }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: countries
             columns:
               - column: { name: name, value: "La Paz" }
+              - column: {name: photo, value: "link for photo La Paz"}
               - column: { name: continent, value: "SOUTH AMERICA" }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: countries
             columns:
               - column: { name: name, value: "Vancouver" }
+              - column: {name: photo, value: "link for photo Vancouver"}
               - column: { name: continent, value: "NORTH_AMERICA" }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: countries
             columns:
               - column: { name: name, value: "Cape Town" }
+              - column: {name: photo, value: "link for photo Cape Town"}
               - column: { name: continent, value: "AFRICA" }
               - column: { name: is_deleted, valueBoolean: false }

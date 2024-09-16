@@ -10,4 +10,5 @@ public class CountryRespondDto {
     private Long id;
     private String name;
     private Country.Continent continent;
+    private String photo;
 }
