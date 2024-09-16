@@ -18,7 +18,7 @@ public class Details {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String photo; //link for photo
+    private String additionalPhotos;
 
     @Column(nullable = false)
     private int elevationGain;

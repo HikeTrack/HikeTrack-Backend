@@ -12,7 +12,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +28,9 @@ public class Country {
 
     @Column(unique = true, nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String photo;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

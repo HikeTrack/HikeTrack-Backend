@@ -12,6 +12,10 @@ public class CountryRequestDto {
     @NotBlank
     @Size(max = 170)
     private String name;
+
     @NotBlank
     private Country.Continent continent;
+
+    @NotBlank
+    private String photo;
 }

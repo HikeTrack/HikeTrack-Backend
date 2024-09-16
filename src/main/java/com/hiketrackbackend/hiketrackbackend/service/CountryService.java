@@ -10,4 +10,6 @@ public interface CountryService {
     CountryRespondDto createCountry(CountryRequestDto requestDto);
 
     List<CountryRespondDto> search(CountrySearchParameters params, Pageable pageable);
+
+    CountryRespondDto getById(Long id);
 }
