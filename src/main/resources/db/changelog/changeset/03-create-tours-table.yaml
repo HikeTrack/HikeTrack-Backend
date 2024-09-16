@@ -46,6 +46,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: main_photo
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
                   name: country_id
                   type: BIGINT
                   constraints:

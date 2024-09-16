@@ -14,7 +14,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: photo
+                  name: additional_photos
                   type: VARCHAR(255)
               - column:
                   name: elevation_gain

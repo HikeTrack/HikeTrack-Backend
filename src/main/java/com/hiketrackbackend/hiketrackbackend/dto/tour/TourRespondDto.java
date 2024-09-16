@@ -18,4 +18,5 @@ public class TourRespondDto {
     private Difficulty difficulty;
     private Long countryId;
     private DetailsRespondDto details;
+    private String mainPhoto;
 }

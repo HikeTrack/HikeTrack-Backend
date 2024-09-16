@@ -45,6 +45,9 @@ public class Tour {
     private int length;
 
     @Column(nullable = false)
+    private String mainPhoto;
+
+    @Column(nullable = false)
     private BigDecimal price;
 
     @Column(nullable = false)

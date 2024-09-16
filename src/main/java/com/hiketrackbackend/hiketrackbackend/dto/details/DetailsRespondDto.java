@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class DetailsRespondDto {
     private Long id;
-    private String photo;
+    private String additionalPhotos;
     private int elevationGain;
     private RouteType routeType;
     private int duration;
