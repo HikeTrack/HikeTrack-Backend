@@ -1,0 +1,16 @@
+package com.hiketrackbackend.hiketrackbackend.dto.user;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+public class UserRegistrationRespondDto {
+    private Long id;
+    private String email;
+    private String password;
+    private String firstName;
+    private String lastName;
+    private String country;
+    private String city;
+}
