@@ -12,4 +12,6 @@ public interface CountryService {
     List<CountryRespondDto> search(CountrySearchParameters params, Pageable pageable);
 
     CountryRespondDto getById(Long id);
+
+    List<CountryRespondDto> getAll(Pageable pageable);
 }
