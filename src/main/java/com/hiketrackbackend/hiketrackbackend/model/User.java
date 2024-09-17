@@ -1,5 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -43,6 +45,9 @@ public class User implements UserDetails {
     private String country;
 
     private String city;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<Review> reviews;
 
     @ManyToMany
     @JoinTable(name = "users_roles",

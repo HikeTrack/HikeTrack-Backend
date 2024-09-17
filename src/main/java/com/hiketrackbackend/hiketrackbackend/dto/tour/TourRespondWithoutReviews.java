@@ -1,17 +1,15 @@
 package com.hiketrackbackend.hiketrackbackend.dto.tour;
 
 import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
 import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.List;
 
 @Getter
 @Setter
-public class TourRespondDto {
+public class TourRespondWithoutReviews {
     private Long id;
     private String name;
     private int length;
@@ -19,10 +17,6 @@ public class TourRespondDto {
     private ZonedDateTime date;
     private Difficulty difficulty;
     private Long countryId;
-    private DetailsRespondDto details;
-    private List<ReviewsRespondDto> reviews;
-    private int currentReviewPage;
-    private int totalReviewPages;
-    private long totalReviewElements;
     private String mainPhoto;
+    private DetailsRespondDto details;
 }
