@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,14 +32,14 @@ import java.util.List;
 public class TourController {
     private final TourService tourService;
 
-    //    @PreAuthorize("hasRole('ADMIN')") add after adding auth feature
+    @PreAuthorize("hasRole('GUIDE')")
     @PostMapping("/new")
     @Operation(summary = "Create a new tour", description = "Add new tour to DB")
     public TourRespondDto createTour(@RequestBody @Valid TourRequestDto requestDto) {
         return tourService.createTour(requestDto);
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")add after adding auth feature
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete tour by ID", description = "Delete tour with out actual "
            + "deleting it from DB(soft deleting). Tour become not visible for user")
@@ -46,21 +47,18 @@ public class TourController {
         tourService.deleteById(id);
     }
 
-//    @PreAuthorize("hasRole('USER')") add after adding auth feature
     @GetMapping
     @Operation(summary = "Get list of all tours")
     public List<TourRespondWithoutDetails> getAll(@ParameterObject @PageableDefault Pageable pageable) {
         return tourService.getAll(pageable);
     }
 
-//    @PreAuthorize("hasRole('USER')") add after adding auth feature
     @GetMapping("/{id}")
     @Operation(summary = "Get tour by id", description = "Get a single tour")
     public TourRespondDto getTourById(@PathVariable @Positive Long id) {
         return tourService.getById(id);
     }
 
-    //    @PreAuthorize("hasRole('USER')") add after adding auth feature
     @GetMapping("/popular")
     @Operation(summary = "Get tour by likes",
             description = "Get a list of 7th tours with the most popular(rated) value")
@@ -68,7 +66,6 @@ public class TourController {
         return tourService.getByRating();
     }
 
-    //    @PreAuthorize("hasAnyRole('USER')") add after adding auth feature
     @GetMapping("/search")
     @Operation(summary = "Search by param",
             description = "Get list of all countries sorted by chosen parameter")

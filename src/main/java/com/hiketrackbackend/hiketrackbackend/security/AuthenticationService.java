@@ -1,8 +1,8 @@
 package com.hiketrackbackend.hiketrackbackend.security;
 
-import example.dto.user.UserLoginRequestDto;
-import example.dto.user.UserLoginResponseDto;
-import example.model.User;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserLoginRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserLoginResponseDto;
+import com.hiketrackbackend.hiketrackbackend.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

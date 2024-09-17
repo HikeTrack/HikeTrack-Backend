@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-data-to-user-table
+      author: Vadym P
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: id, value: 1}
+              - column: {name: email, value: "admin@gmail.com"}
+              - column: {name: password, value: "$2a$10$8BI2iR6p6NlDFXQ7/dmPdu0v69tchIXTfZrS1jkj4Zi.WXU4Xm8hq"}
+              - column: {name: first_name, value: "Vadym"}
+              - column: {name: last_name, value: "Pantielieienko"}
+              - column: {name: country, value: "Ukraine"}
+              - column: {name: city, value: "Kharkiv"}
+        - insert:
+            tableName: roles
+            columns:
+              - column: { name: name, value: "ROLE_ADMIN" }
+        - insert:
+            tableName: roles
+            columns:
+              - column: { name: name, value: "ROLE_USER" }
+        - insert:
+            tableName: roles
+            columns:
+              - column: { name: name, value: "ROLE_GUIDE" }
+        - insert:
+            tableName: users_roles
+            columns:
+              - column: { name: user_id, value: 1 }
+              - column: { name: role_id, value: 1 }

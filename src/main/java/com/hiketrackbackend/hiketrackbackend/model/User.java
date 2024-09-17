@@ -1,11 +1,20 @@
 package com.hiketrackbackend.hiketrackbackend.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Set;
 
@@ -30,6 +39,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String lastName;
 
+    @Column(nullable = false)
     private String country;
 
     private String city;
@@ -53,7 +63,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getPassword(){
+    public String getPassword() {
         return password;
     }
 
@@ -76,5 +86,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 }

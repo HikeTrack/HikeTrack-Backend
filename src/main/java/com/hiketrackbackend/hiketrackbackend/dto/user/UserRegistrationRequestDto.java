@@ -31,5 +31,6 @@ public class UserRegistrationRequestDto {
 
     private String city;
 
+    @NotBlank
     private String country;
 }
