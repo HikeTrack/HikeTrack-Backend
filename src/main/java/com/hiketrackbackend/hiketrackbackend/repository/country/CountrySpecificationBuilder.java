@@ -1,7 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.repository.country;
 
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
-import com.hiketrackbackend.hiketrackbackend.model.Country;
+import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.repository.SpecificationBuilder;
 import com.hiketrackbackend.hiketrackbackend.repository.SpecificationProviderManager;
 import lombok.RequiredArgsConstructor;

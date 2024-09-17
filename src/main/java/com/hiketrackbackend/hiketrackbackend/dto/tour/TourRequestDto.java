@@ -31,4 +31,7 @@ public class TourRequestDto {
     @NotBlank
     @Min(0)
     private Long countryId;
+
+    @NotBlank
+    private String mainPhoto;
 }
