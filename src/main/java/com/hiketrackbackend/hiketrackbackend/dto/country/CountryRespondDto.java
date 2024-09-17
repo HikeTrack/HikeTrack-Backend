@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.dto.country;
 
-import com.hiketrackbackend.hiketrackbackend.model.Country;
+import com.hiketrackbackend.hiketrackbackend.model.country.Continent;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,5 +9,6 @@ import lombok.Setter;
 public class CountryRespondDto {
     private Long id;
     private String name;
-    private Country.Continent continent;
+    private Continent continent;
+    private String photo;
 }

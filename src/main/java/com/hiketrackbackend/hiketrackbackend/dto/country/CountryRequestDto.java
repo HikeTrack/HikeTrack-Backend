@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.dto.country;
 
-import com.hiketrackbackend.hiketrackbackend.model.Country;
+import com.hiketrackbackend.hiketrackbackend.model.country.Continent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -12,6 +12,10 @@ public class CountryRequestDto {
     @NotBlank
     @Size(max = 170)
     private String name;
+
     @NotBlank
-    private Country.Continent continent;
+    private Continent continent;
+
+    @NotBlank
+    private String photo;
 }

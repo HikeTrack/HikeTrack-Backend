@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.repository.country;
 
-import com.hiketrackbackend.hiketrackbackend.model.Country;
+import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.repository.SpecificationProvider;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;

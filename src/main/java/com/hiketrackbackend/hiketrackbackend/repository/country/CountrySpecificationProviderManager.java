@@ -1,7 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.repository.country;
 
 import com.hiketrackbackend.hiketrackbackend.exception.SpecificationNotFoundException;
-import com.hiketrackbackend.hiketrackbackend.model.Country;
+import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.repository.SpecificationProvider;
 import com.hiketrackbackend.hiketrackbackend.repository.SpecificationProviderManager;
 import lombok.RequiredArgsConstructor;

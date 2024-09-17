@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.model.tour;
 
-import com.hiketrackbackend.hiketrackbackend.model.Country;
+import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.model.details.Details;
 import com.hiketrackbackend.hiketrackbackend.model.Review;
 import jakarta.persistence.CascadeType;
@@ -43,6 +43,9 @@ public class Tour {
     @Column(nullable = false)
     @Min(0)
     private int length;
+
+    @Column(nullable = false)
+    private String mainPhoto;
 
     @Column(nullable = false)
     private BigDecimal price;

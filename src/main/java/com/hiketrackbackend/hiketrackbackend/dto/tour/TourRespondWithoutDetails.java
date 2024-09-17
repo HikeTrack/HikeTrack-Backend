@@ -16,4 +16,5 @@ public class TourRespondWithoutDetails {
     private ZonedDateTime date;
     private Difficulty difficulty;
     private Long countryId;
+    private String mainPhoto;
 }

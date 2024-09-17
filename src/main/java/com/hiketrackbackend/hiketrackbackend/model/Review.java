@@ -21,8 +21,6 @@ public class Review {
     @Column(nullable = false, unique = true)
     private String content;
 
-//    private int rating; discuss and add later
-
     @ManyToOne
     @JoinColumn(name = "tour_id", nullable = false)
     private Tour tour;

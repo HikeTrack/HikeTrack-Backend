@@ -3,8 +3,9 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
+import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.CountryMapper;
-import com.hiketrackbackend.hiketrackbackend.model.Country;
+import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountrySpecificationBuilder;
 import com.hiketrackbackend.hiketrackbackend.service.CountryService;
@@ -34,5 +35,13 @@ public class CountryServiceImpl implements CountryService {
                 .stream()
                 .map(countryMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public CountryRespondDto getById(Long id) {
+        Country country = countryRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Can`t find country with id: " + id)
+        );
+        return countryMapper.toDto(country);
     }
 }

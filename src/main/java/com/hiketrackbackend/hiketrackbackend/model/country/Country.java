@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.model;
+package com.hiketrackbackend.hiketrackbackend.model.country;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import jakarta.persistence.Column;
@@ -12,7 +12,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,6 +30,9 @@ public class Country {
     private String name;
 
     @Column(nullable = false)
+    private String photo;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Continent continent;
 
@@ -40,12 +42,5 @@ public class Country {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    public enum Continent {
-        EUROPE,
-        ASIA,
-        SOUTH_AMERICA,
-        NORTH_AMERICA,
-        AFRICA,
-        AUSTRALIA
-    }
+
 }
