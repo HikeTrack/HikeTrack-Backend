@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.model;
+package com.hiketrackbackend.hiketrackbackend.model.country;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import jakarta.persistence.Column;
@@ -42,12 +42,5 @@ public class Country {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    public enum Continent {
-        EUROPE,
-        ASIA,
-        SOUTH_AMERICA,
-        NORTH_AMERICA,
-        AFRICA,
-        AUSTRALIA
-    }
+
 }
