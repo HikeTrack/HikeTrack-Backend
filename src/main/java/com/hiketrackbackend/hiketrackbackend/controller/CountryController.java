@@ -51,4 +51,10 @@ public class CountryController {
     public CountryRespondDto getById(@PathVariable @Positive Long id) {
         return countryService.getById(id);
     }
+
+    @GetMapping
+    @Operation(summary = "Get all countries")
+    public List<CountryRespondDto> getAll(@ParameterObject @PageableDefault Pageable pageable) {
+        return countryService.getAll(pageable);
+    }
 }

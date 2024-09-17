@@ -44,4 +44,12 @@ public class CountryServiceImpl implements CountryService {
         );
         return countryMapper.toDto(country);
     }
+
+    @Override
+    public List<CountryRespondDto> getAll(Pageable pageable) {
+        return countryRepository.findAll()
+                .stream()
+                .map(countryMapper::toDto)
+                .toList();
+    }
 }
