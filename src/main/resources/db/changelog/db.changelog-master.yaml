@@ -11,3 +11,11 @@ databaseChangeLog:
       file: db/changelog/changeset/05-create-review-table.yaml
   - include:
       file: db/changelog/changeset/06-insert-data-to-db.yaml
+  - include:
+      file: db/changelog/changeset/07-create-user-table.yaml
+  - include:
+      file: db/changelog/changeset/08-create-role-table.yaml
+  - include:
+      file: db/changelog/changeset/09-create-users-roles-table.yaml
+  - include:
+      file: db/changelog/changeset/10-insert-data-to-user-table.yaml

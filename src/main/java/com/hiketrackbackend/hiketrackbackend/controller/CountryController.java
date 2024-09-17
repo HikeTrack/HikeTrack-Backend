@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,14 +30,13 @@ import java.util.List;
 public class CountryController {
     private final CountryService countryService;
 
-//    @PreAuthorize("hasRole('ADMIN')") add after adding auth feature
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/new")
     @Operation(summary = "Create a new country", description = "Add new country to DB")
     public CountryRespondDto createCountry(@RequestBody @Valid CountryRequestDto requestDto) {
         return countryService.createCountry(requestDto);
     }
 
-//    @PreAuthorize("hasAnyRole('USER')") add after adding auth feature
     @GetMapping("/search")
     @Operation(summary = "Search by param",
             description = "Get list of all countries sorted by chosen continent or country")
@@ -45,7 +45,6 @@ public class CountryController {
         return countryService.search(params, pageable);
     }
 
-    //    @PreAuthorize("hasAnyRole('USER')") add after adding auth feature
     @GetMapping("/{id}")
     @Operation(summary = "Get country by ID",
             description = "Get get country with ID")
