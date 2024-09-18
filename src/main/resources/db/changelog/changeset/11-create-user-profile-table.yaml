@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-user-table
+      id: create-user-profile-table
       author: Vadym P
       changes:
         - createTable:
-            tableName: users
+            tableName: user_profiles
             columns:
               - column:
                   name: id
@@ -14,23 +14,24 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: email
-                  type: VARCHAR(255)
+                  name: user_id
+                  type: BIGINT
                   constraints:
                     nullable: false
                     unique: true
               - column:
-                  name: password
+                  name: country_id
+                  type: BIGINT
+              - column:
+                  name: city
                   type: VARCHAR(255)
+              - column:
+                  name: registration_date
+                  type: TIMESTAMP
                   constraints:
                     nullable: false
               - column:
-                  name: first_name
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: last_name
+                  name: user_photo
                   type: VARCHAR(255)
                   constraints:
                     nullable: false

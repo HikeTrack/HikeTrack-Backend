@@ -15,7 +15,6 @@ databaseChangeLog:
               - column: { name: main_photo, value: "img/tours/china/tour-china-00.png" }
               - column: {name: date, value: 2025-11-22 08:00:00 }
               - column: {name: country_id, value: 8}
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -29,7 +28,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Hard" }
               - column: { name: date, value: 2025-05-17 12:00:00 }
               - column: { name: country_id, value: 8 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -43,7 +41,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Easy" }
               - column: { name: date, value: 2025-08-23 06:30:00 }
               - column: { name: country_id, value: 8 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -57,7 +54,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Hard" }
               - column: { name: date, value: 2025-06-14 07:20:00 }
               - column: { name: country_id, value: 3 }
-              - column: { name: saved_to_bookmarks, value: 1 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -71,7 +67,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Hard" }
               - column: { name: date, value: 2025-04-29 09:30:00 }
               - column: { name: country_id, value: 3 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -85,7 +80,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Easy" }
               - column: { name: date, value: 2025-08-07 10:00:00 }
               - column: { name: country_id, value: 3 }
-              - column: { name: saved_to_bookmarks, value: 2 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -99,7 +93,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Hard" }
               - column: { name: date, value: 2025-10-03 05:30:00 }
               - column: { name: country_id, value: 2 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -113,7 +106,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Medium" }
               - column: { name: date, value: 2025-09-11 09:45:00 }
               - column: { name: country_id, value: 2 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -127,7 +119,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Medium" }
               - column: { name: date, value: 2025-09-27 15:00:00 }
               - column: { name: country_id, value: 2 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -141,7 +132,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Medium" }
               - column: { name: date, value: 2025-10-07 10:00:00 }
               - column: { name: country_id, value: 4 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -155,7 +145,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Easy" }
               - column: { name: date, value: 2025-07-15 09:00:00 }
               - column: { name: country_id, value: 4 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -169,7 +158,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Hard" }
               - column: { name: date, value: 2025-07-06 08:45:00 }
               - column: { name: country_id, value: 4 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -183,7 +171,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Hard" }
               - column: { name: date, value: 2025-06-01 09:50:00 }
               - column: { name: country_id, value: 7 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -197,7 +184,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Medium" }
               - column: { name: date, value: 2025-02-26 05:30:00 }
               - column: { name: country_id, value: 7 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -211,7 +197,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Medium" }
               - column: { name: date, value: 2025-09-09 08:15:00 }
               - column: { name: country_id, value: 7 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -225,7 +210,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Medium" }
               - column: { name: date, value: 2025-08-14 08:30:00 }
               - column: { name: country_id, value: 5 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -239,7 +223,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Hard" }
               - column: { name: date, value: 2025-09-25 10:30:00 }
               - column: { name: country_id, value: 5 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -253,7 +236,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Medium" }
               - column: { name: date, value: 2025-06-18 10:15:00 }
               - column: { name: country_id, value: 5 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -267,7 +249,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Medium" }
               - column: { name: date, value: 2025-07-18 10:15:00 }
               - column: { name: country_id, value: 1 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -281,7 +262,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Medium" }
               - column: { name: date, value: 2025-05-20 08:00:00 }
               - column: { name: country_id, value: 1 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -295,7 +275,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Medium" }
               - column: { name: date, value: 2025-05-20 06:45:00 }
               - column: { name: country_id, value: 1 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -309,7 +288,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Hard" }
               - column: { name: date, value: 2025-07-08 09:05:00 }
               - column: { name: country_id, value: 6 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -323,7 +301,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Medium" }
               - column: { name: date, value: 2025-08-04 08:35:00 }
               - column: { name: country_id, value: 6 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: tours
@@ -337,7 +314,6 @@ databaseChangeLog:
               - column: { name: difficulty, value: "Hard" }
               - column: { name: date, value: 2025-09-05 06:50:00 }
               - column: { name: country_id, value: 6 }
-              - column: { name: saved_to_bookmarks, value: 0 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: details

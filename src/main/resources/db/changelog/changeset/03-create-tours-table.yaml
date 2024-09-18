@@ -38,9 +38,6 @@ databaseChangeLog:
                   name: rating
                   type: INT
               - column:
-                  name: saved_to_bookmarks
-                  type: INT
-              - column:
                   name: difficulty
                   type: VARCHAR(255)
                   constraints:
