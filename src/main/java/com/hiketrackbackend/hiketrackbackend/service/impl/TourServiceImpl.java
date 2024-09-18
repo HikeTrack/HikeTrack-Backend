@@ -1,22 +1,31 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
+import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetails;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
+import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
+import com.hiketrackbackend.hiketrackbackend.model.Review;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
+import com.hiketrackbackend.hiketrackbackend.repository.ReviewRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourSpecificationBuilder;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,13 +34,15 @@ public class TourServiceImpl implements TourService {
     private final TourMapper tourMapper;
     private final CountryRepository countryRepository;
     private final TourSpecificationBuilder tourSpecificationBuilder;
+    private final ReviewRepository reviewRepository;
+    private final ReviewMapper reviewMapper;
 
     @Override
-    public TourRespondDto createTour(TourRequestDto requestDto) {
+    public TourRespondWithoutDetailsAndReviews createTour(TourRequestDto requestDto) {
         Tour tour = tourMapper.toEntity(requestDto);
         Country country = findCountry(requestDto.getCountryId());
         tour.setCountry(country);
-        return tourMapper.toDto(tourRepository.save(tour));
+        return tourMapper.toDtoWithoutDetailsAndReviews(tourRepository.save(tour));
     }
 
     @Override
@@ -41,34 +52,45 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourRespondWithoutDetails> getAll(Pageable pageable) {
+    public List<TourRespondWithoutDetailsAndReviews> getAll(Pageable pageable) {
         return tourRepository.findAll(pageable)
                 .stream()
-                .map(tourMapper::toDtoWithoutDetails)
+                .map(tourMapper::toDtoWithoutDetailsAndReviews)
                 .toList();
     }
 
     @Override
-    public TourRespondDto getById(Long id) {
+    public TourRespondDto getById(Long id, int page, int size) {
         Tour tour = findTour(id);
-        return tourMapper.toDto(tour);
+        TourRespondDto respondDto = tourMapper.toDto(tour);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("dateCreated").descending());
+        Page<Review> reviewPage = reviewRepository.findByTourId(id, pageable);
+        List<ReviewsRespondDto> dtoList = reviewPage.getContent()
+                .stream()
+                .map(reviewMapper::toDto)
+                .collect(Collectors.toList());
+        respondDto.setReviews(dtoList);
+        respondDto.setCurrentReviewPage(reviewPage.getNumber());
+        respondDto.setTotalReviewPages(reviewPage.getTotalPages());
+        respondDto.setTotalReviewElements(reviewPage.getTotalElements());
+        return respondDto;
     }
 
     @Override
-    public List<TourRespondDto> search(TourSearchParameters params, Pageable pageable) {
+    public List<TourRespondWithoutReviews> search(TourSearchParameters params, Pageable pageable) {
         Specification<Tour> tourSpecification = tourSpecificationBuilder.build(params);
         return tourRepository.findAll(tourSpecification, pageable)
                 .stream()
-                .map(tourMapper::toDto)
+                .map(tourMapper::toDtoWithoutReviews)
                 .toList();
     }
 
     @Override
-    public List<TourRespondDto> getByRating() {
+    public List<TourRespondWithoutDetailsAndReviews> getByRating() {
         return tourRepository
                 .findTop7ByRatingGreaterThanOrderByRatingDesc(0)
                 .stream()
-                .map(tourMapper::toDto)
+                .map(tourMapper::toDtoWithoutDetailsAndReviews)
                 .toList();
     }
 

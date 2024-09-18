@@ -28,9 +28,4 @@ public class UserRegistrationRequestDto {
 
     @NotBlank
     private String lastName;
-
-    private String city;
-
-    @NotBlank
-    private String country;
 }

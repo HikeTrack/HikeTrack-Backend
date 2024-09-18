@@ -11,6 +11,4 @@ public class UserRegistrationRespondDto {
     private String password;
     private String firstName;
     private String lastName;
-    private String country;
-    private String city;
 }

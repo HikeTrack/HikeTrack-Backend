@@ -8,7 +8,7 @@ import java.time.ZonedDateTime;
 
 @Getter
 @Setter
-public class TourRespondWithoutDetails {
+public class TourRespondWithoutDetailsAndReviews {
     private Long id;
     private String name;
     private int length;

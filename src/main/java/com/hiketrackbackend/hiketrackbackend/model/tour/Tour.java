@@ -1,5 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.model.tour;
 
+import com.hiketrackbackend.hiketrackbackend.model.Bookmark;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.model.details.Details;
 import com.hiketrackbackend.hiketrackbackend.model.Review;
@@ -24,6 +25,9 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -45,31 +49,34 @@ public class Tour {
     private int length;
 
     @Column(nullable = false)
-    private String mainPhoto;
-
-    @Column(nullable = false)
     private BigDecimal price;
 
     @Column(nullable = false)
     private ZonedDateTime date;
 
+    @Min(0)
     private int rating;
-
-    private int savedToBookmarks;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
-    private Set<Review> reviews;
+    @Column(nullable = false)
+    private String mainPhoto;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
 
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
+
     @OneToOne(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Details details;
+
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Bookmark> bookmarks = new HashSet<>();
 
     @Column(nullable = false)
     private boolean isDeleted;

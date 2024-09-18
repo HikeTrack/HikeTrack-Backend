@@ -2,21 +2,22 @@ package com.hiketrackbackend.hiketrackbackend.service;
 
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetails;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface TourService {
-    TourRespondDto createTour(TourRequestDto requestDto);
+    TourRespondWithoutDetailsAndReviews createTour(TourRequestDto requestDto);
 
     void deleteById(Long id);
 
-    List<TourRespondWithoutDetails> getAll(Pageable pageable);
+    List<TourRespondWithoutDetailsAndReviews> getAll(Pageable pageable);
 
-    TourRespondDto getById(Long id);
+    TourRespondDto getById(Long id, int page, int size);
 
-    List<TourRespondDto> getByRating();
+    List<TourRespondWithoutDetailsAndReviews> getByRating();
 
-    List<TourRespondDto> search(TourSearchParameters params, Pageable pageable);
+    List<TourRespondWithoutReviews> search(TourSearchParameters params, Pageable pageable);
 }
