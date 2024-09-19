@@ -18,6 +18,7 @@ public class TourSpecificationBuilder implements SpecificationBuilder<Tour, Tour
     private static final String DATE_KEYWORD = "date";
     private static final String DURATION_KEYWORD = "duration";
     private static final String PRICE_KEYWORD = "price";
+    private static final String COUNTRY_KEYWORD = "country";
     private final SpecificationProviderManager<Tour> tourSpecificationProviderManager;
 
     @Override
@@ -57,6 +58,11 @@ public class TourSpecificationBuilder implements SpecificationBuilder<Tour, Tour
             spec = spec.and(tourSpecificationProviderManager
                     .getSpecificationProvider(PRICE_KEYWORD)
                     .getSpecification(searchParameters.price()));
+        }
+        if (searchParameters.country() != null && searchParameters.country().length > 0) {
+            spec = spec.and(tourSpecificationProviderManager
+                    .getSpecificationProvider(COUNTRY_KEYWORD)
+                    .getSpecification(searchParameters.country()));
         }
         return spec;
     }

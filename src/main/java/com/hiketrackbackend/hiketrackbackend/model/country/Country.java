@@ -12,8 +12,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "countries")
-//@SQLDelete(sql = "UPDATE countries SET is_deleted = true WHERE id = ?")
-//@SQLRestriction("is_deleted=false") activate after adding delete endpoint functionality
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +39,4 @@ public class Country {
 
     @Column(nullable = false)
     private boolean isDeleted;
-
-
 }

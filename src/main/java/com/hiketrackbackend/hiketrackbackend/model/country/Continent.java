@@ -2,7 +2,6 @@ package com.hiketrackbackend.hiketrackbackend.model.country;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.Getter;
 
 
 public enum Continent {
@@ -30,15 +29,13 @@ public enum Continent {
             return null;
         }
         for (Continent continent : Continent.values()) {
-            // Сравниваем displayName без учета регистра
             if (continent.displayName.equalsIgnoreCase(value)) {
                 return continent;
             }
-            // Также сравниваем имя enum без учета регистра
             if (continent.name().equalsIgnoreCase(value)) {
                 return continent;
             }
         }
-        throw new IllegalArgumentException("Неизвестное значение статуса: " + value);
+        throw new IllegalArgumentException("Unknown continent tyoe: " + value);
     }
 }
