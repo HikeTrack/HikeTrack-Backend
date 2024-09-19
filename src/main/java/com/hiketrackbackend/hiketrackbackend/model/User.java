@@ -1,5 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.model;
 
+import com.hiketrackbackend.hiketrackbackend.model.bookmark.Bookmark;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.model;
+package com.hiketrackbackend.hiketrackbackend.model.bookmark;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -10,7 +10,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class BookmarkId implements Serializable {
-
     @Column(name = "user_id")
     private Long userId;
 
@@ -42,5 +41,13 @@ public class BookmarkId implements Serializable {
         int result = userId.hashCode();
         result = 31 * result + tourId.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "BookmarkId{" +
+                "userId=" + userId +
+                ", tourId=" + tourId +
+                '}';
     }
 }

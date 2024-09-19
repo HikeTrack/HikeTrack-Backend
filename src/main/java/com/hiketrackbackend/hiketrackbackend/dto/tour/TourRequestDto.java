@@ -11,27 +11,27 @@ import java.time.ZonedDateTime;
 @Getter
 @Setter
 public class TourRequestDto {
-    @NotBlank
+    @NotBlank(message = "Tour name is mandatory and cannot be empty")
     private String name;
 
     @NotBlank
-    @Min(0)
+    @Min(value = 0, message = "Length cannot be negative")
     private int length;
 
     @NotBlank
-    @Min(0)
+    @Min(value = 0, message = "Price has to be positive")
     private BigDecimal price;
 
-    @NotBlank
+    @NotBlank(message = "Enter departure date")
     private ZonedDateTime date;
 
-    @NotBlank
+    @NotBlank(message = "Difficulty cannot be empty")
     private Difficulty difficulty;
 
     @NotBlank
-    @Min(0)
+    @Min(value = 0, message = "Country id has to be positive")
     private Long countryId;
 
-    @NotBlank
+    @NotBlank(message = "Photo is mandatory")
     private String mainPhoto;
 }

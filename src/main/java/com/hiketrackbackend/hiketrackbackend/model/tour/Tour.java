@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.model.tour;
 
-import com.hiketrackbackend.hiketrackbackend.model.Bookmark;
+import com.hiketrackbackend.hiketrackbackend.model.bookmark.Bookmark;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.model.details.Details;
 import com.hiketrackbackend.hiketrackbackend.model.Review;

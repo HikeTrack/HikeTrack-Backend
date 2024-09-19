@@ -24,6 +24,3 @@ databaseChangeLog:
                   type: TIMESTAMP
                   constraints:
                     nullable: false
-              - column:
-                  name: notes
-                  type: VARCHAR(255)
