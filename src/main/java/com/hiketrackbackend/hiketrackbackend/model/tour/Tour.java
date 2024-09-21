@@ -1,5 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.model.tour;
 
+import com.hiketrackbackend.hiketrackbackend.model.User;
 import com.hiketrackbackend.hiketrackbackend.model.bookmark.Bookmark;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.model.details.Details;
@@ -69,15 +70,26 @@ public class Tour {
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
 
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.REMOVE)
     private List<Review> reviews = new ArrayList<>();
 
     @OneToOne(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Details details;
 
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Bookmark> bookmarks = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "user_id")
+    private User user;
 
     @Column(nullable = false)
     private boolean isDeleted;
+
+    public void setTourDetails(Details tourDetails) {
+        this.details = tourDetails;
+        if (tourDetails != null && tourDetails.getTour() != this) {
+            tourDetails.setTour(this);
+        }
+    }
 }

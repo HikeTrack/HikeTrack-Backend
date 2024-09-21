@@ -23,16 +23,6 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final CountryRepository countryRepository;
 
     @Override
-    public UserProfile createUserProfile(User user) {
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUserPhoto("here would be link for default user photo");
-        userProfile.setUser(user);
-        LocalDate localDate = LocalDate.now();
-        userProfile.setRegistrationDate(localDate);
-        return userProfileRepository.save(userProfile);
-    }
-
-    @Override
     @Transactional
     public UserProfileRespondDto updateUserProfile(UserProfileRequestDto requestDto, Long id) {
         UserProfile userProfile = findByUserId(id);

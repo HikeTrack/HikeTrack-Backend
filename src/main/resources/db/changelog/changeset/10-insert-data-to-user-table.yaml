@@ -14,17 +14,30 @@ databaseChangeLog:
         - insert:
             tableName: roles
             columns:
+              - column: {name: id, value: 1 }
               - column: { name: name, value: "ROLE_ADMIN" }
         - insert:
             tableName: roles
             columns:
+              - column: {name: id, value: 2 }
               - column: { name: name, value: "ROLE_USER" }
         - insert:
             tableName: roles
             columns:
+              - column: {name: id, value: 3 }
               - column: { name: name, value: "ROLE_GUIDE" }
         - insert:
             tableName: users_roles
             columns:
               - column: { name: user_id, value: 1 }
               - column: { name: role_id, value: 1 }
+        - insert:
+            tableName: users_roles
+            columns:
+              - column: { name: user_id, value: 1 }
+              - column: { name: role_id, value: 2 }
+        - insert:
+            tableName: users_roles
+            columns:
+              - column: { name: user_id, value: 1 }
+              - column: { name: role_id, value: 3 }

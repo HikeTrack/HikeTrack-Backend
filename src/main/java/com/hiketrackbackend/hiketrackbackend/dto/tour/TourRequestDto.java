@@ -1,5 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.dto.tour;
 
+import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRequestDto;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -34,4 +35,7 @@ public class TourRequestDto {
 
     @NotBlank(message = "Photo is mandatory")
     private String mainPhoto;
+
+    @NotBlank
+    private DetailsRequestDto detailsRequestDto;
 }

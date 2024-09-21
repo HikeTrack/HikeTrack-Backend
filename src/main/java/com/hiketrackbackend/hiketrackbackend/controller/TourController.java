@@ -5,6 +5,8 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
+import com.hiketrackbackend.hiketrackbackend.model.User;
+import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,6 +17,7 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,11 +40,13 @@ public class TourController {
     @PreAuthorize("hasRole('GUIDE')")
     @PostMapping("/new")
     @Operation(summary = "Create a new tour", description = "Add new tour to DB")
-    public TourRespondWithoutDetailsAndReviews createTour(@RequestBody @Valid TourRequestDto requestDto) {
-        return tourService.createTour(requestDto);
+    public TourRespondWithoutReviews createTour(@RequestBody @Valid TourRequestDto requestDto,
+                                                Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return tourService.createTour(requestDto, user);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('GUIDE')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete tour by ID", description = "Delete tour with out actual "
            + "deleting it from DB(soft deleting). Tour become not visible for user")
@@ -66,7 +71,7 @@ public class TourController {
     @GetMapping("/popular")
     @Operation(summary = "Get tour by likes",
             description = "Get a list of 7th tours with the most popular(rated) value")
-    public List<TourRespondWithoutDetailsAndReviews> getMostRatedTour() {
+    public List<TourRespondWithoutReviews> getMostRatedTour() {
         return tourService.getByRating();
     }
 

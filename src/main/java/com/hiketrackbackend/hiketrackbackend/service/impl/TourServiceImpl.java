@@ -10,6 +10,7 @@ import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
 import com.hiketrackbackend.hiketrackbackend.model.Review;
+import com.hiketrackbackend.hiketrackbackend.model.User;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.repository.ReviewRepository;
@@ -17,6 +18,7 @@ import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepositor
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourSpecificationBuilder;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +26,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,11 +42,14 @@ public class TourServiceImpl implements TourService {
     private final ReviewMapper reviewMapper;
 
     @Override
-    public TourRespondWithoutDetailsAndReviews createTour(TourRequestDto requestDto) {
+    @Transactional
+    public TourRespondWithoutReviews createTour(TourRequestDto requestDto, User user) {
+        isExistTour(requestDto.getName(), user.getId());
         Tour tour = tourMapper.toEntity(requestDto);
+        tour.setUser(user);
         Country country = findCountry(requestDto.getCountryId());
         tour.setCountry(country);
-        return tourMapper.toDtoWithoutDetailsAndReviews(tourRepository.save(tour));
+        return tourMapper.toDtoWithoutReviews(tourRepository.save(tour));
     }
 
     @Override
@@ -86,11 +93,11 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourRespondWithoutDetailsAndReviews> getByRating() {
+    public List<TourRespondWithoutReviews> getByRating() {
         return tourRepository
                 .findTop7ByRatingGreaterThanOrderByRatingDesc(0)
                 .stream()
-                .map(tourMapper::toDtoWithoutDetailsAndReviews)
+                .map(tourMapper::toDtoWithoutReviews)
                 .toList();
     }
 
@@ -104,5 +111,13 @@ public class TourServiceImpl implements TourService {
        return tourRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Tour is not found with id: " + id)
         );
+    }
+
+    private void isExistTour(String tourName, Long guideId) {
+        boolean exist = tourRepository.existsTourByUserIdAndName(guideId, tourName);
+        if (exist) {
+            throw new EntityExistsException("Tour already exists fot this guide with id: " +
+                    guideId + " and with tour name: " + tourName);
+        }
     }
 }

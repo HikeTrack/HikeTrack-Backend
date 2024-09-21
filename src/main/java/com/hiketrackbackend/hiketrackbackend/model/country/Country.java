@@ -31,7 +31,6 @@ public class Country {
     private Set<Tour> tours = new HashSet<>();
 
     @OneToOne(
-            cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "country"
     )

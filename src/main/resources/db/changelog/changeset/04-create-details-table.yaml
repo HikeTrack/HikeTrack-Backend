@@ -21,16 +21,19 @@ databaseChangeLog:
                   type: INT
                   constraints:
                     nullable: false
+                  defaultValue: 0
               - column:
                   name: route_type
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
+                  defaultValue: "Point_to_Point"
               - column:
                   name: duration
                   type: INTEGER
                   constraints:
                     nullable: false
+                  defaultValue: 0
               - column:
                   name: map
                   type: VARCHAR(255)
@@ -39,6 +42,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
+                  defaultValue: "Hiking"
               - column:
                   name: tour_id
                   type: BIGINT
