@@ -1,5 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.model;
 
+import com.hiketrackbackend.hiketrackbackend.model.bookmark.Bookmark;
+import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,11 +21,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 @Entity
 @Getter
@@ -56,7 +55,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Bookmark> bookmarks = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     private List<Review> reviews = new ArrayList<>();
 
     @ManyToMany
@@ -68,6 +67,9 @@ public class User implements UserDetails {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Role> roles;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<Tour> tour;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -102,5 +104,14 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+        if (userProfile != null) {
+            userProfile.setUser(this);
+        }
     }
 }

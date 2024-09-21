@@ -1,5 +1,6 @@
-package com.hiketrackbackend.hiketrackbackend.model;
+package com.hiketrackbackend.hiketrackbackend.model.bookmark;
 
+import com.hiketrackbackend.hiketrackbackend.model.User;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -32,6 +33,4 @@ public class Bookmark {
 
     @Column(nullable = false)
     private LocalDateTime addedAt;
-
-    private String notes;
 }

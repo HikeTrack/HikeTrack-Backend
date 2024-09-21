@@ -12,4 +12,6 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
 
     @EntityGraph(attributePaths = "details")
     Optional<Tour> findById(Long id);
+
+    boolean existsTourByUserIdAndName(Long userId,String name);
 }

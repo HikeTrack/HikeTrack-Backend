@@ -19,4 +19,5 @@ public class TourRespondWithoutReviews {
     private Long countryId;
     private String mainPhoto;
     private DetailsRespondDto details;
+    private Long guideId;
 }

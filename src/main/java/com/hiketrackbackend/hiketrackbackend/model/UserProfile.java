@@ -44,4 +44,11 @@ public class UserProfile {
 
     @Column(nullable = false)
     private String userPhoto;
+
+    public void setUser(User user) {
+        this.user = user;
+        if (user != null && user.getUserProfile() != this) {
+            user.setUserProfile(this);
+        }
+    }
 }

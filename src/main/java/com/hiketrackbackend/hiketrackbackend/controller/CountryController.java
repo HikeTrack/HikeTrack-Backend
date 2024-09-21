@@ -47,7 +47,7 @@ public class CountryController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get country by ID",
-            description = "Get get country with ID")
+            description = "Get country with ID")
     public CountryRespondDto getById(@PathVariable @Positive Long id) {
         return countryService.getById(id);
     }

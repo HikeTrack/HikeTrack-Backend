@@ -38,9 +38,17 @@ public class Details {
     private Activity activity;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
     @JoinColumn(nullable = false, name = "tour_id")
     private Tour tour;
 
     @Column(nullable = false)
     private boolean isDeleted;
+
+    public void setTour(Tour tour) {
+        this.tour = tour;
+        if (tour != null && tour.getDetails() != this) {
+            tour.setTourDetails(this);
+        }
+    }
 }

@@ -24,7 +24,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
-    private final UserProfileService userProfileService;
 
     @Override
     @Transactional
@@ -35,14 +34,8 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toEntity(request);
         setUserPassword(user, request);
         setUserRole(user);
-        setUserProfile(user);
         userRepository.save(user);
         return userMapper.toDto(user);
-    }
-
-    private void setUserProfile(User user) {
-        UserProfile userProfile = userProfileService.createUserProfile(user);
-        user.setUserProfile(userProfile);
     }
 
     private void setUserRole(User user) {
