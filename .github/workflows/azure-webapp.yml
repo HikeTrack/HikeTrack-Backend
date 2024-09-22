@@ -1,13 +1,15 @@
-name: Build and Deploy to Azure Web App
+name: Build and Deploy to Azure Web App - Test
 
 on:
   push:
     branches:
-      - develop  # Или ветка, которую вы используете
+      - develop  # Ветка для тестового окружения
 
 env:
-  AZURE_WEBAPP_NAME: HikeTrack-backend  # Имя вашего Web App
-  JAVA_VERSION: '17'  # Версия Java вашего приложения
+  AZURE_WEBAPP_NAME: HikeTrack-backend
+  JAVA_VERSION: 17
+  JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.4-7/x64
+  JAVA_HOME_21_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/21.0.4-7/x64
 
 jobs:
   build-and-deploy:
@@ -35,5 +37,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          resource-group: HikeTrack_Stage
-          package: '${{ github.workspace }}/target/*.jar'
+          resource-group: HikeTrack_Stage  # Добавлено
+          package: '/home/runner/work/HikeTrack-Backend/HikeTrack-Backend/target/*.jar'
