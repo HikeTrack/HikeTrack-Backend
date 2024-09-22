@@ -371,7 +371,6 @@ databaseChangeLog:
               - column: { name: user_id, value: 1 }
               - column: { name: tour_id, value: 2 }
               - column: { name: date_created, value: 2025-09-05 06:50:00 }
-              - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: reviews
             columns:
@@ -380,4 +379,3 @@ databaseChangeLog:
               - column: { name: tour_id, value: 1 }
               - column: { name: date_created, value: 2025-09-05 06:50:00 }
               - column: { name: user_id, value: 1 }
-              - column: { name: is_deleted, valueBoolean: false }

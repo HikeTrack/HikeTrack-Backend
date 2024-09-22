@@ -12,16 +12,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reviews")
 @Getter
 @Setter
-@SQLDelete(sql = "UPDATE reviews SET is_deleted = true WHERE id = ?")
-@SQLRestriction("is_deleted=false")
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +36,4 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "tour_id", nullable = false)
     private Tour tour;
-
-    @Column(nullable = false)
-    private boolean isDeleted;
 }

@@ -1,5 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
+import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
@@ -7,6 +9,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.model.User;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
+import com.hiketrackbackend.hiketrackbackend.service.ReviewService;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,8 +40,9 @@ import java.util.List;
 @Tag(name = "Tour Management", description = "Work with tour endpoints")
 public class TourController {
     private final TourService tourService;
+    private final ReviewService reviewService;
 
-    @PreAuthorize("hasRole('GUIDE')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @PostMapping("/new")
     @Operation(summary = "Create a new tour", description = "Add new tour to DB")
     public TourRespondWithoutReviews createTour(@RequestBody @Valid TourRequestDto requestDto,
@@ -46,7 +51,7 @@ public class TourController {
         return tourService.createTour(requestDto, user);
     }
 
-    @PreAuthorize("hasRole('GUIDE')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete tour by ID", description = "Delete tour with out actual "
            + "deleting it from DB(soft deleting). Tour become not visible for user")
@@ -82,5 +87,35 @@ public class TourController {
     public List<TourRespondWithoutReviews> search(@Valid TourSearchParameters params,
                                                   @ParameterObject @PageableDefault Pageable pageable) {
         return tourService.search(params, pageable);
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
+    @PostMapping("/{tourId}/reviews")
+    @Operation(summary = "Create a new review", description = "Save new registered users review")
+    public ReviewsRespondDto createReview(@RequestBody @Valid ReviewRequestDto requestDto,
+                                          @PathVariable @Positive Long tourId,
+                                          Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return reviewService.createReview(requestDto, user, tourId);
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
+    @DeleteMapping("/{tourId}/reviews/{reviewId}")
+    @Operation(summary = "Delete review by ID",
+            description = "Delete review from DB with registered user by review ID adn tour ID")
+    public void deleteReview( @PathVariable @Positive Long tourId,
+                              @PathVariable @Positive Long reviewId) {
+        reviewService.deleteById(reviewId, tourId);
+    }
+
+
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
+    @PutMapping("/{tourId}/reviews/{reviewId}")
+    @Operation(summary = "Update review",
+            description = "Update review for authorized user with tour id")
+    public ReviewsRespondDto updateReview(@RequestBody @Valid ReviewRequestDto requestDto,
+                                          @PathVariable @Positive Long tourId,
+                                          @PathVariable @Positive Long reviewId) {
+        return reviewService.updateReview(requestDto, tourId, reviewId);
     }
 }
