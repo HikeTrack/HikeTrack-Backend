@@ -93,6 +93,14 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
+    @Transactional
+    public TourRespondWithoutReviews updateTour(TourRequestDto requestDto, Long tourId) {
+        Tour tour = findTour(tourId);
+        tourMapper.updateEntityFromDto(requestDto, tour);
+        return tourMapper.toDtoWithoutReviews(tourRepository.save(tour));
+    }
+
+    @Override
     public List<TourRespondWithoutReviews> getByRating() {
         return tourRepository
                 .findTop7ByRatingGreaterThanOrderByRatingDesc(0)

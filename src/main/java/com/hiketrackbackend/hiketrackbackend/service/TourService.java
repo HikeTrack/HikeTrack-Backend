@@ -21,4 +21,6 @@ public interface TourService {
     List<TourRespondWithoutReviews> getByRating();
 
     List<TourRespondWithoutReviews> search(TourSearchParameters params, Pageable pageable);
+
+    TourRespondWithoutReviews updateTour(TourRequestDto requestDto, Long tourId);
 }

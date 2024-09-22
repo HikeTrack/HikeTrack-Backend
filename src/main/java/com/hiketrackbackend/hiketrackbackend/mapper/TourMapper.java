@@ -34,6 +34,8 @@ public interface TourMapper {
 
     DetailsRespondDto toDto(Details tourDetails);
 
+    void updateEntityFromDto(TourRequestDto requestDto, @MappingTarget Tour tour);
+
     @AfterMapping
     default void linkTourDetails(@MappingTarget Tour tour, TourRequestDto dto) {
         if (tour.getDetails() == null && dto.getDetailsRequestDto() != null) {

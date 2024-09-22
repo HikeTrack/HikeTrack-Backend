@@ -8,7 +8,6 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsA
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.model.User;
-import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
 import com.hiketrackbackend.hiketrackbackend.service.ReviewService;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,6 +48,15 @@ public class TourController {
                                                 Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return tourService.createTour(requestDto, user);
+    }
+
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
+    @PutMapping("/{tourId}")
+    @Operation(summary = "Update tour",
+            description = "Update tour information by authorized guide with tour id")
+    public TourRespondWithoutReviews updateTour(@RequestBody @Valid TourRequestDto requestDto,
+                                                @PathVariable @Positive Long tourId) {
+        return tourService.updateTour(requestDto, tourId);
     }
 
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
