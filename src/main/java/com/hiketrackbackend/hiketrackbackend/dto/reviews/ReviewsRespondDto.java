@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Setter
 public class ReviewsRespondDto {
     private Long id;
-    private Long userProfileId;
+    private Long userId;
     private String content;
     private Long tourId;
     private LocalDateTime dateCreated;

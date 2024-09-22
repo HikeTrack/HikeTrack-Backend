@@ -34,7 +34,7 @@ public class UserProfileController {
     private final AuthenticationService authenticationService;
     private final BookmarkService bookmarkService;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @PostMapping("/bookmarks/new")
     @Operation(summary = "Add tour to bookmarks", description = "Add tour to current logged user bookmarks")
     public BookmarkRespondDto addToBookmark(@RequestBody @Valid BookmarkRequestDto requestDto,
@@ -43,7 +43,7 @@ public class UserProfileController {
         return bookmarkService.addToBookmarks(requestDto, user);
     }
 
-    @PreAuthorize(("hasRole('USER')"))
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @PutMapping
     @Operation(summary = "Update user profile", description = "Update authorized user profile information")
     public UserProfileRespondDto updateUserProfile(@RequestBody @Valid UserProfileRequestDto requestDto,
@@ -52,7 +52,7 @@ public class UserProfileController {
         return userProfileService.updateUserProfile(requestDto, userId);
     }
 
-    @PreAuthorize(("hasRole('USER')"))
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @GetMapping("/bookmarks")
     @Operation(summary = "Get bookmark",
             description = "Get bookmarks from logged user by his id(Set of all his saved tours)")
@@ -61,7 +61,7 @@ public class UserProfileController {
         return bookmarkService.getByUserId(userId);
     }
 
-    @PreAuthorize(("hasRole('USER')"))
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @GetMapping
     @Operation(summary = "Get user profile", description = "Get authorized user information")
     public UserProfileRespondDto getUserProfile(Authentication authentication) {
@@ -69,7 +69,7 @@ public class UserProfileController {
         return userProfileService.getById(userId);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @DeleteMapping("/bookmarks/{tourId}")
     @Operation(summary = "Delete tour from bookmarks",
             description = "Delete tour by tourId from current logged user bookmarks")
