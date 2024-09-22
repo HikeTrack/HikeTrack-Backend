@@ -6,7 +6,7 @@ on:
       - develop  # Или ветка, которую вы используете
 
 env:
-  AZURE_WEBAPP_NAME: HikeTrack-test-backend  # Имя вашего Web App
+  AZURE_WEBAPP_NAME: HikeTrack-backend  # Имя вашего Web App
   JAVA_VERSION: '17'  # Версия Java вашего приложения
 
 jobs:
