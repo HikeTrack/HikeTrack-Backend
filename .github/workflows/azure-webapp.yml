@@ -1,0 +1,38 @@
+name: Build and Deploy to Azure Web App
+
+on:
+  push:
+    branches:
+      - develop  # Или ветка, которую вы используете
+
+env:
+  AZURE_WEBAPP_NAME: HikeTrack-test-backend  # Имя вашего Web App
+  JAVA_VERSION: '17'  # Версия Java вашего приложения
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Java version
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: '${{ github.workspace }}/target/*.jar'
