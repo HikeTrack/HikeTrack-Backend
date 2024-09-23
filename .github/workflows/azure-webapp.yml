@@ -43,3 +43,4 @@ jobs:
           resource-group-name: HikeTrack_Stage  # Исправлено
           package: '/home/runner/work/HikeTrack-Backend/HikeTrack-Backend/target/*.jar'
           slot-name: production
+
