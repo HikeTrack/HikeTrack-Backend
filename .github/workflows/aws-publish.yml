@@ -1,0 +1,57 @@
+name: Deploy to Elastic Beanstalk AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      - name: Zip the application
+        run: zip -r app.zip target/*.jar
+
+      - name: Upload to AWS S3
+        run: aws s3 cp app.zip s3://elasticbeanstalk-eu-central-1-954976302863/app.zip
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-central-1'
+
+      - name: Create a new application version
+        run: |
+          aws elasticbeanstalk create-application-version --application-name "HikeTrack" --version-label "ver${{ github.run_id }}" --source-bundle S3Bucket="elasticbeanstalk-eu-central-1-954976302863",S3Key="app.zip"
+          env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-central-1'
+
+      - name: Update environment with new version
+        run: |
+          aws elasticbeanstalk update-environment --application-name "HikeTrack" --environment-name "HikeTrack-env" --version-label "ver${{ github.run_id }}"
+          env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-central-1'
