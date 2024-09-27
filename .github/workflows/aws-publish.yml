@@ -53,5 +53,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         run: |
-          eb init -p java-21 HikeTrack --region $AWS_REGION
+          eb init -p "Сorretto 17" HikeTrack --region $AWS_REGION
           eb deploy
