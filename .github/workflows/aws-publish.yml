@@ -21,31 +21,39 @@ jobs:
       - name: Build with Maven
         run: mvn clean install -DskipTests
 
-      - name: Upload build artifacts
+      - name: Package application
+        run: |
+          mkdir package
+          cp target/*.jar package/
+          cd package
+          zip -r ../app.zip ./*
+      
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: app
-          path: target/*.jar
+          path: app.zip
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app
+          path: deploy
+
+      - name: Unzip application
+        run: unzip deploy/app.zip -d deploy
 
       - name: Set up Python
-        uses: actions/setup-python@v4  # Устанавливаем Python, чтобы установить EB CLI
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
       - name: Install AWS Elastic Beanstalk CLI
-        run: pip install awsebcli  # Устанавливаем EB CLI
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: app
+        run: pip install awsebcli
 
       - name: Deploy to AWS Elastic Beanstalk
         env:
@@ -53,5 +61,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         run: |
+          cd deploy
           eb init -p corretto-17 HikeTrack --region $AWS_REGION
           eb deploy
