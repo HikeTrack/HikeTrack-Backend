@@ -1,0 +1,10 @@
+spring.datasource.url=jdbc:tc:mysql:8.0.33:///test
+spring.datasource.username=test
+spring.datasource.password=test
+
+jwt.expiration=YOUR_JWT_EXPIRATION
+jwt.secret=YOUR_JWT_SECRET
+
+spring.security.oauth2.client.registration.google.client-id=YOUR_GOOGLE_ID
+spring.security.oauth2.client.registration.google.client-secret=YOUR_GOOGLE_SECRET_CLIENT
+spring.security.oauth2.client.registration.google.scope=YOUR_GOOGLE_SCOPE
