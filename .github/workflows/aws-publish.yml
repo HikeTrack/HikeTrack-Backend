@@ -1,0 +1,66 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+
+      - name: Package application
+        run: |
+          mkdir package
+          cp target/*.jar package/
+          cd package
+          zip -r ../app.zip ./*
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app
+          path: app.zip
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app
+          path: deploy
+
+      - name: Unzip application
+        run: unzip deploy/app.zip -d deploy
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install AWS Elastic Beanstalk CLI
+        run: pip install awsebcli
+
+      - name: Deploy to AWS Elastic Beanstalk
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        run: |
+          cd deploy
+          eb init -p corretto-17 HikeTrack --region $AWS_REGION
+          eb deploy
