@@ -27,11 +27,12 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   name: registration_date
-                  type: TIMESTAMP
+                  type: DATE
                   constraints:
                     nullable: false
               - column:
                   name: user_photo
                   type: VARCHAR(255)
+                  defaultValue: "img/icons/defaultAvatar.svg"
                   constraints:
                     nullable: false
