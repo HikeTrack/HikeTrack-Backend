@@ -51,7 +51,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewsRespondDto> getAllByUserId(Long userId, Pageable pageable) {
-        return reviewRepository.
+        return reviewRepository.findReviewsByUserId(userId, pageable)
+                .stream()
+                .map(reviewMapper::toDto)
+                .toList();
     }
 
     private void isExistReviewByIdAndTourId(Long tourId, Long reviewId) {
