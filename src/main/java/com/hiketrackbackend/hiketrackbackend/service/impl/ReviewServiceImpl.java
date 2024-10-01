@@ -11,9 +11,11 @@ import com.hiketrackbackend.hiketrackbackend.repository.ReviewRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import com.hiketrackbackend.hiketrackbackend.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +47,14 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = getReviewById(reviewId);
         reviewMapper.updateEntityFromDto(review, requestDto);
         return reviewMapper.toDto(reviewRepository.save(review));
+    }
+
+    @Override
+    public List<ReviewsRespondDto> getAllByUserId(Long userId, Pageable pageable) {
+        return reviewRepository.findReviewsByUserId(userId, pageable)
+                .stream()
+                .map(reviewMapper::toDto)
+                .toList();
     }
 
     private void isExistReviewByIdAndTourId(Long tourId, Long reviewId) {
