@@ -9,6 +9,7 @@ import com.hiketrackbackend.hiketrackbackend.model.User;
 import com.hiketrackbackend.hiketrackbackend.repository.RoleRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.security.JwtTokenServiceImpl;
+import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
 import com.hiketrackbackend.hiketrackbackend.security.UUIDTokenServiceImpl;
 import com.hiketrackbackend.hiketrackbackend.service.MailSender;
 
@@ -29,9 +30,9 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
-    private final UUIDTokenServiceImpl UUIDTokenService;
-    private final JwtTokenServiceImpl jwtTokenService;
+    private final UUIDTokenServiceImpl UUIDTokenService;;
     private final MailSender mailSender;
+    private final JwtUtil jwtUtil;
 
     @Override
     @Transactional
@@ -51,25 +52,21 @@ public class UserServiceImpl implements UserService {
     public UserForgotRespondDto createRestoreRequest(UserForgotRequestDto request) {
         User user = findUserByEmail(request.getEmail());
         String token = UUID.randomUUID().toString();
-        UUIDTokenService.saveToken(token, user.getEmail());
+        UUIDTokenService.saveTokenToDB(token, user.getEmail());
         mailSender.sendResetPasswordMailToGMail(user.getEmail(), token);
         return userMapper.toDto(user.getEmail());
     }
 
     @Override
     @Transactional
-    public void updatePassword(UserRestoreRequestDto request, String token) {
-        String userEmail = UUIDTokenService.getValueByToken(token);
-        User user = findUserByEmail(userEmail);
+    public UserLoginResponseDto updatePassword(UserRestoreRequestDto request, String email) {
+        User user = findUserByEmail(email);
         user.setPassword(encoder.encode(request.getPassword()));
-        UUIDTokenService.deleteToken(token);
         userRepository.save(user);
+        String token = jwtUtil.generateToken(email);
+        return new UserLoginResponseDto(token);
     }
 
-    @Override
-    public void logout(HttpServletRequest request, String email) {
-        addJwtTokenToBlackList(request, email);
-    }
 
     private void setUserRole(User user) {
         Set<Role> roles = roleRepository.findByName(Role.RoleName.ROLE_USER);
@@ -86,7 +83,5 @@ public class UserServiceImpl implements UserService {
         );
     }
 
-    private void addJwtTokenToBlackList(HttpServletRequest request, String username) {
-        jwtTokenService.saveToken(request, username);
-    }
+
 }

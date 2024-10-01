@@ -7,9 +7,9 @@ public abstract class TokenService<T> {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    public abstract void saveToken(T param, String email);
+    public abstract void saveTokenToDB(T param, String email);
 
-    public String getValueByToken(String token) {
+    public String getValueByTokenFromDB(String token) {
         String value = redisTemplate.opsForValue().get(token);
         if (value == null) {
             throw new RuntimeException("Value not found with token: " + token);
@@ -17,14 +17,14 @@ public abstract class TokenService<T> {
         return value;
     }
 
-    public boolean isTokenExist(String token) {
-        if (token == null) {
-            return true;
-        }
+    public boolean isTokenExistInDB(String token) {
+//        if (token == null) {
+//            return true;
+//        }
         return Boolean.TRUE.equals(redisTemplate.hasKey(token));
     }
 
-    public void deleteToken(String token) {
+    public void deleteTokenInDB(String token) {
         redisTemplate.delete(token);
     }
 }
