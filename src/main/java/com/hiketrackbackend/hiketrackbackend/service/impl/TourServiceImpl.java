@@ -66,7 +66,9 @@ public class TourServiceImpl implements TourService {
                 .toList();
     }
 
+    // Transactional annotation is used to skip lazy init exception, so we can get reviews the way we needed
     @Override
+    @Transactional
     public TourRespondDto getById(Long id, int page, int size) {
         Tour tour = findTour(id);
         TourRespondDto respondDto = tourMapper.toDto(tour);

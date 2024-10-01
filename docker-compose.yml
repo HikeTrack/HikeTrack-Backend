@@ -21,7 +21,7 @@ services:
   redis:
     image: redis:7.4.0
     ports:
-      - "6379:6379"
+      - $SPRING_REDIS_PORT:$SPRING_REDIS_DOCKER_PORT
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 30s
@@ -40,7 +40,6 @@ services:
     ports:
       - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
       - $DEBUG_PORT:$DEBUG_PORT
-      - $SPRING_REDIS_PORT:$SPRING_REDIS_DOCKER_PORT
     environment:
       SPRING_APPLICATION_JSON: '{     
         "spring.datasource.url" : "jdbc:mysql://mysqldb:$MYSQLDB_DOCKER_PORT/$MYSQLDB_DATABASE?createDatabaseIfNotExist=true&serverTimezone=UTC",
