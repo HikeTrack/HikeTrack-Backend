@@ -1,8 +1,10 @@
 package com.hiketrackbackend.hiketrackbackend.security;
 
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserForgotRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserLoginRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserLoginResponseDto;
 import com.hiketrackbackend.hiketrackbackend.model.User;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final JwtTokenServiceImpl jwtTokenService;
 
     public UserLoginResponseDto login(UserLoginRequestDto requestDto) {
         final Authentication authentication = authenticationManager.authenticate(
@@ -23,8 +26,18 @@ public class AuthenticationService {
         return new UserLoginResponseDto(token);
     }
 
+    public void logout(HttpServletRequest request, String email) {
+        addJwtTokenToBlackList(request, email);
+    }
+
+    private void addJwtTokenToBlackList(HttpServletRequest request, String username) {
+        jwtTokenService.saveTokenToDB(request, username);
+    }
+
     public Long getUserId(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return user.getId();
     }
+
+
 }

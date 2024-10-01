@@ -18,9 +18,20 @@ services:
       interval: 30s
       timeout: 30s
       retries: 3
+  redis:
+    image: redis:7.4.0
+    ports:
+      - $SPRING_REDIS_PORT:$SPRING_REDIS_DOCKER_PORT
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
   app:
     depends_on:
       mysqldb:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     restart: on-failure
     image: hike-track
@@ -40,3 +51,4 @@ services:
         "spring.jpa.open-in-view" : "false"
       }'
       JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$DEBUG_PORT"
+      SPRING_REDIS_HOST: $SPRING_REDIS_HOST

@@ -7,6 +7,7 @@ RUN mvn clean package -DskipTests -Dcheckstyle.skip=true
 FROM openjdk:17-jdk AS builder2
 WORKDIR /application
 COPY --from=builder /application/target/*.jar application.jar
+ENV SPRING_PROFILES_ACTIVE=local
 RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM openjdk:17-jdk
