@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificationExecutor<Tour> {
     List<Tour> findTop7ByRatingGreaterThanOrderByRatingDesc(int rating);
 
-    @EntityGraph(attributePaths = {"details"})
+    @EntityGraph(attributePaths = "details")
     Optional<Tour> findById(Long id);
 
     boolean existsTourByUserIdAndName(Long userId,String name);
