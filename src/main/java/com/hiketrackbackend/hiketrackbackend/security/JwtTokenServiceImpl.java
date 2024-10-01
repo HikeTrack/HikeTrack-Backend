@@ -16,7 +16,7 @@ public class JwtTokenServiceImpl extends TokenService<HttpServletRequest> {
 
 
     @Override
-    public void saveToken(HttpServletRequest request, String userEmail) {
+    public void saveTokenToDB(HttpServletRequest request, String userEmail) {
         String token = getToken(request);
         if (token == null) {
             throw new RuntimeException("Missing token in authorization header");

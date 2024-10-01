@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         if (token != null && jwtUtil.isValidToken(token)) {
-            if (jwtTokenService.isTokenExist(token)) {
+            if (jwtTokenService.isTokenExistInDB(token)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Login first please");
                 return;
