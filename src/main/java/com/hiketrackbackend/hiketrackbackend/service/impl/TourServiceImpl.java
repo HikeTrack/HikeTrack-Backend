@@ -67,6 +67,7 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
+    @Transactional
     public TourRespondDto getById(Long id, int page, int size) {
         Tour tour = findTour(id);
         TourRespondDto respondDto = tourMapper.toDto(tour);
