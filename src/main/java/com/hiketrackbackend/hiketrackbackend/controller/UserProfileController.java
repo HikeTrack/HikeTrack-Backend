@@ -43,6 +43,7 @@ public class UserProfileController {
         return bookmarkService.addToBookmarks(requestDto, user);
     }
 
+    // change to patch
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @PutMapping
     @Operation(summary = "Update user profile", description = "Update authorized user profile information")

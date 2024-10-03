@@ -3,7 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.config;
 import com.hiketrackbackend.hiketrackbackend.security.CustomUserDetailsService;
 import com.hiketrackbackend.hiketrackbackend.security.JwtAuthenticationFilter;
 import com.hiketrackbackend.hiketrackbackend.security.OAuth2AuthenticationSuccessHandler;
-import com.hiketrackbackend.hiketrackbackend.service.impl.CustomOAuth2UserService;
+import com.hiketrackbackend.hiketrackbackend.security.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -45,9 +46,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .cors(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf
+                        .requireCsrfProtectionMatcher(new AntPathRequestMatcher("/api/**")).disable()
+                )
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers(antMatcher("/auth/**"),
