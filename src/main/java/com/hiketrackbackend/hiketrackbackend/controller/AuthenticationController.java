@@ -70,7 +70,7 @@ public class AuthenticationController {
 
     @Operation(summary = "",
             description = "")
-    @PostMapping("/logout")
+    @PostMapping("/")
     public String logout(HttpServletRequest request,
                          Authentication authentication) {
         String email = authentication.getName();

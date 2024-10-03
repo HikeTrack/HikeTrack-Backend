@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.service.impl;
+package com.hiketrackbackend.hiketrackbackend.security;
 
 import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
 import com.hiketrackbackend.hiketrackbackend.model.Role;
