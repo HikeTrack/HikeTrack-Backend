@@ -50,6 +50,7 @@ public class TourController {
         return tourService.createTour(requestDto, user);
     }
 
+    // change to patchMapping
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @PutMapping("/{tourId}")
     @Operation(summary = "Update tour",
@@ -117,6 +118,7 @@ public class TourController {
     }
 
 
+    //change to patch mapping
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @PutMapping("/{tourId}/reviews/{reviewId}")
     @Operation(summary = "Update review",
