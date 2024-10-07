@@ -20,6 +20,6 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
         response.setContentType("application/json");
         response.getWriter().write("{\"token\": \"" + token + "\"}");
-        response.sendRedirect("http://localhost:3000/#");
+        response.sendRedirect("\"https://hiketrack.github.io/hike-track-frontend/"); //"http://localhost:3000/#
     }
 }
