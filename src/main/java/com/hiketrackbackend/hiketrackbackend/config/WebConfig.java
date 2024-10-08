@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:3000")
                 .allowedOrigins("https://hiketrack.github.io")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                .allowedHeaders("Content-Type", "Authorization", "X-Requested-With")
+                .allowedHeaders("Content-Type", "Authorization", "X-Requested-With", "Access-Control-Allow-Origin")
                 .allowCredentials(true);
     }
 }
