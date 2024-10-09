@@ -9,4 +9,6 @@ public interface UserService {
     UserForgotRespondDto createRestoreRequest(UserForgotRequestDto request);
 
     UserLoginResponseDto updatePassword(UserRestoreRequestDto request, String email);
+
+    UserRegistrationRespondDto getById(Long id);
 }
