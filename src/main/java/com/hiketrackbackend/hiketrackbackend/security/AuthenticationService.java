@@ -1,6 +1,5 @@
 package com.hiketrackbackend.hiketrackbackend.security;
 
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserForgotRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserLoginRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserLoginResponseDto;
 import com.hiketrackbackend.hiketrackbackend.model.User;
@@ -38,6 +37,4 @@ public class AuthenticationService {
         User user = (User) authentication.getPrincipal();
         return user.getId();
     }
-
-
 }
