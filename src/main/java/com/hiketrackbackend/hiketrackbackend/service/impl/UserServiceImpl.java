@@ -67,6 +67,10 @@ public class UserServiceImpl implements UserService {
         return new UserLoginResponseDto(token);
     }
 
+    @Override
+    public UserRegistrationRespondDto getById(Long id) {
+        return userMapper.toDto(findUserById(id));
+    }
 
     private void setUserRole(User user) {
         Set<Role> roles = roleRepository.findByName(Role.RoleName.ROLE_USER);
@@ -83,5 +87,10 @@ public class UserServiceImpl implements UserService {
         );
     }
 
+    private User findUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("User with id " + id + " not found")
+        );
+    }
 
 }
