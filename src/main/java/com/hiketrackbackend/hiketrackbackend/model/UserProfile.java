@@ -32,9 +32,7 @@ public class UserProfile {
             name = "user_id"
     )
     private User user;
-
     private String country;
-
     private String city;
 
     @Column(nullable = false)

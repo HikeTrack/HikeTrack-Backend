@@ -68,6 +68,10 @@ public class AuthenticationController {
         return userService.updatePassword(request, email);
     }
 
+
+    // TODO закрыть сесию when logout
+
+    // TODO послать линк на востановление пароля повторно( точно так же сделать и на регистрацию)
     @Operation(summary = "",
             description = "")
     @PostMapping("/")
