@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class UserProfileRespondDto {
     private Long id;
     private Long userId;
-    private Long countryId;
+    private String country;
     private String city;
     private LocalDate registrationDate;
     private String userPhoto;

@@ -20,8 +20,8 @@ databaseChangeLog:
                     nullable: false
                     unique: true
               - column:
-                  name: country_id
-                  type: BIGINT
+                  name: country
+                  type: VARCHAR(255)
               - column:
                   name: city
                   type: VARCHAR(255)

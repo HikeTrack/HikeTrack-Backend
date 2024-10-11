@@ -20,14 +20,12 @@ import java.time.LocalDate;
 public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileRepository userProfileRepository;
     private final UserProfileMapper userProfileMapper;
-    private final CountryRepository countryRepository;
 
     @Override
     @Transactional
     public UserProfileRespondDto updateUserProfile(UserProfileRequestDto requestDto, Long id) {
         UserProfile userProfile = findByUserId(id);
         userProfileMapper.updateFromDto(requestDto, userProfile);
-        setCountryToUserProfile(requestDto, userProfile);
         userProfileRepository.save(userProfile);
         return userProfileMapper.toDto(userProfile);
     }
@@ -41,20 +39,6 @@ public class UserProfileServiceImpl implements UserProfileService {
     private UserProfile findByUserId(Long id) {
         return userProfileRepository.findByUserId(id).orElseThrow(
                 () -> new EntityNotFoundException("Profile with user id " + id + " is not exist")
-        );
-    }
-
-    private void setCountryToUserProfile(UserProfileRequestDto requestDto,
-                                         UserProfile userProfile) {
-        if (requestDto.getCountryId() != null) {
-            Country country = findCountry(requestDto);
-            userProfile.setCountry(country);
-        }
-    }
-
-    private Country findCountry(UserProfileRequestDto requestDto) {
-        return countryRepository.findById(requestDto.getCountryId()).orElseThrow(
-                () -> new EntityNotFoundException("not found country with id: " + requestDto.getCountryId())
         );
     }
 }
