@@ -11,7 +11,10 @@ public class UserProfileRespondDto {
     private Long userId;
     private String country;
     private String city;
+    private String phoneNumber;
+    private String aboutMe;
     private LocalDate registrationDate;
     private String userPhoto;
-    private boolean hasCountry = true;
+//    //
+//    private boolean hasCountry = true;
 }

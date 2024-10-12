@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-column-to-user-profile-table
+      author: Vadym P
+      changes:
+        - addColumn:
+            tableName: user_profiles
+            columns:
+              - column:
+                  name: phone_number
+                  type: VARCHAR(255)
+              - column:
+                  name: about_me
+                  type: VARCHAR(255)

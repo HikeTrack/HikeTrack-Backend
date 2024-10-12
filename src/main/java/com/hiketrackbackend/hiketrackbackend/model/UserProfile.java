@@ -34,6 +34,8 @@ public class UserProfile {
     private User user;
     private String country;
     private String city;
+    private String phoneNumber;
+    private String aboutMe;
 
     @Column(nullable = false)
     private LocalDate registrationDate;
