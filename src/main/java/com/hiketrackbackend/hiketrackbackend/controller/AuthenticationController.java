@@ -69,16 +69,5 @@ public class AuthenticationController {
     }
 
 
-    // TODO закрыть сесию when logout
 
-    // TODO послать линк на востановление пароля повторно( точно так же сделать и на регистрацию)
-    @Operation(summary = "",
-            description = "")
-    @PostMapping("/")
-    public String logout(HttpServletRequest request,
-                         Authentication authentication) {
-        String email = authentication.getName();
-        authenticationService.logout(request, email);
-        return "Logged out successfully";
-    }
 }
