@@ -15,14 +15,8 @@ public interface UserProfileMapper {
     void updateFromDto(UserProfileRequestDto requestDto, @MappingTarget UserProfile userProfile);
 
     @AfterMapping
-    default void setCountryAndUserIds(@MappingTarget UserProfileRespondDto respondDto, UserProfile userProfile) {
+    default void setUserIds(@MappingTarget UserProfileRespondDto respondDto, UserProfile userProfile) {
         Long userId = userProfile.getUser().getId();
         respondDto.setUserId(userId);
-        if (userProfile.getCountry() == null) {
-            respondDto.setHasCountry(false);
-        } else {
-            Long countryId = userProfile.getCountry().getId();
-            respondDto.setCountryId(countryId);
-        }
     }
 }

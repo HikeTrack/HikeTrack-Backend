@@ -17,6 +17,7 @@ public abstract class TokenService<T> {
         return value;
     }
 
+    // TODO может тут можно прокинуть какую то ошибку если не могу обратиться к базе даных впринципе
     public boolean isTokenExistInDB(String token) {
 //        if (token == null) {
 //            return true;

@@ -32,11 +32,7 @@ public class UserProfile {
             name = "user_id"
     )
     private User user;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_id")
-    private Country country;
-
+    private String country;
     private String city;
 
     @Column(nullable = false)

@@ -30,12 +30,6 @@ public class Country {
     @OneToMany(mappedBy = "country")
     private Set<Tour> tours = new HashSet<>();
 
-    @OneToOne(
-            fetch = FetchType.LAZY,
-            mappedBy = "country"
-    )
-    private UserProfile userProfile;
-
     @Column(nullable = false)
     private boolean isDeleted;
 }
