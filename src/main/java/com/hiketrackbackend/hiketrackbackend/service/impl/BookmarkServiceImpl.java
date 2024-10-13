@@ -24,12 +24,6 @@ public class BookmarkServiceImpl implements BookmarkService {
     private final TourRepository tourRepository;
 
     @Override
-    public Set<BookmarkRespondDto> getByUserId(Long userId) {
-        Set<Bookmark> bookmarks = bookmarkRepository.findByUser_Id(userId);
-        return bookmarkMapper.toDto(bookmarks);
-    }
-
-    @Override
     public BookmarkRespondDto addToBookmarks(BookmarkRequestDto requestDto, User user) {
         BookmarkId bookmarkId = new BookmarkId(user.getId(), requestDto.getTourId());
         findBookmarkById(bookmarkId);
@@ -40,6 +34,12 @@ public class BookmarkServiceImpl implements BookmarkService {
         bookmark.setTour(tour);
         bookmark.setAddedAt(LocalDateTime.now());
         return bookmarkMapper.toDto(bookmarkRepository.save(bookmark));
+    }
+
+    @Override
+    public Set<BookmarkRespondDto> getByUserId(Long userId) {
+        Set<Bookmark> bookmarks = bookmarkRepository.findByUser_Id(userId);
+        return bookmarkMapper.toDto(bookmarks);
     }
 
     @Override

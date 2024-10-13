@@ -12,8 +12,6 @@ import java.util.List;
 public interface TourService {
     TourRespondWithoutReviews createTour(TourRequestDto requestDto, User user);
 
-    void deleteById(Long id);
-
     List<TourRespondWithoutDetailsAndReviews> getAll(Pageable pageable);
 
     TourRespondDto getById(Long id, int page, int size);
@@ -23,4 +21,6 @@ public interface TourService {
     List<TourRespondWithoutReviews> search(TourSearchParameters params, Pageable pageable);
 
     TourRespondWithoutReviews updateTour(TourRequestDto requestDto, Long tourId);
+
+    void deleteById(Long id);
 }

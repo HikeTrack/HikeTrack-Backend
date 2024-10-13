@@ -5,7 +5,6 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginResponseDto
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserForgotPasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserPasswordRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserUpdatePasswordRequestDto;
-
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
 import com.hiketrackbackend.hiketrackbackend.model.User;
@@ -14,7 +13,6 @@ import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.security.token.UserTokenService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.MailSender;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final JwtTokenServiceImpl jwtTokenService;
     private final UserRepository userRepository;
     private final UserTokenService userTokenService;
     private final MailSender mailSender;
@@ -56,28 +53,18 @@ public class AuthenticationService {
         return userService.updatePassword(request, userToken.getUserId());
     }
 
+    // TODO
 //    public void logout(HttpServletRequest request, String email) {
 //        addJwtTokenToBlackList(request, email);
 //    }
 
-    private void addJwtTokenToBlackList(HttpServletRequest request, String username) {
-        jwtTokenService.saveTokenToDB(request, username);
-    }
-
-    public Long getUserId(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        return user.getId();
-    }
+//    private void addJwtTokenToBlackList(HttpServletRequest request, String username) {
+//        jwtTokenService.saveTokenToDB(request, username);
+//    }
 
     private User findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException("User with email " + email + " not found")
-        );
-    }
-
-    private User findUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("User with id " + id + " not found")
         );
     }
 }

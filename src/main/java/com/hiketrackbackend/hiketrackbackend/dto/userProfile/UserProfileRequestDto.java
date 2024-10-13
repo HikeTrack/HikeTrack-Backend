@@ -13,11 +13,11 @@ public class UserProfileRequestDto {
 
     @Size(min = 1, max = 30)
     private String city;
+    private String userPhoto;
 
     @Max(15)
     private String phoneNumber;
 
     @Size(max = 300)
     private String aboutMe;
-    private String userPhoto;
 }

@@ -35,15 +35,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void deleteById(Long reviewId, Long tourId) {
-        isExistReviewByIdAndTourId(tourId, reviewId);
-        reviewRepository.deleteById(reviewId);
-    }
-
-    @Override
-    @Transactional
-    public ReviewsRespondDto updateReview(ReviewRequestDto requestDto, Long tourId, Long reviewId) {
-        isExistReviewByIdAndTourId(tourId, reviewId);
+    public ReviewsRespondDto updateReview(ReviewRequestDto requestDto, Long reviewId) {
+        Tour tour = getTourByReviewId(reviewId);
+        isExistReviewByIdAndTourId(tour.getId(), reviewId);
         Review review = getReviewById(reviewId);
         reviewMapper.updateEntityFromDto(review, requestDto);
         return reviewMapper.toDto(reviewRepository.save(review));
@@ -55,6 +49,14 @@ public class ReviewServiceImpl implements ReviewService {
                 .stream()
                 .map(reviewMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long reviewId) {
+        Tour tour = getTourByReviewId(reviewId);
+        isExistReviewByIdAndTourId(tour.getId(), reviewId);
+        reviewRepository.deleteById(reviewId);
     }
 
     private void isExistReviewByIdAndTourId(Long tourId, Long reviewId) {
@@ -73,6 +75,12 @@ public class ReviewServiceImpl implements ReviewService {
     private Tour getTourById(Long tourId) {
         return tourRepository.findById(tourId).orElseThrow(
                 () -> new EntityNotFoundException("Tour not found with id " + tourId)
+        );
+    }
+
+    private Tour getTourByReviewId(Long reviewId) {
+        return tourRepository.findTourByReviewsId(reviewId).orElseThrow(
+                () -> new EntityNotFoundException("Tour not found with review id: " + reviewId)
         );
     }
 }

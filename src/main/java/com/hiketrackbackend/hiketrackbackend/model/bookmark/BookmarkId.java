@@ -16,9 +16,7 @@ public class BookmarkId implements Serializable {
     @Column(name = "tour_id")
     private Long tourId;
 
-    public BookmarkId() {
-
-    }
+    public BookmarkId() { }
 
     public BookmarkId(Long userId, Long tourId) {
         this.userId = userId;

@@ -58,7 +58,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return createBodyMessage(ex, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(SpecificationNotFoundException.class)
+    @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<Object> handleInvalidTokenException(InvalidTokenException ex) {
         return createBodyMessage(ex, HttpStatus.NOT_FOUND);
     }

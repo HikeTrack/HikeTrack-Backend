@@ -27,7 +27,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,9 +52,11 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        findTour(id);
-        tourRepository.deleteById(id);
+    @Transactional
+    public TourRespondWithoutReviews updateTour(TourRequestDto requestDto, Long tourId) {
+        Tour tour = findTour(tourId);
+        tourMapper.updateEntityFromDto(requestDto, tour);
+        return tourMapper.toDtoWithoutReviews(tourRepository.save(tour));
     }
 
     @Override
@@ -66,7 +67,10 @@ public class TourServiceImpl implements TourService {
                 .toList();
     }
 
-    // Transactional annotation is used to skip lazy init exception, so we can get reviews the way we needed
+    /*
+        Transactional annotation is used to skip lazy init exception,
+        so we can get reviews the way we needed
+     */
     @Override
     @Transactional
     public TourRespondDto getById(Long id, int page, int size) {
@@ -95,20 +99,18 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    @Transactional
-    public TourRespondWithoutReviews updateTour(TourRequestDto requestDto, Long tourId) {
-        Tour tour = findTour(tourId);
-        tourMapper.updateEntityFromDto(requestDto, tour);
-        return tourMapper.toDtoWithoutReviews(tourRepository.save(tour));
-    }
-
-    @Override
     public List<TourRespondWithoutReviews> getByRating() {
         return tourRepository
                 .findTop7ByRatingGreaterThanOrderByRatingDesc(0)
                 .stream()
                 .map(tourMapper::toDtoWithoutReviews)
                 .toList();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        findTour(id);
+        tourRepository.deleteById(id);
     }
 
     private Country findCountry(Long id) {

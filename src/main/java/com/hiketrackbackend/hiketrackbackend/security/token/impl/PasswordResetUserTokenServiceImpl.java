@@ -36,7 +36,6 @@ public class PasswordResetUserTokenServiceImpl implements UserTokenService {
         return userToken;
     }
 
-
     private void saveToken(UserToken userToken) {
         long ttl = userToken.getTokenType().getTimeToLiveInSeconds();
         redisTemplate.opsForValue().set(userToken.getToken(), userToken, ttl, TimeUnit.SECONDS);
