@@ -1,6 +1,5 @@
-package com.hiketrackbackend.hiketrackbackend.service.impl;
+package com.hiketrackbackend.hiketrackbackend.service.notification;
 
-import com.hiketrackbackend.hiketrackbackend.service.MailSender;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -14,8 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.Properties;
 
 @Service
-public class MailSenderImpl implements MailSender {
-    private static final String MAIL_HOST = "smtp.gmail.com";
+public class PasswordResetMailSenderImpl implements MailSender {
+    @Value("${mail.host}")
+    private String mailHost;
     @Value("${mail.port}")
     private String mailPort;
     @Value("${from.email}")
@@ -24,9 +24,9 @@ public class MailSenderImpl implements MailSender {
     private String password;
 
     @Override
-    public void sendResetPasswordMailToGMail(String userEmail, String token) {
+    public void sendMessage(String userEmail, String token) {
         Properties props = new Properties();
-        props.put("mail.smtp.host", MAIL_HOST);
+        props.put("mail.smtp.host", mailHost);
         props.put("mail.smtp.port", mailPort);
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.ssl.enable", "true");
@@ -42,6 +42,7 @@ public class MailSenderImpl implements MailSender {
         );
 
         String resetUrl = "http://localhost:8081/auth/reset-password?token=" + token;
+        // TODO create a template for sending to user
         String resetMessage = "To reset your password please use this link:\n" + resetUrl
                 + ". If it was not u who sent this request please visit our website and change the password";
         try {

@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.dto.user;
+package com.hiketrackbackend.hiketrackbackend.dto.user.login;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

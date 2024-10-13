@@ -6,32 +6,30 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.redis.core.RedisHash;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
-@RedisHash
-public class UserToken {
-    @Id
-    private String id;
+public class UserToken implements Serializable {
     private String token;
     private LocalDateTime createdAt;
     private Long userId;
 
     @Enumerated(EnumType.STRING)
-    private TokenType type;
+    private TokenType tokenType;
 
-    public UserToken() {}
-
-    public UserToken(String token, Long userId, TokenType type) {
-        this.id = UUID.randomUUID().toString();
-        this.createdAt = LocalDateTime.now();
-    }
-
+    @Getter
     public enum TokenType {
-        CONFIRMATION,
-        PASSWORD_RESET,
-        LOGOUT
+        PASSWORD_RESET(3600),   // 1 hour after password reset
+        CONFIRMATION(10800),    // 3 hours after registration confirmation
+        ACCESS(900);            // 15 min after user logout
+
+        private final long timeToLiveInSeconds;
+
+        TokenType(long timeToLiveInSeconds) {
+            this.timeToLiveInSeconds = timeToLiveInSeconds;
+        }
     }
 }

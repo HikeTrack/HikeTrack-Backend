@@ -18,12 +18,12 @@ public abstract class TokenService<T> {
     }
 
     // TODO может тут можно прокинуть какую то ошибку если не могу обратиться к базе даных впринципе
-    public boolean isTokenExistInDB(String token) {
-//        if (token == null) {
-//            return true;
-//        }
-        return Boolean.TRUE.equals(redisTemplate.hasKey(token));
-    }
+//    public boolean isTokenExistInDB(String token) {
+////        if (token == null) {
+////            return true;
+////        }
+//        return Boolean.TRUE.equals(redisTemplate.hasKey(token));
+//    }
 
     public void deleteTokenInDB(String token) {
         redisTemplate.delete(token);

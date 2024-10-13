@@ -1,6 +1,9 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
-import com.hiketrackbackend.hiketrackbackend.dto.user.*;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserPasswordRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserUpdatePasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.RegistrationException;
 import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
@@ -8,20 +11,12 @@ import com.hiketrackbackend.hiketrackbackend.model.Role;
 import com.hiketrackbackend.hiketrackbackend.model.User;
 import com.hiketrackbackend.hiketrackbackend.repository.RoleRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
-import com.hiketrackbackend.hiketrackbackend.security.JwtTokenServiceImpl;
-import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
-import com.hiketrackbackend.hiketrackbackend.security.UUIDTokenServiceImpl;
-import com.hiketrackbackend.hiketrackbackend.service.MailSender;
-
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +25,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
-    private final UUIDTokenServiceImpl UUIDTokenService;;
-    private final MailSender mailSender;
-    private final JwtUtil jwtUtil;
 
     @Override
     @Transactional
@@ -41,7 +33,7 @@ public class UserServiceImpl implements UserService {
             throw new RegistrationException("This email is already used: " + request.getEmail());
         }
         User user = userMapper.toEntity(request);
-        setUserPassword(user, request);
+        setUserPassword(user, request.getPassword());
         setUserRole(user);
         userRepository.save(user);
         return userMapper.toDto(user);
@@ -49,22 +41,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserForgotRespondDto createRestoreRequest(UserForgotRequestDto request) {
-        User user = findUserByEmail(request.getEmail());
-        String token = UUID.randomUUID().toString();
-        UUIDTokenService.saveTokenToDB(token, user.getEmail());
-        mailSender.sendResetPasswordMailToGMail(user.getEmail(), token);
-        return userMapper.toDto(user.getEmail());
-    }
-
-    @Override
-    @Transactional
-    public UserLoginResponseDto updatePassword(UserRestoreRequestDto request, String email) {
-        User user = findUserByEmail(email);
-        user.setPassword(encoder.encode(request.getPassword()));
+    public UserPasswordRespondDto updatePassword(UserUpdatePasswordRequestDto request, Long id) {
+        User user = findUserById(id);
+        setUserPassword(user, request.getPassword());
         userRepository.save(user);
-        String token = jwtUtil.generateToken(email);
-        return new UserLoginResponseDto(token);
+        return userMapper.toDto("Password successfully changed.");
     }
 
     @Override
@@ -77,14 +58,8 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
     }
 
-    private void setUserPassword(User user, UserRegistrationRequestDto request) {
-        user.setPassword(encoder.encode(request.getPassword()));
-    }
-
-    private User findUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(
-                () -> new EntityNotFoundException("User with email " + email + " not found")
-        );
+    private void setUserPassword(User user, String password) {
+        user.setPassword(encoder.encode(password));
     }
 
     private User findUserById(Long id) {
@@ -92,5 +67,4 @@ public class UserServiceImpl implements UserService {
                 () -> new EntityNotFoundException("User with id " + id + " not found")
         );
     }
-
 }

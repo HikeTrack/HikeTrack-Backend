@@ -1,9 +1,9 @@
 package com.hiketrackbackend.hiketrackbackend.mapper;
 
 import com.hiketrackbackend.hiketrackbackend.config.MapperConfig;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserForgotRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserRegistrationRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserRegistrationRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserPasswordRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.User;
 import com.hiketrackbackend.hiketrackbackend.model.UserProfile;
 import org.mapstruct.AfterMapping;
@@ -20,7 +20,7 @@ public interface UserMapper {
 
     UserRegistrationRespondDto toDto(User user);
 
-    UserForgotRespondDto toDto(String userEmail);
+    UserPasswordRespondDto toDto(String message);
 
     @AfterMapping
     default void createProfile(@MappingTarget User user) {
