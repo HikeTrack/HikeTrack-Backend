@@ -74,6 +74,7 @@ public class SecurityConfig {
                         )
                         .successHandler(oAuth2AuthenticationSuccessHandler)
                 )
+                // TODO сделать логаут через спринг и секурити чейну
                 .logout(logout -> logout
                         .logoutSuccessUrl("https://hiketrack.github.io")
                         .permitAll()

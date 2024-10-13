@@ -26,34 +26,34 @@ import java.util.List;
 @RequestMapping("/countries")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Country Management", description = "Endpoints for managing country endpoints")
+@Tag(name = "", description = "")
 public class CountryController {
     private final CountryService countryService;
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/new")
-    @Operation(summary = "Create a new country", description = "Add new country to DB")
+    @PostMapping
+    @Operation(summary = "", description = "")
     public CountryRespondDto createCountry(@RequestBody @Valid CountryRequestDto requestDto) {
         return countryService.createCountry(requestDto);
     }
 
     @GetMapping("/search")
-    @Operation(summary = "Search by param",
-            description = "Get list of all countries sorted by chosen continent or country")
+    @Operation(summary = "",
+            description = "")
     public List<CountryRespondDto> search(@Valid CountrySearchParameters params,
                                           @ParameterObject @PageableDefault Pageable pageable) {
         return countryService.search(params, pageable);
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get country by ID",
-            description = "Get country with ID")
+    @Operation(summary = "",
+            description = "")
     public CountryRespondDto getById(@PathVariable @Positive Long id) {
         return countryService.getById(id);
     }
 
     @GetMapping
-    @Operation(summary = "Get all countries")
+    @Operation(summary = "")
     public List<CountryRespondDto> getAll(@ParameterObject @PageableDefault Pageable pageable) {
         return countryService.getAll(pageable);
     }

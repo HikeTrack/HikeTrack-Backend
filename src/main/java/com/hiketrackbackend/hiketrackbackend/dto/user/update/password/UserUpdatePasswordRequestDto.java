@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.dto.user;
+package com.hiketrackbackend.hiketrackbackend.dto.user.update.password;
 
 import com.hiketrackbackend.hiketrackbackend.validation.FieldMatch;
 import com.hiketrackbackend.hiketrackbackend.validation.Password;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @FieldMatch(password = "password", repeatPassword = "repeatPassword")
-public class UserRestoreRequestDto {
+public class UserUpdatePasswordRequestDto {
     @NotBlank
     @Password
     private String password;

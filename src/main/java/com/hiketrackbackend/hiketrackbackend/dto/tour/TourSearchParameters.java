@@ -1,7 +1,5 @@
 package com.hiketrackbackend.hiketrackbackend.dto.tour;
 
-import java.util.List;
-
 public record TourSearchParameters(
         String[] routeType,
         String[] difficulty,

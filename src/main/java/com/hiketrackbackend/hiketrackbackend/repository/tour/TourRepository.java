@@ -14,4 +14,6 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
     Optional<Tour> findById(Long id);
 
     boolean existsTourByUserIdAndName(Long userId,String name);
+
+    Optional<Tour> findTourByReviewsId(Long id);
 }
