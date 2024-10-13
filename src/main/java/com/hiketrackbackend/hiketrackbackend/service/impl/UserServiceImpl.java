@@ -1,7 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserPasswordRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
@@ -52,17 +52,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserUpdateRespondDto updateUser(UserUpdateRequestDto requestDto, Long id) {
+    public UserRespondDto updateUser(UserUpdateRequestDto requestDto, Long id) {
         User user = findUserById(id);
         userMapper.updateUserFromDto(requestDto, user);
         userMapper.updateUserProfileFromDto(requestDto.getUserProfileRequestDto(), user.getUserProfile());
         userRepository.save(user);
-        return userMapper.toUpdateDto(user);
+        return userMapper.toRespondDto(user);
     }
 
     @Override
-    public UserRegistrationRespondDto getById(Long id) {
-        return userMapper.toDto(findUserById(id));
+    public UserRespondDto getUserById(Long id) {
+        return userMapper.toRespondDto(findUserById(id));
     }
 
     private void setUserRole(User user) {

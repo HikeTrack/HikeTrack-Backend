@@ -1,8 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
-import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,7 +10,6 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +29,8 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @GetMapping("/{id}")
     @Operation(summary = "", description = "")
-    public UserRegistrationRespondDto getUser(@PathVariable @Positive Long id) {
-        return userService.getById(id);
+    public UserRespondDto getUser(@PathVariable @Positive Long id) {
+        return userService.getUserById(id);
     }
 
     // TODO закрыть сесию when logout
@@ -51,8 +49,8 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @PatchMapping("/{id}")
     @Operation(summary = "", description = "")
-    public UserUpdateRespondDto updateUser(@RequestBody @Valid UserUpdateRequestDto requestDto,
-                                           @PathVariable @Positive Long id) {
+    public UserRespondDto updateUser(@RequestBody @Valid UserUpdateRequestDto requestDto,
+                                     @PathVariable @Positive Long id) {
         return userService.updateUser(requestDto, id);
     }
 
