@@ -70,7 +70,7 @@ public class TourController {
 
     @GetMapping
     @Operation(summary = "Get list of all tours")
-    public List<TourRespondWithoutDetailsAndReviews> getAll(@ParameterObject @PageableDefault Pageable pageable) {
+    public List<TourRespondWithoutDetailsAndReviews> getAllTours(@ParameterObject @PageableDefault Pageable pageable) {
         return tourService.getAll(pageable);
     }
 
@@ -85,7 +85,7 @@ public class TourController {
     @GetMapping("/popular")
     @Operation(summary = "Get tour by likes",
             description = "Get a list of 7th tours with the most popular(rated) value")
-    public List<TourRespondWithoutReviews> getMostRatedTour() {
+    public List<TourRespondWithoutReviews> getMostRatedTours() {
         return tourService.getByRating();
     }
 
@@ -93,39 +93,15 @@ public class TourController {
     @GetMapping("/search")
     @Operation(summary = "Search by param",
             description = "Get list of all countries sorted by chosen parameter")
-    public List<TourRespondWithoutReviews> search(@Valid TourSearchParameters params,
+    public List<TourRespondWithoutReviews> searchTours(@Valid TourSearchParameters params,
                                                   @ParameterObject @PageableDefault Pageable pageable) {
         return tourService.search(params, pageable);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
-    @PostMapping("/{tourId}/reviews")
-    @Operation(summary = "Create a new review", description = "Save new registered users review")
-    public ReviewsRespondDto createReview(@RequestBody @Valid ReviewRequestDto requestDto,
-                                          @PathVariable @Positive Long tourId,
-                                          Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        return reviewService.createReview(requestDto, user, tourId);
-    }
-
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
-    @DeleteMapping("/{tourId}/reviews/{reviewId}")
-    @Operation(summary = "Delete review by ID",
-            description = "Delete review from DB with registered user by review ID adn tour ID")
-    public void deleteReview( @PathVariable @Positive Long tourId,
-                              @PathVariable @Positive Long reviewId) {
-        reviewService.deleteById(reviewId, tourId);
-    }
 
 
-    //change to patch mapping
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
-    @PutMapping("/{tourId}/reviews/{reviewId}")
-    @Operation(summary = "Update review",
-            description = "Update review for authorized user with tour id")
-    public ReviewsRespondDto updateReview(@RequestBody @Valid ReviewRequestDto requestDto,
-                                          @PathVariable @Positive Long tourId,
-                                          @PathVariable @Positive Long reviewId) {
-        return reviewService.updateReview(requestDto, tourId, reviewId);
-    }
+
+
+
+
 }
