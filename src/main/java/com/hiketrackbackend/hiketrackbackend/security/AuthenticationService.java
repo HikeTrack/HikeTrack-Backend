@@ -8,11 +8,11 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserUpdate
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
 import com.hiketrackbackend.hiketrackbackend.model.User;
-import com.hiketrackbackend.hiketrackbackend.model.UserToken;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.security.token.UserTokenService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.MailSender;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +26,8 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-    private final UserTokenService userTokenService;
+    private final UserTokenService<String> PasswordResetTokenService;
+    private final UserTokenService<HttpServletRequest> LogoutTokenService;
     private final MailSender mailSender;
     private final UserMapper userMapper;
     private final UserService userService;
@@ -42,25 +43,22 @@ public class AuthenticationService {
     @Transactional
     public UserPasswordRespondDto createRestoreRequest(UserForgotPasswordRequestDto request) {
         User user = findUserByEmail(request.getEmail());
-        UserToken userToken = userTokenService.createToken(user.getId());
-        mailSender.sendMessage(user.getEmail(), userToken.getToken());
+        String token = PasswordResetTokenService.save(user.getEmail());
+        mailSender.sendMessage(user.getEmail(), token);
         return userMapper.toDto("Password reset link sent to email.");
     }
 
     @Transactional
     public UserPasswordRespondDto restorePassword(String token, UserUpdatePasswordRequestDto request) {
-        UserToken userToken = userTokenService.getUserToken(token);
-        return userService.updatePassword(request, userToken.getUserId());
+        String email = PasswordResetTokenService.getValue(token);
+        User user = findUserByEmail(email);
+        return userService.updatePassword(request, user.getId());
     }
 
-    // TODO
-//    public void logout(HttpServletRequest request, String email) {
-//        addJwtTokenToBlackList(request, email);
-//    }
-
-//    private void addJwtTokenToBlackList(HttpServletRequest request, String username) {
-//        jwtTokenService.saveTokenToDB(request, username);
-//    }
+    public void logout(HttpServletRequest request) {
+        request.getSession().invalidate();
+        LogoutTokenService.save(request);
+    }
 
     private User findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(
