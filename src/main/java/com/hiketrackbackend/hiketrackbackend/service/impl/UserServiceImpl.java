@@ -13,16 +13,24 @@ import com.hiketrackbackend.hiketrackbackend.model.Role;
 import com.hiketrackbackend.hiketrackbackend.model.User;
 import com.hiketrackbackend.hiketrackbackend.repository.RoleRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
+import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
@@ -62,8 +70,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRespondDto getUserById(Long id) {
-        return userMapper.toRespondDto(findUserById(id));
+    public UserRespondDto getLoggedInUser(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Authorization header is missing or incorrect");
+        }
+        String token = authorizationHeader.substring(7);
+        String username = jwtUtil.getUsername(token);
+        User user = findUserByEmail(username);
+        return userMapper.toRespondDto(findUserById(user.getId()));
     }
 
     @Override
@@ -84,6 +99,12 @@ public class UserServiceImpl implements UserService {
     private User findUserById(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("User with id " + id + " not found")
+        );
+    }
+
+    private User findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException("User with email " + email + " not found")
         );
     }
 }
