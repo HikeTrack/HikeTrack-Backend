@@ -1,23 +1,24 @@
 package com.hiketrackbackend.hiketrackbackend.security.token;
 
-import com.hiketrackbackend.hiketrackbackend.model.UserToken;
+import com.hiketrackbackend.hiketrackbackend.exception.InvalidTokenException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import java.util.concurrent.TimeUnit;
+public abstract class UserTokenService<P> {
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
-public interface UserTokenService<P> {
-    String saveToken(P param);
+    public abstract String save(P param);
 
-    UserToken getUserToken(String token);
-
-    default boolean isTokenBlacklisted(String token, RedisTemplate<String, String> redisTemplate) {
-        return Boolean.TRUE.equals(redisTemplate.hasKey(token));
+    public String getValue(String token) {
+        if (!isKeyExist(token)) {
+            throw new InvalidTokenException("Invalid password reset token: " + token);
+        }
+        return redisTemplate.opsForValue().get(token);
     }
 
-
-//
-//    default void saveToken(UserToken userToken, RedisTemplate<String, UserToken> redisTemplate) {
-//        long ttl = userToken.getTokenType().getTimeToLiveInSeconds();
-//        redisTemplate.opsForValue().set(userToken.getToken(), userToken, ttl, TimeUnit.SECONDS);
-//    }
+    public boolean isKeyExist(String token) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(token));
+    }
 }
+

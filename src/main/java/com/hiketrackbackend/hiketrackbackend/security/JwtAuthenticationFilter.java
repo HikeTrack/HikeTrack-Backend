@@ -1,5 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.security;
 
+import com.hiketrackbackend.hiketrackbackend.security.token.UserTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private static final List<String> EXCLUDE_URLS = Arrays.asList("/auth/**", "/oauth2/**");
     private static final String TOKEN_NAME = "Bearer ";
+    private final UserTokenService<HttpServletRequest> LogoutTokenService;
 
     @Override
     protected void doFilterInternal(
@@ -39,13 +42,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        //TODO logic for logout
         if (token != null && jwtUtil.isValidToken(token)) {
-//            if (jwtTokenService.isTokenExistInDB(token)) {
-//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//                response.getWriter().write("Login first please");
-//                return;
-//            }
+            if (LogoutTokenService.isKeyExist(token)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Login first please");
+                return;
+            }
             String username = jwtUtil.getUsername(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             Authentication authentication = new UsernamePasswordAuthenticationToken(
