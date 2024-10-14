@@ -31,10 +31,10 @@ public class UserController {
     private final AuthenticationService authenticationService;
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
-    @GetMapping("/{id}")
+    @GetMapping("/me")
     @Operation(summary = "", description = "")
-    public UserRespondDto getUser(@PathVariable @Positive Long id) {
-        return userService.getUserById(id);
+    public UserRespondDto getLoggedInUser(HttpServletRequest request) {
+        return userService.getLoggedInUser(request);
     }
 
     // TODO послать линк на востановление пароля повторно( точно так же сделать и на регистрацию)

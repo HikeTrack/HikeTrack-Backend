@@ -7,6 +7,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserUpdate
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.exception.RegistrationException;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface UserService {
     UserRegistrationRespondDto register(UserRegistrationRequestDto requestDto) throws RegistrationException;
@@ -15,7 +16,7 @@ public interface UserService {
 
     UserRespondDto updateUser(UserUpdateRequestDto requestDto, Long id);
 
-    UserRespondDto getUserById(Long id);
+    UserRespondDto getLoggedInUser(HttpServletRequest request);
 
     void deleteUser(Long id);
 }
