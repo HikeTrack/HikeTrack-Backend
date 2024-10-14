@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,12 +55,10 @@ public class UserController {
         return userService.updateUser(requestDto, id);
     }
 
-    // TODO implement controller after deleting also add jwt token to blacklist
-
-//    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
-//    @DeleteMapping("/{id}")
-//    @Operation(summary = "", description = "")
-//    public UserRegistrationRespondDto deleteUser(@PathVariable @Positive Long id) {
-//        return userService.deleteUser(id);
-//    }
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
+    @DeleteMapping("/{userId}")
+    @Operation(summary = "", description = "")
+    public void deleteUser(@PathVariable @Positive Long userId) {
+        userService.deleteUser(userId);
+    }
 }

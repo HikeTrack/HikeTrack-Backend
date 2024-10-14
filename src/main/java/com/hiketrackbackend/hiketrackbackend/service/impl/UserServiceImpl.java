@@ -65,6 +65,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.toRespondDto(findUserById(id));
     }
 
+    @Override
+    public void deleteUser(Long id) {
+        findUserById(id);
+        userRepository.deleteById(id);
+    }
+
     private void setUserRole(User user) {
         Set<Role> roles = roleRepository.findByName(Role.RoleName.ROLE_USER);
         user.setRoles(roles);
