@@ -6,6 +6,8 @@ import com.hiketrackbackend.hiketrackbackend.security.token.UserTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -14,30 +16,35 @@ import java.util.concurrent.TimeUnit;
 */
 @Service
 @RequiredArgsConstructor
-public class PasswordResetUserTokenServiceImpl implements UserTokenService {
-    private final RedisTemplate<String, UserToken> redisTemplate;
+public class PasswordResetUserTokenServiceImpl implements UserTokenService<String> {
+    private final RedisTemplate<String, String> redisTemplate;
+    private static final long TIME_TO_LIVE = 3600;
 
+//    @Override
+//    public UserToken createToken(String token) {
+//        UserToken userToken = new UserToken();
+//        userToken.setToken(UUID.randomUUID().toString());
+//        userToken.setUserId(userId);
+//        userToken.setCreatedAt(LocalDateTime.now());
+//        userToken.setTokenType(UserToken.TokenType.PASSWORD_RESET);
+//        saveToken(userToken, redisTemplate);
+//        return userToken;
+//    }
+//
     @Override
-    public UserToken createToken(Long userId) {
-        UserToken userToken = new UserToken();
-        userToken.setToken(UUID.randomUUID().toString());
-        userToken.setUserId(userId);
-        userToken.setTokenType(UserToken.TokenType.PASSWORD_RESET);
-        saveToken(userToken);
-        return userToken;
-    }
-
-    @Override
-    public UserToken getUserToken(String tokenKey) {
-        UserToken userToken = redisTemplate.opsForValue().get(tokenKey);
+    public UserToken getUserToken(String token) {
+        String email = redisTemplate.opsForValue().get(token);
         if (userToken == null) {
             throw new InvalidTokenException("Invalid password reset token.");
         }
         return userToken;
     }
 
-    private void saveToken(UserToken userToken) {
-        long ttl = userToken.getTokenType().getTimeToLiveInSeconds();
-        redisTemplate.opsForValue().set(userToken.getToken(), userToken, ttl, TimeUnit.SECONDS);
+
+    @Override
+    public String saveToken(String email) {
+        String token = UUID.randomUUID().toString();
+        redisTemplate.opsForValue().set(token, email, TIME_TO_LIVE, TimeUnit.SECONDS);
+        return token;
     }
 }

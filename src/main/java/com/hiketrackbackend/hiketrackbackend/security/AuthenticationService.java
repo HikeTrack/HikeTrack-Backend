@@ -26,7 +26,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-    private final UserTokenService userTokenService;
+    private final UserTokenService<Long> userTokenService;
     private final MailSender mailSender;
     private final UserMapper userMapper;
     private final UserService userService;

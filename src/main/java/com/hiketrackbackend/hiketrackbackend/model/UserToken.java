@@ -2,6 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.model;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.PrePersist;
 import lombok.Getter;
 import lombok.Setter;
 import java.io.Serializable;

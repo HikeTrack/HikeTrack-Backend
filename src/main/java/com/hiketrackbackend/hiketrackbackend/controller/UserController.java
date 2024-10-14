@@ -2,9 +2,11 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
+import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "", description = "")
 public class UserController {
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     // TODO получается сделать что бы я мог вытянуть и юзер профайл
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
@@ -30,14 +33,16 @@ public class UserController {
     }
 
     // TODO закрыть сесию when logout
-//    HttpServletRequest request,
     // TODO послать линк на востановление пароля повторно( точно так же сделать и на регистрацию)
     @Operation(summary = "",
             description = "")
     @PostMapping("/logout")
-    public String logout(Authentication authentication) {
-        String email = authentication.getName();
-        userService.logout(request, email);
+    public String logout(
+//            HttpServletRequest request,
+//            Authentication authentication
+    ) {
+//        String email = authentication.getName();
+//        authenticationService.logout(request, email);
         return "Logged out successfully";
     }
 

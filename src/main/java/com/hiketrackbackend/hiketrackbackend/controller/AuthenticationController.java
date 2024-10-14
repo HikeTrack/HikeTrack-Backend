@@ -22,6 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/*
+    Do not send requests with JWT token.
+    This path is in EXCLUDE_URLS to skip token validation.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -51,34 +55,11 @@ public class AuthenticationController {
         return authenticationService.createRestoreRequest(request);
     }
 
-
     @Operation(summary = "",
             description = "")
     @PostMapping("/reset-password")
     public UserPasswordRespondDto resetPassword(@ValidToken @RequestParam("token") String token,
-                                                      @RequestBody @Valid UserUpdatePasswordRequestDto request) {
+                                                @RequestBody @Valid UserUpdatePasswordRequestDto request) {
         return authenticationService.restorePassword(token, request);
     }
-
-
-    // TODO dodelat logout
-
-    //    тут походу все таки надо посылать токен. но в таком случае получается система больше не знает креды в контексте и если на какой то ендпоинт поставлю
-//                                                        @PreAuthorize("#username == authentication.name") то я не смогу ничего сделать?
-
-//    узнав емаил можно поменять пароль любому кого знаешь мыло
-//    еще ты забыл что ты поставил что бы на эту  ссылку(аус) не приходили жвт токены из за гугла
-//
-//
-//        походу переделать все на гвт токен
-//    @Operation(summary = "",
-//            description = "")
-//    @PostMapping("/update-password/{email}")
-//    public UserLoginResponseDto updatePassword(@RequestBody @Valid UserRestoreRequestDto request,
-//                               @PathVariable String email) {
-//        return userService.updatePassword(request, email);
-//    }
-
-
-
 }

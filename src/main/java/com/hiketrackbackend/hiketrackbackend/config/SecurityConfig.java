@@ -1,9 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.config;
 
-import com.hiketrackbackend.hiketrackbackend.security.CustomUserDetailsService;
-import com.hiketrackbackend.hiketrackbackend.security.JwtAuthenticationFilter;
-import com.hiketrackbackend.hiketrackbackend.security.OAuth2AuthenticationSuccessHandler;
-import com.hiketrackbackend.hiketrackbackend.security.CustomOAuth2UserService;
+import com.hiketrackbackend.hiketrackbackend.security.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +33,7 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final CustomLogoutHandler customLogoutHandler;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -76,8 +74,11 @@ public class SecurityConfig {
                 )
                 // TODO сделать логаут через спринг и секурити чейну
                 .logout(logout -> logout
+                        .logoutUrl("/user/logout")
                         .logoutSuccessUrl("https://hiketrack.github.io")
-                        .permitAll()
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .addLogoutHandler(customLogoutHandler)
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
