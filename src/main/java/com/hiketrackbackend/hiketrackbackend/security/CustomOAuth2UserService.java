@@ -1,6 +1,5 @@
 package com.hiketrackbackend.hiketrackbackend.security;
 
-import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
 import com.hiketrackbackend.hiketrackbackend.model.Role;
 import com.hiketrackbackend.hiketrackbackend.model.User;
 import com.hiketrackbackend.hiketrackbackend.repository.RoleRepository;
@@ -18,7 +17,6 @@ import java.util.Set;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -31,13 +29,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return oAuth2User;
     }
 
+    // TODO make sure that profile is created when register via google
     private void saveUserToDB(OAuth2User oAuth2User) {
         User user = new User();
         user.setEmail(oAuth2User.getAttribute("email"));
         user.setFirstName(oAuth2User.getAttribute("given_name"));
         user.setLastName(oAuth2User.getAttribute("family_name"));
         setUserRole(user);
-        userMapper.createProfile(user);
         userRepository.save(user);
     }
 

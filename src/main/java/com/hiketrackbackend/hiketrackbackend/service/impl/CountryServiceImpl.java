@@ -29,20 +29,20 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
+    public CountryRespondDto getById(Long id) {
+        Country country = countryRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Can`t find country with id: " + id)
+        );
+        return countryMapper.toDto(country);
+    }
+
+    @Override
     public List<CountryRespondDto> search(CountrySearchParameters params, Pageable pageable) {
         Specification<Country> countrySpecification = countrySpecificationBuilder.build(params);
         return countryRepository.findAll(countrySpecification, pageable)
                 .stream()
                 .map(countryMapper::toDto)
                 .toList();
-    }
-
-    @Override
-    public CountryRespondDto getById(Long id) {
-        Country country = countryRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Can`t find country with id: " + id)
-        );
-        return countryMapper.toDto(country);
     }
 
     @Override

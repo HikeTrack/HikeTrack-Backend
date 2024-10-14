@@ -2,7 +2,6 @@ package com.hiketrackbackend.hiketrackbackend.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
 import java.util.regex.Pattern;
 
 public class PasswordValidation implements ConstraintValidator<Password, String> {

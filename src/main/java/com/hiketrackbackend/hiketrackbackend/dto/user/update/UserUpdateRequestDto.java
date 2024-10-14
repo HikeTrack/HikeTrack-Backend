@@ -1,31 +1,25 @@
-package com.hiketrackbackend.hiketrackbackend.dto.user;
+package com.hiketrackbackend.hiketrackbackend.dto.user.update;
 
+import com.hiketrackbackend.hiketrackbackend.dto.userProfile.UserProfileRequestDto;
 import com.hiketrackbackend.hiketrackbackend.validation.FieldMatch;
 import com.hiketrackbackend.hiketrackbackend.validation.Password;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @FieldMatch(password = "password", repeatPassword = "repeatPassword")
-public class UserRegistrationRequestDto {
-    @Email(message = "Email should be valid")
-    @NotBlank(message = "Email is mandatory")
+public class UserUpdateRequestDto {
+    @Email
     private String email;
 
-    @NotBlank
     @Password
     private String password;
 
-    @NotBlank(message = "Confirm Password is mandatory")
     @Password
     private String repeatPassword;
-
-    @NotBlank
     private String firstName;
-
-    @NotBlank
     private String lastName;
+    private UserProfileRequestDto userProfileRequestDto;
 }

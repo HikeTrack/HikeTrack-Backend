@@ -19,7 +19,6 @@ public class DateSpecificationProvider implements SpecificationProvider<Tour> {
         return NAME_PARAMETER;
     }
 
-    //find better logic sorting
     @Override
     public Specification<Tour> getSpecification(String[] params) {
         return (root, query, criteriaBuilder) -> {

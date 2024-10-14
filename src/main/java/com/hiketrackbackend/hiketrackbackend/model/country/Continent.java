@@ -3,7 +3,6 @@ package com.hiketrackbackend.hiketrackbackend.model.country;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-
 public enum Continent {
     EUROPE("Europe"),
     ASIA("Asia"),

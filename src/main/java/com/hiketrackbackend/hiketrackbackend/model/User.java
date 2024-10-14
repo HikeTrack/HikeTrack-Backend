@@ -14,6 +14,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,24 +33,22 @@ import java.util.Set;
 @Setter
 @Table(name = "users")
 public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
     private String email;
-
     private String password;
 
     @Column(nullable = false)
     private String firstName;
-
     private String lastName;
 
-    @OneToOne(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "user"
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(
+            nullable = false,
+            unique = true,
+            name = "user_profile_id"
     )
     private UserProfile userProfile;
 
@@ -107,12 +106,8 @@ public class User implements UserDetails {
         return true;
     }
 
-
-
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
-        if (userProfile != null) {
-            userProfile.setUser(this);
-        }
+    @PrePersist
+    protected void onCreate() {
+        this.userProfile = new UserProfile();
     }
 }

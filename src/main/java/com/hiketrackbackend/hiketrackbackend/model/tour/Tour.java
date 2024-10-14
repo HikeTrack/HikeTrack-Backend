@@ -65,7 +65,6 @@ public class Tour {
     @Column(nullable = false)
     private String mainPhoto;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
@@ -73,6 +72,7 @@ public class Tour {
     @OneToMany(mappedBy = "tour", cascade = CascadeType.REMOVE)
     private List<Review> reviews = new ArrayList<>();
 
+    // TODO сделать как я сделал с юзер и его профилем
     @OneToOne(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Details details;
 
