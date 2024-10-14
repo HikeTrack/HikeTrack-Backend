@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto("Password successfully changed.");
     }
 
+    // TODO при апдейте мыла надо его как тообновлять в контексте
     @Override
     @Transactional
     public UserRespondDto updateUser(UserUpdateRequestDto requestDto, Long id) {
