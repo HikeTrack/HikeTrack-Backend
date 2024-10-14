@@ -41,7 +41,7 @@ public class PasswordResetMailSenderImpl implements MailSender {
                 }
         );
 
-        String resetUrl = "http://localhost:8081/auth/reset-password?token=" + token;
+        String resetUrl = "https://hiketrack.github.io/auth/reset-password?token=" + token;
         // TODO create a template for sending to user
         String resetMessage = "To reset your password please use this link:\n" + resetUrl
                 + ". If it was not u who sent this request please visit our website and change the password";
