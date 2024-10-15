@@ -1,7 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.security;
 
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginResponseDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserResponseDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserForgotPasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserPasswordRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserUpdatePasswordRequestDto;
@@ -32,12 +32,12 @@ public class AuthenticationService {
     private final UserMapper userMapper;
     private final UserService userService;
 
-    public UserLoginResponseDto login(UserLoginRequestDto requestDto) {
+    public UserResponseDto login(UserLoginRequestDto requestDto) {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(requestDto.email(), requestDto.password())
         );
         String token = jwtUtil.generateToken(authentication.getName());
-        return new UserLoginResponseDto(token);
+        return new UserResponseDto(token);
     }
 
     @Transactional
