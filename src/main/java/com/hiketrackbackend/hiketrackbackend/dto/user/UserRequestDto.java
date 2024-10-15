@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.dto.user.update.password;
+package com.hiketrackbackend.hiketrackbackend.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserForgotPasswordRequestDto {
+public class UserRequestDto {
     @Email
     @NotBlank
     private String email;

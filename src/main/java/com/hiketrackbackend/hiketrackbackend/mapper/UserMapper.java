@@ -3,7 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.mapper;
 import com.hiketrackbackend.hiketrackbackend.config.MapperConfig;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserPasswordRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.userProfile.UserProfileRequestDto;
@@ -20,7 +20,7 @@ public interface UserMapper {
 
     UserRegistrationRespondDto toDto(User user);
 
-    UserPasswordRespondDto toDto(String message);
+    UserDevMsgRespondDto toDto(String message);
 
     @Mapping(target = "userProfileRespondDto", source = "userProfile")
     UserRespondDto toRespondDto(User user);
