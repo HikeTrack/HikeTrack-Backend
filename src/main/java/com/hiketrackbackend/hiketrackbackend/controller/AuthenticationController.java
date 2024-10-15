@@ -2,7 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserForgotPasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginResponseDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserResponseDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserPasswordRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
@@ -44,7 +44,7 @@ public class AuthenticationController {
 
     @Operation(summary = "", description = "")
     @PostMapping("/login")
-    public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {
+    public UserResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {
         return authenticationService.login(request);
     }
 

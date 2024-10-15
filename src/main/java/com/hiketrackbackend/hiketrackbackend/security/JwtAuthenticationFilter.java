@@ -28,7 +28,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
     private static final List<String> EXCLUDE_URLS = Arrays.asList("/auth/**", "/oauth2/**");
-    private static final String TOKEN_NAME = "Bearer ";
     private final UserTokenService<HttpServletRequest> LogoutTokenService;
 
     @Override
@@ -37,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        String token = getToken(request);
+        String token = jwtUtil.getToken(request);
         if (EXCLUDE_URLS.stream().anyMatch(exclude -> path.startsWith(exclude))) {
             filterChain.doFilter(request, response);
             return;
@@ -56,13 +55,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
-    }
-
-    private String getToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_NAME)) {
-            return bearerToken.substring(TOKEN_NAME.length());
-        }
-        return null;
     }
 }
