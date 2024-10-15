@@ -40,7 +40,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private void setUserRole(User user) {
-        Set<Role> roles = roleRepository.findByName(Role.RoleName.ROLE_USER);
-        user.setRoles(roles);
+        Role roleUser = roleRepository.findByName(Role.RoleName.ROLE_USER);
+        user.setRoles(Set.of(roleUser));
     }
 }

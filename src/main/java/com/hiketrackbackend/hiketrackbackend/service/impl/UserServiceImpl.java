@@ -9,7 +9,6 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordR
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.RegistrationException;
 import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
-import com.hiketrackbackend.hiketrackbackend.model.Role;
 import com.hiketrackbackend.hiketrackbackend.model.User;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
@@ -20,8 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -40,8 +37,7 @@ public class UserServiceImpl implements UserService {
         }
         User user = userMapper.toEntity(request);
         setUserPassword(user, request.getPassword());
-        Role role = roleService.createUserDefaultRole();
-        user.setRoles(Set.of(role));
+        roleService.setUserDefaultRole(user);
         userRepository.save(user);
         return userMapper.toDto(user);
     }
