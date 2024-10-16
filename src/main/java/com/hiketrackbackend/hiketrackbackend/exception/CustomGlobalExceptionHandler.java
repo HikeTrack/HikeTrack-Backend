@@ -63,6 +63,11 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return createBodyMessage(ex, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(EmailSendingException.class)
+    public ResponseEntity<Object> handleEmailSendingException(EmailSendingException ex) {
+        return createBodyMessage(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     private ResponseEntity<Object> createBodyMessage(Exception ex, HttpStatus status) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());

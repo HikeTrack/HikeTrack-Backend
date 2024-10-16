@@ -1,31 +1,26 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserPasswordRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserUpdatePasswordRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.RegistrationException;
 import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
-import com.hiketrackbackend.hiketrackbackend.model.Role;
 import com.hiketrackbackend.hiketrackbackend.model.User;
-import com.hiketrackbackend.hiketrackbackend.repository.RoleRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
+import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
+import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Set;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +28,9 @@ public class UserServiceImpl implements UserService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
+    private final RoleService roleService;
+    private final EmailSender promotionRequestEmailSenderImpl;
 
     @Override
     @Transactional
@@ -44,14 +40,14 @@ public class UserServiceImpl implements UserService {
         }
         User user = userMapper.toEntity(request);
         setUserPassword(user, request.getPassword());
-        setUserRole(user);
+        roleService.setUserDefaultRole(user);
         userRepository.save(user);
         return userMapper.toDto(user);
     }
 
     @Override
     @Transactional
-    public UserPasswordRespondDto updatePassword(UserUpdatePasswordRequestDto request, Long id) {
+    public UserDevMsgRespondDto updatePassword(UserUpdatePasswordRequestDto request, Long id) {
         User user = findUserById(id);
         setUserPassword(user, request.getPassword());
         userRepository.save(user);
@@ -87,9 +83,11 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-    private void setUserRole(User user) {
-        Set<Role> roles = roleRepository.findByName(Role.RoleName.ROLE_USER);
-        user.setRoles(roles);
+    // TODO later add some other info instead of second email
+    @Override
+    public UserDevMsgRespondDto promoteRequest(UserRequestDto request) {
+        promotionRequestEmailSenderImpl.send(request.getEmail(), request.getEmail());
+        return new UserDevMsgRespondDto("Request for promotion has been sent");
     }
 
     private void setUserPassword(User user, String password) {

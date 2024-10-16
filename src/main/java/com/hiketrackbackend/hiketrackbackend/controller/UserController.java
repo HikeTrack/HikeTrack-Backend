@@ -1,8 +1,11 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
+import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
+    private final RoleService roleService;
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @GetMapping("/me")
@@ -59,5 +63,21 @@ public class UserController {
     @Operation(summary = "", description = "")
     public void deleteUser(@PathVariable @Positive Long userId) {
         userService.deleteUser(userId);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/new_role")
+    @Operation(summary = "", description = "")
+    public UserDevMsgRespondDto promoteUserToGuide(@RequestBody UserRequestDto request) {
+        return roleService.changeUserRoleToGuide(request);
+    }
+
+    // TODO temporary decision to sent only email for promote.
+    //  Next feat accept a form with data and send it to admins mail.
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/role_change")
+    @Operation(summary = "", description = "")
+    public UserDevMsgRespondDto promoteRequest(@RequestBody UserRequestDto request) {
+        return userService.promoteRequest(request);
     }
 }
