@@ -1,5 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
@@ -14,6 +15,7 @@ import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
+import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
     private final RoleService roleService;
+    private final EmailSender promotionRequestEmailSenderImpl;
 
     @Override
     @Transactional
@@ -78,6 +81,13 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         findUserById(id);
         userRepository.deleteById(id);
+    }
+
+    // TODO later add some other info instead of second email
+    @Override
+    public UserDevMsgRespondDto promoteRequest(UserRequestDto request) {
+        promotionRequestEmailSenderImpl.send(request.getEmail(), request.getEmail());
+        return new UserDevMsgRespondDto("Request for promotion has been sent");
     }
 
     private void setUserPassword(User user, String password) {
