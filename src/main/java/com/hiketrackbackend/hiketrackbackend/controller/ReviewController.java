@@ -29,6 +29,7 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
+    // TODO сделать что бы в ревью можно было загружать фотки и собстаенно грузить их на авс тоже и с апдейт
     /*
         получаем все ревью определенного юзера в его профиле
      */
