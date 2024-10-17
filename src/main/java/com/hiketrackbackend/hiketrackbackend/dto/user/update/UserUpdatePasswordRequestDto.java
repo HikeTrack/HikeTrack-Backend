@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.dto.user.update.password;
+package com.hiketrackbackend.hiketrackbackend.dto.user.update;
 
 import com.hiketrackbackend.hiketrackbackend.validation.FieldMatch;
 import com.hiketrackbackend.hiketrackbackend.validation.Password;

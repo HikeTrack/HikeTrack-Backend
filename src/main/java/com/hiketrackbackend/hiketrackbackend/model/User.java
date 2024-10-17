@@ -66,10 +66,10 @@ public class User implements UserDetails {
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<Tour> tour;
+    private Set<Tour> tour = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

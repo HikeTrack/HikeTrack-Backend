@@ -1,16 +1,15 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
-import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserForgotPasswordRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginResponseDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserPasswordRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserResponseDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.update.password.UserUpdatePasswordRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.RegistrationException;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
-import com.hiketrackbackend.hiketrackbackend.validation.ValidToken;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -44,22 +43,22 @@ public class AuthenticationController {
 
     @Operation(summary = "", description = "")
     @PostMapping("/login")
-    public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {
+    public UserResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {
         return authenticationService.login(request);
     }
 
     @Operation(summary = "",
             description = "")
     @PostMapping("/forgot-password")
-    public UserPasswordRespondDto forgotPassword(@RequestBody @Valid UserForgotPasswordRequestDto request) {
+    public UserDevMsgRespondDto forgotPassword(@RequestBody @Valid UserRequestDto request) {
         return authenticationService.createRestoreRequest(request);
     }
 
     @Operation(summary = "",
             description = "")
     @PostMapping("/reset-password")
-    public UserPasswordRespondDto resetPassword(@ValidToken @RequestParam("token") String token,
-                                                @RequestBody @Valid UserUpdatePasswordRequestDto request) {
+    public UserDevMsgRespondDto resetPassword(@RequestParam("token") String token,
+                                              @RequestBody @Valid UserUpdatePasswordRequestDto request) {
         return authenticationService.restorePassword(token, request);
     }
 }

@@ -1,12 +1,16 @@
 package com.hiketrackbackend.hiketrackbackend.security;
 
+import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserResponseDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
@@ -14,6 +18,7 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
+    private static final String TOKEN_NAME = "Bearer ";
     @Value("${jwt.expiration}")
     private Long expiration;
     private final Key secret;
@@ -47,6 +52,22 @@ public class JwtUtil {
         return getClaimsFromToken(token, Claims::getSubject);
     }
 
+    protected String getToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_NAME)) {
+            return bearerToken.substring(TOKEN_NAME.length());
+        }
+        return null;
+    }
+
+    public UserResponseDto refreshToken(HttpServletRequest request) {
+        String token = getToken(request);
+        isValidToken(token);
+        String username = getUsername(token);
+        String newToken = generateToken(username);
+        return new UserResponseDto(newToken);
+    }
+
     private <T> T getClaimsFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = Jwts.parserBuilder()
                 .setSigningKey(secret)
@@ -55,4 +76,6 @@ public class JwtUtil {
                 .getBody();
         return claimsResolver.apply(claims);
     }
+
+
 }
