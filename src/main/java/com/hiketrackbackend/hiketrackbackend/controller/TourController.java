@@ -37,6 +37,7 @@ import java.util.List;
 public class TourController {
     private final TourService tourService;
 
+    // TODO грузить фотки на авс
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @PostMapping
     @Operation(summary = "", description = "")
@@ -46,6 +47,7 @@ public class TourController {
         return tourService.createTour(requestDto, user);
     }
 
+    // TODO грузить фотки на авс
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @PatchMapping("/{tourId}")
     @Operation(summary = "",

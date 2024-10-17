@@ -25,3 +25,5 @@ databaseChangeLog:
       file: db/changelog/changeset/06-insert-data-to-db.yaml
   - include:
       file: db/changelog/changeset/13-add-column-to-user-profile-table.yaml
+  - include:
+      file: db/changelog/changeset/14-create-country-files-table.yaml

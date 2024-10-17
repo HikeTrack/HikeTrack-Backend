@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: country_table
+      id: create-country-files-table
       author: Vadym P
       changes:
         - createTable:
-            tableName: countries
+            tableName: country_files
             columns:
               - column:
                   name: id
@@ -14,18 +14,15 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: name
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
-                    unique: true
-              - column:
-                  name: continent
-                  type: VARCHAR(255)
+                  name: country_id
+                  type: BIGINT
                   constraints:
                     nullable: false
               - column:
-                  name: is_deleted
-                  type: TINYINT(1)
+                  name: created_at
+                  type: TIMESTAMP
                   constraints:
                     nullable: false
+              - column:
+                  name: file_url
+                  type: VARCHAR(255)

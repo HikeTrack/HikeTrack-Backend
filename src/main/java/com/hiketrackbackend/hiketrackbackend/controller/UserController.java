@@ -50,6 +50,7 @@ public class UserController {
         return "Logged out successfully";
     }
 
+    // TODO грузить фотки на авс
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @PatchMapping("/{id}")
     @Operation(summary = "", description = "")

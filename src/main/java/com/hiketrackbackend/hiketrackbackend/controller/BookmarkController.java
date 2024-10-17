@@ -12,13 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -34,6 +31,7 @@ public class BookmarkController {
     @Operation(summary = "", description = "")
     public BookmarkRespondDto addToBookmark(@RequestBody @Valid BookmarkRequestDto requestDto,
                                             Authentication authentication) {
+        // TODO вроде как не правильно так доставать юзера, но может и норм, подумай оставить или что то придумать
         User user = (User) authentication.getPrincipal();
         return bookmarkService.addToBookmarks(requestDto, user);
     }
