@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.repository;
 
-import com.hiketrackbackend.hiketrackbackend.model.User;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;

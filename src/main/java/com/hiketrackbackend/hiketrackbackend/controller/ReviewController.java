@@ -2,7 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
-import com.hiketrackbackend.hiketrackbackend.model.User;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;

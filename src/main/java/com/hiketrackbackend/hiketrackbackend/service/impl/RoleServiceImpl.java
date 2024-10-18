@@ -4,7 +4,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.model.Role;
-import com.hiketrackbackend.hiketrackbackend.model.User;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.repository.RoleRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;

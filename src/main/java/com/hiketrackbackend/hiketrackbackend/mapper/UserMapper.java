@@ -8,8 +8,8 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrat
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.userProfile.UserProfileRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.userProfile.UserProfileRespondDto;
-import com.hiketrackbackend.hiketrackbackend.model.User;
-import com.hiketrackbackend.hiketrackbackend.model.UserProfile;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
+import com.hiketrackbackend.hiketrackbackend.model.user.UserProfile;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

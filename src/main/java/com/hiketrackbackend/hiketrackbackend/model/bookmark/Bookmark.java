@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.model.bookmark;
 
-import com.hiketrackbackend.hiketrackbackend.model.User;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;

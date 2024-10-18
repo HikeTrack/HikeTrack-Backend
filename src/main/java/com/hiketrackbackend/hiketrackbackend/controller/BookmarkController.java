@@ -2,7 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.hiketrackbackend.hiketrackbackend.dto.bookmark.BookmarkRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.bookmark.BookmarkRespondDto;
-import com.hiketrackbackend.hiketrackbackend.model.User;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.service.BookmarkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

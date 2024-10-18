@@ -9,13 +9,16 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrat
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.exception.RegistrationException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface UserService {
     UserRegistrationRespondDto register(UserRegistrationRequestDto requestDto) throws RegistrationException;
 
     UserDevMsgRespondDto updatePassword(UserUpdatePasswordRequestDto request, Long id);
 
-    UserRespondDto updateUser(UserUpdateRequestDto requestDto, Long id);
+    UserRespondDto updateUser(UserUpdateRequestDto requestDto, Long id, MultipartFile file);
 
     UserRespondDto getLoggedInUser(HttpServletRequest request);
 

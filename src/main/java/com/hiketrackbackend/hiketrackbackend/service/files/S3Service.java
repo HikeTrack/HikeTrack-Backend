@@ -41,7 +41,7 @@ public class S3Service implements FileStorageService {
                 String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + keyName;
                 fileUrls.add(fileUrl);
             } catch (IOException e) {
-                throw new RuntimeException("File can`t be downloaded: " + multipartFile + ". " + e.getMessage(), e);
+                throw new RuntimeException("BaseFile can`t be downloaded: " + multipartFile + ". " + e.getMessage(), e);
             } finally {
 
                 if (tempFile != null && tempFile.exists()) {

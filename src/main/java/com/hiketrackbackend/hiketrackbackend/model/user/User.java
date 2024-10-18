@@ -1,5 +1,7 @@
-package com.hiketrackbackend.hiketrackbackend.model;
+package com.hiketrackbackend.hiketrackbackend.model.user;
 
+import com.hiketrackbackend.hiketrackbackend.model.Review;
+import com.hiketrackbackend.hiketrackbackend.model.Role;
 import com.hiketrackbackend.hiketrackbackend.model.bookmark.Bookmark;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import jakarta.persistence.CascadeType;

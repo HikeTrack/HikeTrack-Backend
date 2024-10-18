@@ -2,7 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.service;
 
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
-import com.hiketrackbackend.hiketrackbackend.model.User;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 
