@@ -64,3 +64,4 @@ jobs:
           cd deploy
           eb init -p corretto-17 HikeTrack --region $AWS_REGION
           eb deploy
+
