@@ -7,6 +7,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
+import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFileList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,14 +16,8 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user")
@@ -54,9 +49,13 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @PatchMapping("/{id}")
     @Operation(summary = "", description = "")
-    public UserRespondDto updateUser(@RequestBody @Valid UserUpdateRequestDto requestDto,
-                                     @PathVariable @Positive Long id) {
-        return userService.updateUser(requestDto, id);
+    public UserRespondDto updateUser(
+            @RequestPart("requestDto") @Valid UserUpdateRequestDto requestDto,
+            @PathVariable @Positive Long id,
+            //TODO  исправить аннотацию с файл лист на файл или может и не надо
+            @RequestPart("files") @Valid @ValidImageFileList MultipartFile file
+    ) {
+        return userService.updateUser(requestDto, id, file);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
@@ -66,8 +65,9 @@ public class UserController {
         userService.deleteUser(userId);
     }
 
+    // for admin profile
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/new_role")
+    @PostMapping("/role_change")
     @Operation(summary = "", description = "")
     public UserDevMsgRespondDto promoteUserToGuide(@RequestBody UserRequestDto request) {
         return roleService.changeUserRoleToGuide(request);
@@ -76,7 +76,7 @@ public class UserController {
     // TODO temporary decision to sent only email for promote.
     //  Next feat accept a form with data and send it to admins mail.
     @PreAuthorize("hasRole('USER')")
-    @PostMapping("/role_change")
+    @PostMapping("/role_change/request")
     @Operation(summary = "", description = "")
     public UserDevMsgRespondDto promoteRequest(@RequestBody UserRequestDto request) {
         return userService.promoteRequest(request);

@@ -13,7 +13,7 @@ databaseChangeLog:
                   name: registration_date
                   value: "2024-10-12"
               - column:
-                  name: user_photo
+                  name: photo
                   value: "img/icons/defaultAvatar.svg"
         - insert:
             tableName: users
