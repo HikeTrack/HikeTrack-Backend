@@ -1,8 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.service;
 
-import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
+import com.hiketrackbackend.hiketrackbackend.dto.country.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,4 +14,8 @@ public interface CountryService {
     CountryRespondDto getById(Long id);
 
     List<CountryRespondDto> getAll(Pageable pageable);
+
+    List<CountryRespondWithFilesDto> getTenRandomCountries();
+
+    void deleteByName(CountryDeleteRequestDto requestDto);
 }

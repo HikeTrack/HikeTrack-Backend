@@ -1,8 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
-import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
-import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.*;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.CountryMapper;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
@@ -68,6 +66,16 @@ public class CountryServiceImpl implements CountryService {
                 .toList();
     }
 
+    @Override
+    public List<CountryRespondWithFilesDto> getTenRandomCountries() {
+        return countryMapper.toDto(countryRepository.findTenRandomCountry());
+    }
+
+    @Override
+    public void deleteByName(CountryDeleteRequestDto requestDto) {
+        countryRepository.delete(findCountryByName(requestDto.getName()));
+    }
+
     protected List<CountryFile> saveCountryFile(List<MultipartFile> files, Country country) {
         List<CountryFile> countryFiles = new ArrayList<>();
         List<String> urls = s3Service.uploadFile(FOLDER_NAME, files);
@@ -79,5 +87,11 @@ public class CountryServiceImpl implements CountryService {
             countryFiles.add(countryFile);
         }
         return countryFiles;
+    }
+
+    private Country findCountryByName(String name) {
+        return countryRepository.findCountryByName(name).orElseThrow(
+                () -> new EntityNotFoundException("Could not find country with name: " + name)
+        );
     }
 }

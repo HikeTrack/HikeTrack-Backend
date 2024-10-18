@@ -39,7 +39,4 @@ public class Country {
 
     @OneToMany(mappedBy = "country")
     private Set<Tour> tours = new HashSet<>();
-
-    @Column(nullable = false)
-    private boolean isDeleted;
 }

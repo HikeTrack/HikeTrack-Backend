@@ -3,6 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.mapper;
 import com.hiketrackbackend.hiketrackbackend.config.MapperConfig;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithFilesDto;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.model.country.CountryFile;
 import org.mapstruct.AfterMapping;
@@ -18,8 +19,10 @@ public interface CountryMapper {
 
     CountryRespondDto toDto(Country country);
 
+    List<CountryRespondWithFilesDto> toDto(List<Country> country);
+
     @AfterMapping
-    default void setUrls(@MappingTarget CountryRespondDto respondDto, Country country) {
+    default void setUrls(@MappingTarget CountryRespondWithFilesDto respondDto, Country country) {
         List<CountryFile> photos = country.getPhotos();
         List<String> urls = new ArrayList<>();
         for (CountryFile photo : photos) {
