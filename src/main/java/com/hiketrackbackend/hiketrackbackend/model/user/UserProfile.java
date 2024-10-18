@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.model;
+package com.hiketrackbackend.hiketrackbackend.model.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,11 +27,10 @@ public class UserProfile {
     private LocalDate registrationDate;
 
     @Column(nullable = false)
-    private String userPhoto;
+    private String photo = "default link";
 
     @PrePersist
     protected void onCreate() {
         this.registrationDate = LocalDate.now();
-        this.userPhoto = "img/icons/defaultAvatar.svg";
     }
 }

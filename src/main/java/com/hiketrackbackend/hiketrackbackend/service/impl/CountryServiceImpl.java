@@ -1,10 +1,13 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
-import com.hiketrackbackend.hiketrackbackend.dto.country.*;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryDeleteRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhotoDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.CountryMapper;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
-import com.hiketrackbackend.hiketrackbackend.model.country.CountryFile;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountrySpecificationBuilder;
 import com.hiketrackbackend.hiketrackbackend.service.CountryService;
@@ -16,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CountryServiceImpl implements CountryService {
     private static final String FOLDER_NAME = "country";
+    private static final int FIRST_ELEMENT = 0;
     private final CountryRepository countryRepository;
     private final CountryMapper countryMapper;
     private final CountrySpecificationBuilder countrySpecificationBuilder;
@@ -31,13 +34,13 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     @Transactional
-    public CountryRespondDto createCountry(CountryRequestDto requestDto, List<MultipartFile> files) {
-        if (files == null || files.isEmpty()) {
+    public CountryRespondDto createCountry(CountryRequestDto requestDto, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
             throw new RuntimeException("Country photo cannot be empty of null");
         }
         Country country = countryMapper.toEntity(requestDto);
-        List<CountryFile> countryFiles = saveCountryFile(files, country);
-        country.setPhotos(countryFiles);
+        String photoUrl = saveFile(file);
+        country.setPhoto(photoUrl);
         return countryMapper.toDto(countryRepository.save(country));
     }
 
@@ -67,7 +70,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public List<CountryRespondWithFilesDto> getTenRandomCountries() {
+    public List<CountryRespondWithPhotoDto> getTenRandomCountries() {
         return countryMapper.toDto(countryRepository.findTenRandomCountry());
     }
 
@@ -76,17 +79,11 @@ public class CountryServiceImpl implements CountryService {
         countryRepository.delete(findCountryByName(requestDto.getName()));
     }
 
-    protected List<CountryFile> saveCountryFile(List<MultipartFile> files, Country country) {
-        List<CountryFile> countryFiles = new ArrayList<>();
+    private String saveFile(MultipartFile file) {
+        List<MultipartFile> files = new ArrayList<>();
+        files.add(file);
         List<String> urls = s3Service.uploadFile(FOLDER_NAME, files);
-        for (String url : urls) {
-            CountryFile countryFile = new CountryFile();
-            countryFile.setFileUrl(url);
-            countryFile.setCountry(country);
-            countryFile.setCreatedAt(LocalDateTime.now());
-            countryFiles.add(countryFile);
-        }
-        return countryFiles;
+        return urls.get(FIRST_ELEMENT);
     }
 
     private Country findCountryByName(String name) {

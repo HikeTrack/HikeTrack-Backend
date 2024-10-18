@@ -4,7 +4,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.bookmark.BookmarkRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.bookmark.BookmarkRespondDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.BookmarkMapper;
-import com.hiketrackbackend.hiketrackbackend.model.User;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.bookmark.Bookmark;
 import com.hiketrackbackend.hiketrackbackend.model.bookmark.BookmarkId;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;

@@ -1,6 +1,10 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
-import com.hiketrackbackend.hiketrackbackend.dto.country.*;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryDeleteRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhotoDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
 import com.hiketrackbackend.hiketrackbackend.service.CountryService;
 import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFileList;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,9 +36,9 @@ public class CountryController {
     @Operation(summary = "", description = "")
     public CountryRespondDto createCountry(
             @RequestPart("requestDto") @Valid CountryRequestDto requestDto,
-            @RequestPart("files") @Valid @ValidImageFileList List<MultipartFile> files
+            @RequestPart("files") @Valid @ValidImageFileList MultipartFile file
     ) {
-        return countryService.createCountry(requestDto, files);
+        return countryService.createCountry(requestDto, file);
     }
 
     @GetMapping("/search")
@@ -62,7 +66,7 @@ public class CountryController {
     @GetMapping("/random_ten")
     @Operation(summary = "",
             description = "")
-    public List<CountryRespondWithFilesDto> getTenRandomCountries() {
+    public List<CountryRespondWithPhotoDto> getTenRandomCountries() {
         return countryService.getTenRandomCountries();
     }
 

@@ -5,7 +5,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
-import com.hiketrackbackend.hiketrackbackend.model.User;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFileList;
 import io.swagger.v3.oas.annotations.Operation;

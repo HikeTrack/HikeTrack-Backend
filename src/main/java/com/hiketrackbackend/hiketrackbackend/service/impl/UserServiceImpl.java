@@ -10,27 +10,36 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordR
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.RegistrationException;
 import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
-import com.hiketrackbackend.hiketrackbackend.model.User;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
+import com.hiketrackbackend.hiketrackbackend.model.user.UserProfile;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
+import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private static final String FOLDER_NAME = "user_profile";
+    private static final int FIRST_ELEMENT = 0;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
     private final RoleService roleService;
     private final EmailSender promotionRequestEmailSenderImpl;
+    private final FileStorageService s3Service;
 
     @Override
     @Transactional
@@ -57,12 +66,14 @@ public class UserServiceImpl implements UserService {
     // TODO при апдейте мыла надо его как тообновлять в контексте
     @Override
     @Transactional
-    public UserRespondDto updateUser(UserUpdateRequestDto requestDto, Long id) {
+    public UserRespondDto updateUser(UserUpdateRequestDto requestDto, Long id, MultipartFile file) {
         User user = findUserById(id);
         userMapper.updateUserFromDto(requestDto, user);
+        UserProfile userProfile = user.getUserProfile();
         userMapper.updateUserProfileFromDto(requestDto.getUserProfileRequestDto(), user.getUserProfile());
-        userRepository.save(user);
-        return userMapper.toRespondDto(user);
+        String photoUrl = saveUserFile(file);
+        userProfile.setPhoto(photoUrl);
+        return userMapper.toRespondDto(userRepository.save(user));
     }
 
     @Override
@@ -104,5 +115,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException("User with email " + email + " not found")
         );
+    }
+
+    // TODO придумать что то тут дубликат кода такой же в кантрис и в турах будет
+    private String saveUserFile(MultipartFile file) {
+        List<MultipartFile> files = new ArrayList<>();
+        files.add(file);
+        List<String> urls = s3Service.uploadFile(FOLDER_NAME, files);
+        return urls.get(FIRST_ELEMENT);
     }
 }
