@@ -1,6 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.model.country;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,7 +13,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,8 +30,8 @@ public class Country {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String photo;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "country", orphanRemoval = true)
+    private List<CountryFile> photos;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -36,7 +39,4 @@ public class Country {
 
     @OneToMany(mappedBy = "country")
     private Set<Tour> tours = new HashSet<>();
-
-    @Column(nullable = false)
-    private boolean isDeleted;
 }

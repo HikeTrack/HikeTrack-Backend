@@ -15,7 +15,4 @@ public class CountryRequestDto {
 
     @NotBlank(message = "Continent cannot be empty")
     private Continent continent;
-
-    @NotBlank(message = "Photo is mandatory")
-    private String photo;
 }
