@@ -9,53 +9,45 @@ databaseChangeLog:
               - column: {name: id, value: 1}
               - column: {name: name, value: "Ukraine"}
               - column: {name: continent, value: "EUROPE"}
-              - column: {name: is_deleted, valueBoolean: false}
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 2}
               - column: { name: name, value: "Indonesia" }
               - column: { name: continent, value: "ASIA" }
-              - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 3}
               - column: { name: name, value: "India" }
               - column: { name: continent, value: "ASIA" }
-              - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 4}
               - column: { name: name, value: "Italy" }
               - column: { name: continent, value: "EUROPE" }
-              - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 5}
               - column: { name: name, value: "Turkey" }
               - column: { name: continent, value: "EUROPE" }
-              - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 6}
               - column: { name: name, value: "Canada" }
               - column: { name: continent, value: "NORTH_AMERICA" }
-              - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 7}
               - column: { name: name, value: "Nepal" }
               - column: { name: continent, value: "ASIA" }
-              - column: { name: is_deleted, valueBoolean: false }
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 8}
               - column: { name: name, value: "China" }
               - column: { name: continent, value: "ASIA" }
-              - column: { name: is_deleted, valueBoolean: false }

@@ -1,8 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
-import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
-import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.*;
 import com.hiketrackbackend.hiketrackbackend.service.CountryService;
 import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFileList;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +28,7 @@ public class CountryController {
     private final CountryService countryService;
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "", description = "")
     public CountryRespondDto createCountry(
             @RequestPart("requestDto") @Valid CountryRequestDto requestDto,
@@ -55,8 +53,24 @@ public class CountryController {
     }
 
     @GetMapping
-    @Operation(summary = "")
+    @Operation(summary = "",
+            description = "")
     public List<CountryRespondDto> getAll(@ParameterObject @PageableDefault Pageable pageable) {
         return countryService.getAll(pageable);
+    }
+
+    @GetMapping("/random_ten")
+    @Operation(summary = "",
+            description = "")
+    public List<CountryRespondWithFilesDto> getTenRandomCountries() {
+        return countryService.getTenRandomCountries();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping
+    @Operation(summary = "",
+            description = "")
+    public void deleteByCountryName(@RequestBody CountryDeleteRequestDto requestDto) {
+        countryService.deleteByName(requestDto);
     }
 }
