@@ -7,7 +7,6 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.userProfile.UserProfileRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.userProfile.UserProfileRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.Role;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.user.UserProfile;
@@ -32,8 +31,6 @@ public interface UserMapper {
 
     @Mapping(target = "userProfileRespondDto", source = "userProfile")
     UserRespondDto toRespondDto(User user);
-
-    UserProfileRespondDto toDto(UserProfile userProfile);
 
     void updateUserFromDto(UserUpdateRequestDto requestDto, @MappingTarget User user);
 

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificationExecutor<Tour> {
+    @EntityGraph(attributePaths = "user")
     List<Tour> findTop7ByRatingGreaterThanOrderByRatingDesc(int rating);
 
     @EntityGraph(attributePaths = "details")
@@ -16,4 +17,7 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
     boolean existsTourByUserIdAndName(Long userId,String name);
 
     Optional<Tour> findTourByReviewsId(Long id);
+
+    @EntityGraph(attributePaths = "details")
+    Optional<Tour> findTourByIdAndUserId(Long id, Long userId);
 }
