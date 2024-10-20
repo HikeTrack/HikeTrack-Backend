@@ -1,17 +1,17 @@
 package com.hiketrackbackend.hiketrackbackend.dto.details;
 
-import com.hiketrackbackend.hiketrackbackend.model.details.Activity;
-import com.hiketrackbackend.hiketrackbackend.model.details.RouteType;
+import com.hiketrackbackend.hiketrackbackend.model.tour.details.Activity;
+import com.hiketrackbackend.hiketrackbackend.model.tour.details.RouteType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class DetailsRequestDto {
-    private String  additionalPhotos;
-
     @NotBlank
     @Min(0)
     private int elevationGain;

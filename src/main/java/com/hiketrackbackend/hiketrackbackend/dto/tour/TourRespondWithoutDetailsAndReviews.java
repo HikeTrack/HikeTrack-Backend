@@ -17,4 +17,6 @@ public class TourRespondWithoutDetailsAndReviews {
     private Difficulty difficulty;
     private Long countryId;
     private String mainPhoto;
+    private Long guideId;
+    private int rating;
 }

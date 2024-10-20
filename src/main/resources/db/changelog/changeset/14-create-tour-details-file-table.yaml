@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-country-files-table
+      id: create-tour-details-file-table
       author: Vadym P
       changes:
         - createTable:
-            tableName: country_files
+            tableName: tour_details_files
             columns:
               - column:
                   name: id
@@ -14,7 +14,13 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: country_id
+                  name: file_url
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: details_id
                   type: BIGINT
                   constraints:
                     nullable: false
@@ -23,6 +29,3 @@ databaseChangeLog:
                   type: TIMESTAMP
                   constraints:
                     nullable: false
-              - column:
-                  name: file_url
-                  type: VARCHAR(255)

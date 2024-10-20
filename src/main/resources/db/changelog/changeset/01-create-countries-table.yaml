@@ -24,3 +24,8 @@ databaseChangeLog:
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
+              - column:
+                  name: photo
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false

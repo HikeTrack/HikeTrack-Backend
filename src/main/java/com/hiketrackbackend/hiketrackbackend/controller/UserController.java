@@ -7,6 +7,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
+import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFileList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +23,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user")
@@ -50,13 +53,16 @@ public class UserController {
         return "Logged out successfully";
     }
 
-    // TODO грузить фотки на авс
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @PatchMapping("/{id}")
     @Operation(summary = "", description = "")
-    public UserRespondDto updateUser(@RequestBody @Valid UserUpdateRequestDto requestDto,
-                                     @PathVariable @Positive Long id) {
-        return userService.updateUser(requestDto, id);
+    public UserRespondDto updateUser(
+            @RequestPart("requestDto") @Valid UserUpdateRequestDto requestDto,
+            @PathVariable @Positive Long id,
+            //TODO  исправить аннотацию с файл лист на файл или может и не надо
+            @RequestPart("photo") @Valid @ValidImageFileList MultipartFile photo
+    ) {
+        return userService.updateUser(requestDto, id, photo);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
@@ -66,19 +72,20 @@ public class UserController {
         userService.deleteUser(userId);
     }
 
+    // for admin profile
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/new_role")
+    @PostMapping("/role_change")
     @Operation(summary = "", description = "")
     public UserDevMsgRespondDto promoteUserToGuide(@RequestBody UserRequestDto request) {
         return roleService.changeUserRoleToGuide(request);
     }
 
     // TODO temporary decision to sent only email for promote.
-    //  Next feat accept a form with data and send it to admins mail.
-    @PreAuthorize("hasRole('USER')")
-    @PostMapping("/role_change")
+    //  Next feat accept a FULL form with data and send it to admins mail.
+    //TODO когда придет линка при регистрации надо проверить подтвердил ли чел имейл
+    @PostMapping("/request")
     @Operation(summary = "", description = "")
-    public UserDevMsgRespondDto promoteRequest(@RequestBody UserRequestDto request) {
+    public UserDevMsgRespondDto promoteRequestFromUser(@RequestBody UserRequestDto request) {
         return userService.promoteRequest(request);
     }
 }

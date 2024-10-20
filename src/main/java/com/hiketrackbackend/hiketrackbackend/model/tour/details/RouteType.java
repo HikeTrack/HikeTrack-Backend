@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.model.details;
+package com.hiketrackbackend.hiketrackbackend.model.tour.details;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

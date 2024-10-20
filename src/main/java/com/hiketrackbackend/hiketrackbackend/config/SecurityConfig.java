@@ -55,7 +55,8 @@ public class SecurityConfig {
                                 .requestMatchers(antMatcher("/auth/**"),
                                         antMatcher("/oauth2/**"),
                                         antMatcher("/swagger-ui/**"),
-                                        antMatcher("/v3/api-docs/**"))
+                                        antMatcher("/v3/api-docs/**"),
+                                        antMatcher("/user/request"))
                                 .permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.GET, "/countries/**"),
                                         antMatcher(HttpMethod.GET, "/tours/**"))

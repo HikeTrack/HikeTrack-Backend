@@ -6,12 +6,16 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
 @Getter
 @Setter
-public class TourRequestDto {
+public class TourUpdateRequestDto {
+    @Min(1)
+    private Long tourId;
+
     @NotBlank(message = "Tour name is mandatory and cannot be empty")
     private String name;
 

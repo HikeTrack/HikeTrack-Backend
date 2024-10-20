@@ -1,15 +1,17 @@
 package com.hiketrackbackend.hiketrackbackend.dto.details;
 
-import com.hiketrackbackend.hiketrackbackend.model.details.Activity;
-import com.hiketrackbackend.hiketrackbackend.model.details.RouteType;
+import com.hiketrackbackend.hiketrackbackend.model.tour.details.Activity;
+import com.hiketrackbackend.hiketrackbackend.model.tour.details.RouteType;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
 public class DetailsRespondDto {
     private Long id;
-    private String additionalPhotos;
+    private List<String> additionalPhotos;
     private int elevationGain;
     private RouteType routeType;
     private int duration;

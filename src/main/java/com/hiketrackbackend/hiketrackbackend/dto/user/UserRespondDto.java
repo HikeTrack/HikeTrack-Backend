@@ -4,6 +4,8 @@ import com.hiketrackbackend.hiketrackbackend.dto.userProfile.UserProfileRespondD
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class UserRespondDto {
@@ -11,5 +13,7 @@ public class UserRespondDto {
     private String email;
     private String firstName;
     private String lastName;
+    private List<String> role;
     private UserProfileRespondDto userProfileRespondDto;
+    //TODO добавить тур ид сюда
 }

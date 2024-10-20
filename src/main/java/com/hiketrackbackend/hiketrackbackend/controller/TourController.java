@@ -1,11 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
-import com.hiketrackbackend.hiketrackbackend.model.User;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.*;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFileList;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,27 +29,32 @@ import java.util.List;
 public class TourController {
     private final TourService tourService;
 
-    // TODO грузить фотки на авс
+    // TODO set max 5 additional photo
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "", description = "")
     public TourRespondWithoutReviews createTour(
             @RequestPart("requestDto") @Valid TourRequestDto requestDto,
-            @RequestPart("files") @Valid @ValidImageFileList List<MultipartFile> files,
+            @RequestPart("mainPhoto") @Valid @ValidImageFileList MultipartFile mainPhoto,
+            @RequestPart("additionalPhotos") @Valid @ValidImageFileList List<MultipartFile> additionalPhotos,
             Authentication authentication
     ) {
         User user = (User) authentication.getPrincipal();
-        return tourService.createTour(requestDto, user);
+        return tourService.createTour(requestDto, user, mainPhoto, additionalPhotos);
     }
 
     // TODO грузить фотки на авс
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
-    @PatchMapping("/{tourId}")
+    @PatchMapping("/{userId}")
     @Operation(summary = "",
             description = "")
-    public TourRespondWithoutReviews updateTour(@RequestBody @Valid TourRequestDto requestDto,
-                                                @PathVariable @Positive Long tourId) {
-        return tourService.updateTour(requestDto, tourId);
+    public TourRespondWithoutReviews updateTour(
+            @RequestPart("requestDto") @Valid TourUpdateRequestDto requestDto,
+            @RequestPart("mainPhoto") @Valid @ValidImageFileList MultipartFile mainPhoto,
+            @RequestPart("additionalPhotos") @Valid @ValidImageFileList List<MultipartFile> additionalPhotos,
+            @PathVariable @Positive Long userId
+    ) {
+        return tourService.updateTour(requestDto, userId, mainPhoto, additionalPhotos);
     }
 
     @GetMapping("/{id}")
@@ -73,14 +74,14 @@ public class TourController {
     @GetMapping("/popular")
     @Operation(summary = "",
             description = "")
-    public List<TourRespondWithoutReviews> getMostRatedTours() {
+    public List<TourRespondWithoutDetailsAndReviews> getMostRatedTours() {
         return tourService.getByRating();
     }
 
     @GetMapping("/search")
     @Operation(summary = "",
             description = "")
-    public List<TourRespondWithoutReviews> searchTours(@Valid TourSearchParameters params,
+    public List<TourRespondWithoutDetailsAndReviews> searchTours(@Valid TourSearchParameters params,
                                                        @ParameterObject @PageableDefault Pageable pageable) {
         return tourService.search(params, pageable);
     }

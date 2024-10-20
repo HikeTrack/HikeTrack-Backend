@@ -1,26 +1,24 @@
 package com.hiketrackbackend.hiketrackbackend.service;
 
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
-import com.hiketrackbackend.hiketrackbackend.model.User;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.*;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 public interface TourService {
-    TourRespondWithoutReviews createTour(TourRequestDto requestDto, User user);
+    TourRespondWithoutReviews createTour(TourRequestDto requestDto, User user, MultipartFile photo, List<MultipartFile> additionalPhoto);
+
+    TourRespondWithoutReviews updateTour(TourUpdateRequestDto requestDto, Long userId, MultipartFile photo, List<MultipartFile> additionalPhoto);
 
     List<TourRespondWithoutDetailsAndReviews> getAll(Pageable pageable);
 
     TourRespondDto getById(Long id, int page, int size);
 
-    List<TourRespondWithoutReviews> getByRating();
+    List<TourRespondWithoutDetailsAndReviews> getByRating();
 
-    List<TourRespondWithoutReviews> search(TourSearchParameters params, Pageable pageable);
-
-    TourRespondWithoutReviews updateTour(TourRequestDto requestDto, Long tourId);
+    List<TourRespondWithoutDetailsAndReviews> search(TourSearchParameters params, Pageable pageable);
 
     void deleteById(Long id);
 }
