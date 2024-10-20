@@ -15,4 +15,5 @@ public class UserRespondDto {
     private String lastName;
     private List<String> role;
     private UserProfileRespondDto userProfileRespondDto;
+    //TODO добавить тур ид сюда
 }

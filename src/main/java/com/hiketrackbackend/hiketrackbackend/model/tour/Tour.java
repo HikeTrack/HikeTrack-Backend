@@ -3,22 +3,9 @@ package com.hiketrackbackend.hiketrackbackend.model.tour;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.bookmark.Bookmark;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
-import com.hiketrackbackend.hiketrackbackend.model.details.Details;
+import com.hiketrackbackend.hiketrackbackend.model.tour.details.Details;
 import com.hiketrackbackend.hiketrackbackend.model.Review;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
@@ -85,11 +72,4 @@ public class Tour {
 
     @Column(nullable = false)
     private boolean isDeleted;
-
-    public void setTourDetails(Details tourDetails) {
-        this.details = tourDetails;
-        if (tourDetails != null && tourDetails.getTour() != this) {
-            tourDetails.setTour(this);
-        }
-    }
 }

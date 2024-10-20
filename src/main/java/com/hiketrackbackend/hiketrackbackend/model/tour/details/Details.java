@@ -1,23 +1,14 @@
-package com.hiketrackbackend.hiketrackbackend.model.details;
+package com.hiketrackbackend.hiketrackbackend.model.tour.details;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import java.util.List;
 
+// TODO переименовать в TOURDETAILS
 @Entity
 @Getter
 @Setter
@@ -28,7 +19,9 @@ public class Details {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String additionalPhotos;
+
+    @OneToMany(mappedBy = "details")
+    private List<TourDetailsFile> additionalPhotos;
 
     @Column(nullable = false)
     private int elevationGain;
@@ -49,17 +42,9 @@ public class Details {
     private Activity activity;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
     @JoinColumn(nullable = false, name = "tour_id")
     private Tour tour;
 
     @Column(nullable = false)
     private boolean isDeleted;
-
-    public void setTour(Tour tour) {
-        this.tour = tour;
-        if (tour != null && tour.getDetails() != this) {
-            tour.setTourDetails(this);
-        }
-    }
 }

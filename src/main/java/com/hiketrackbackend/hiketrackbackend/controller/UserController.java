@@ -53,7 +53,6 @@ public class UserController {
         return "Logged out successfully";
     }
 
-    // TODO грузить фотки на авс
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @PatchMapping("/{id}")
     @Operation(summary = "", description = "")
@@ -61,9 +60,9 @@ public class UserController {
             @RequestPart("requestDto") @Valid UserUpdateRequestDto requestDto,
             @PathVariable @Positive Long id,
             //TODO  исправить аннотацию с файл лист на файл или может и не надо
-            @RequestPart("files") @Valid @ValidImageFileList MultipartFile file
+            @RequestPart("photo") @Valid @ValidImageFileList MultipartFile photo
     ) {
-        return userService.updateUser(requestDto, id, file);
+        return userService.updateUser(requestDto, id, photo);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
@@ -84,7 +83,7 @@ public class UserController {
     // TODO temporary decision to sent only email for promote.
     //  Next feat accept a FULL form with data and send it to admins mail.
     //TODO когда придет линка при регистрации надо проверить подтвердил ли чел имейл
-    @PostMapping("/role_change/request")
+    @PostMapping("/request")
     @Operation(summary = "", description = "")
     public UserDevMsgRespondDto promoteRequestFromUser(@RequestBody UserRequestDto request) {
         return userService.promoteRequest(request);

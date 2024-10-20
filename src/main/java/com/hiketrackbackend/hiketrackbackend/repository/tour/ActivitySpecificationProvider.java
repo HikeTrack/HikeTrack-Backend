@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.repository.tour;
 
-import com.hiketrackbackend.hiketrackbackend.model.details.Details;
+import com.hiketrackbackend.hiketrackbackend.model.tour.details.Details;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.repository.SpecificationProvider;
 import jakarta.persistence.criteria.Join;
