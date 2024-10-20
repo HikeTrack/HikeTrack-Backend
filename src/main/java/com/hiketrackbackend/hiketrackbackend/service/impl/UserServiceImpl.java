@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
         String token = authorizationHeader.substring(7);
         String username = jwtUtil.getUsername(token);
         User user = findUserByEmail(username);
-        return userMapper.toRespondDto(findUserById(user.getId()));
+        return userMapper.toRespondDto(user);
     }
 
     @Override
