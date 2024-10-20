@@ -35,11 +35,13 @@ public class TourController {
 
     // TODO грузить фотки на авс
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     @Operation(summary = "", description = "")
     public TourRespondWithoutReviews createTour(
-            @RequestPart("requestDto") @Valid TourRequestDto requestDto,
-            @RequestPart("files") @Valid @ValidImageFileList List<MultipartFile> files,
+//            @RequestPart("requestDto") @Valid TourRequestDto requestDto,
+//            @RequestPart("files") @Valid @ValidImageFileList List<MultipartFile> files,
+            @RequestBody @Valid TourRequestDto requestDto,
             Authentication authentication
     ) {
         User user = (User) authentication.getPrincipal();

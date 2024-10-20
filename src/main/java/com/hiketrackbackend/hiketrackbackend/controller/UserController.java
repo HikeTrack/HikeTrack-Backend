@@ -16,7 +16,15 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -74,11 +82,11 @@ public class UserController {
     }
 
     // TODO temporary decision to sent only email for promote.
-    //  Next feat accept a form with data and send it to admins mail.
-    @PreAuthorize("hasRole('USER')")
+    //  Next feat accept a FULL form with data and send it to admins mail.
+    //TODO когда придет линка при регистрации надо проверить подтвердил ли чел имейл
     @PostMapping("/role_change/request")
     @Operation(summary = "", description = "")
-    public UserDevMsgRespondDto promoteRequest(@RequestBody UserRequestDto request) {
+    public UserDevMsgRespondDto promoteRequestFromUser(@RequestBody UserRequestDto request) {
         return userService.promoteRequest(request);
     }
 }
