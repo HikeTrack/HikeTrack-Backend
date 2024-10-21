@@ -36,7 +36,7 @@ public class CountryController {
     @Operation(summary = "", description = "")
     public CountryRespondDto createCountry(
             @RequestPart("requestDto") @Valid CountryRequestDto requestDto,
-            @RequestPart("file") @Valid @ValidImageFileList MultipartFile file
+            @RequestPart("file") @Valid MultipartFile file
     ) {
         return countryService.createCountry(requestDto, file);
     }
