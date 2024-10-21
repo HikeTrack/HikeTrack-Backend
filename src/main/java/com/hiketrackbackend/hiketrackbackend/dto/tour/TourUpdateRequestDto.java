@@ -13,9 +13,6 @@ import java.time.ZonedDateTime;
 @Getter
 @Setter
 public class TourUpdateRequestDto {
-    @Min(1)
-    private Long tourId;
-
     @NotBlank(message = "Tour name is mandatory and cannot be empty")
     private String name;
 

@@ -3,6 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.*;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
+import com.hiketrackbackend.hiketrackbackend.exception.MemoryLimitException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
 import com.hiketrackbackend.hiketrackbackend.model.Review;
@@ -63,8 +64,8 @@ public class TourServiceImpl implements TourService {
 
         List<String> mainPhotoUrl = s3Service.uploadFile(FOLDER_NAME, Collections.singletonList(mainPhoto));
         tour.setMainPhoto(mainPhotoUrl.get(FIRST_ELEMENT));
-// TODO сделать дитеился сервис и перенести все что по деталям туда
 
+        // TODO сделать дитеился сервис и перенести все что по деталям туда
         Details details = tourMapper.toEntity(requestDto.getDetailsRequestDto());
         setAdditionalFilesToTourDetails(additionalPhotos, details);
         details.setTour(tour);
@@ -73,28 +74,13 @@ public class TourServiceImpl implements TourService {
         return tourMapper.toDtoWithoutReviews(tourRepository.save(tour));
     }
 
-    // TODO что бы удалять фото надо сделать отдельный сервис у гида будет просто страницчка с загружеными фото и будет
-    //  возможность удалить каждую, соотв мне будет приходить ид какой фото удалить и я просто удаляю ее
-    //  и удаляю с деталей, а потом они себе грузят новые, тут главное проверить что в сохраненых фото не
-    //  больше 5 фото + 1 мейн фото
     @Override
     @Transactional
-    public TourRespondWithoutReviews updateTour(
-            TourUpdateRequestDto requestDto,
-            Long userId,
-            MultipartFile photo,
-            List<MultipartFile> additionalPhoto
-    ) {
-        Tour tour = findTourByIdAndUserId(requestDto.getTourId(), userId);
+    public TourRespondWithoutReviews updateTour(TourUpdateRequestDto requestDto, Long userId, Long tourId) {
+        Tour tour = findTourByIdAndUserId(tourId, userId);
         tourMapper.updateEntityFromDto(requestDto, tour);
-
-        Details details = tour.getDetails();
-            List<TourDetailsFile> additionalPhotos = details.getAdditionalPhotos();
-        // проверяю сколько ссылок сохранено уже
-        // беру первые фото что бы стало 5ть и сохнаряю
-        // если уже есть 5 сейвов то возврат ошибку
-        // после сохранения возвразаю все вместе с сылками
-
+        Country country = findCountry(requestDto.getCountryId());
+        tour.setCountry(country);
         return tourMapper.toDtoWithoutReviews(tourRepository.save(tour));
     }
 
@@ -190,4 +176,23 @@ public class TourServiceImpl implements TourService {
                 () -> new EntityNotFoundException("Tour not found with id: " + id + " and user id: " + userId)
         );
     }
+
+    // TODO что бы удалять фото надо сделать отдельный сервис у гида будет просто страницчка с загружеными фото и будет
+    //  возможность удалить каждую, соотв мне будет приходить ид какой фото удалить и я просто удаляю ее
+    //  и удаляю с деталей, а потом они себе грузят новые, тут главное проверить что в сохраненых фото не
+    //  больше 5 фото + 1 мейн фото. Разделить по факту обновление тура и обновление его фото
+//     if (photo != null) {
+//        // Метод удаления файлов с с3
+//        // и потом добавляю мейн фото
+//    }
+//
+//    Details details = tour.getDetails();
+//    List<TourDetailsFile> additionalPhotos = details.getAdditionalPhotos();
+//            if (additionalPhoto.size() == 5) {
+//        throw new MemoryLimitException("Max storage is limited by " + 5);
+//    }
+//
+//    // беру первые фото что бы стало 5ть и сохнаряю
+//    // если уже есть 5 сейвов то возврат ошибку
+//    // после сохранения возвразаю все вместе с сылками
 }

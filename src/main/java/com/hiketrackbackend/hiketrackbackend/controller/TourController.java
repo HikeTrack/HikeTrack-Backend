@@ -43,18 +43,19 @@ public class TourController {
         return tourService.createTour(requestDto, user, mainPhoto, additionalPhotos);
     }
 
-    // TODO грузить фотки на авс
+    // TODO грузить фотки на авс сделать отдельный ендпоинт для обновления и удаления фото
+
+    // в этом ендпоинте только обновление текстовой инфы без файтов
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
-    @PatchMapping("/{userId}")
+    @PatchMapping("/{userId}/{tourId}")
     @Operation(summary = "",
             description = "")
-    public TourRespondWithoutReviews updateTour(
-            @RequestPart("requestDto") @Valid TourUpdateRequestDto requestDto,
-            @RequestPart("mainPhoto") @Valid @ValidImageFileList MultipartFile mainPhoto,
-            @RequestPart("additionalPhotos") @Valid @ValidImageFileList List<MultipartFile> additionalPhotos,
-            @PathVariable @Positive Long userId
+    public TourRespondWithoutReviews updateGeneralInfoAboutTour(
+            @RequestBody @Valid TourUpdateRequestDto requestDto,
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long tourId
     ) {
-        return tourService.updateTour(requestDto, userId, mainPhoto, additionalPhotos);
+        return tourService.updateTour(requestDto, userId, tourId);
     }
 
     @GetMapping("/{id}")
@@ -81,8 +82,10 @@ public class TourController {
     @GetMapping("/search")
     @Operation(summary = "",
             description = "")
-    public List<TourRespondWithoutDetailsAndReviews> searchTours(@Valid TourSearchParameters params,
-                                                       @ParameterObject @PageableDefault Pageable pageable) {
+    public List<TourRespondWithoutDetailsAndReviews> searchTours(
+            @Valid TourSearchParameters params,
+            @ParameterObject @PageableDefault Pageable pageable
+    ) {
         return tourService.search(params, pageable);
     }
 

@@ -8,9 +8,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface TourService {
-    TourRespondWithoutReviews createTour(TourRequestDto requestDto, User user, MultipartFile photo, List<MultipartFile> additionalPhoto);
+    TourRespondWithoutReviews createTour(
+            TourRequestDto requestDto,
+            User user,
+            MultipartFile photo,
+            List<MultipartFile> additionalPhoto
+    );
 
-    TourRespondWithoutReviews updateTour(TourUpdateRequestDto requestDto, Long userId, MultipartFile photo, List<MultipartFile> additionalPhoto);
+    TourRespondWithoutReviews updateTour(TourUpdateRequestDto requestDto, Long userId, Long tourId);
 
     List<TourRespondWithoutDetailsAndReviews> getAll(Pageable pageable);
 
