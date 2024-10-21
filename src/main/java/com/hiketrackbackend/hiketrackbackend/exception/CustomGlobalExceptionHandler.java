@@ -73,6 +73,11 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return createBodyMessage(ex, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
+    @ExceptionHandler(AASdasdExeption.class)
+    public ResponseEntity<Object> handleAASdasdExeption(AASdasdExeption ex) {
+        return createBodyMessage(ex, HttpStatus.NOT_FOUND);
+    }
+
     private ResponseEntity<Object> createBodyMessage(Exception ex, HttpStatus status) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
