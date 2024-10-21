@@ -74,7 +74,7 @@ public class TourController {
     }
 
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
-    @PatchMapping("/{tourId}/photo/{userId}")
+    @PatchMapping("/{tourId}/additionalPhotos/{userId}")
     @Operation(summary = "",
             description = "")
     public DetailsRespondDto updateTourDetailsPhotos(
