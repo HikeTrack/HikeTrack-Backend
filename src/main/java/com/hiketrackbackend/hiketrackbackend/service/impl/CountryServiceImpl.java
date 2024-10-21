@@ -17,9 +17,11 @@ import com.hiketrackbackend.hiketrackbackend.service.CountryService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.Metadata;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,23 +39,31 @@ public class CountryServiceImpl implements CountryService {
     private final FileStorageService s3Service;
 
     @Override
-    @Transactional
-    public CountryRespondDto createCountry(String request, MultipartFile file) {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            CountryRequestDto requestDto = objectMapper.readValue(request, CountryRequestDto.class);
-            // Далі обробляємо файл і метадані...
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public CountryRespondDto createCountry(CountryRequestDto requestDto, MultipartFile file) {
             Country country = countryMapper.toEntity(requestDto);
             String photoUrl = saveFile(file);
             country.setPhoto(photoUrl);
             return countryMapper.toDto(countryRepository.save(country));
-        } catch (JsonProcessingException e) {
-            return new CountryRespondDto();
-        }
+    }
+//
 
-
-
+//    @Override
+//    @Transactional
+//    public CountryRespondDto createCountry(CountryRespondDto request, MultipartFile file) {
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        try {
+//            CountryRequestDto requestDto = objectMapper.readValue(objectMapper.writeValueAsString(request), CountryRequestDto.class);
+//            // Далі обробляємо файл і метадані...
+//            Country country = countryMapper.toEntity(requestDto);
+//            String photoUrl = saveFile(file);
+//            country.setPhoto(photoUrl);
+//            return countryMapper.toDto(countryRepository.save(country));
+//        } catch (JsonProcessingException e) {
+//            return new CountryRespondDto();
+//        }
+//    }
 
 
 
@@ -64,7 +74,7 @@ public class CountryServiceImpl implements CountryService {
 //        }
         //TODO переделать сейв напрямую как это есть в туре(+ в юзере тоже переделать)
 
-    }
+//    }
 
     @Override
     public CountryRespondDto getById(Long id) {
