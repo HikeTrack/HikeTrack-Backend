@@ -121,7 +121,7 @@ public class UserServiceImpl implements UserService {
     private String saveUserFile(MultipartFile file) {
         List<MultipartFile> files = new ArrayList<>();
         files.add(file);
-        List<String> urls = s3Service.uploadFile(FOLDER_NAME, files);
+        List<String> urls = s3Service.uploadFileToS3(FOLDER_NAME, files);
         return urls.get(FIRST_ELEMENT);
     }
 }

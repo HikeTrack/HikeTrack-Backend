@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class S3Service implements FileStorageService {
     private String bucketName;
 
     @Override
-    public List<String> uploadFile(String folderName, List<MultipartFile> multipartFiles) {
+    public List<String> uploadFileToS3(String folderName, List<MultipartFile> multipartFiles) {
         List<String> fileUrls = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFiles) {
@@ -50,5 +52,21 @@ public class S3Service implements FileStorageService {
             }
         }
         return fileUrls;
+    }
+
+    @Override
+    public void deleteFileFromS3(String keyName) {
+        try {
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(keyName)
+                    .build();
+
+            s3Client.deleteObject(deleteObjectRequest);
+            System.out.println("File deleted successfully from S3 bucket: " + bucketName + ", key: " + keyName);
+        } catch (S3Exception e) {
+            System.err.println("Failed to delete file from S3: " + e.awsErrorDetails().errorMessage());
+            throw new RuntimeException("Failed to delete file from S3", e);
+        }
     }
 }
