@@ -1,6 +1,12 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
-import com.hiketrackbackend.hiketrackbackend.dto.tour.*;
+import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFileList;
@@ -43,11 +49,8 @@ public class TourController {
         return tourService.createTour(requestDto, user, mainPhoto, additionalPhotos);
     }
 
-    // TODO грузить фотки на авс сделать отдельный ендпоинт для обновления и удаления фото
-
-    // в этом ендпоинте только обновление текстовой инфы без файтов
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
-    @PatchMapping("/{userId}/{tourId}")
+    @PatchMapping("/{tourId}/{userId}")
     @Operation(summary = "",
             description = "")
     public TourRespondWithoutReviews updateGeneralInfoAboutTour(
@@ -56,6 +59,30 @@ public class TourController {
             @PathVariable @Positive Long tourId
     ) {
         return tourService.updateTour(requestDto, userId, tourId);
+    }
+
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
+    @PatchMapping("/{tourId}/photo/{userId}")
+    @Operation(summary = "",
+            description = "")
+    public TourRespondWithoutReviews updateTourPhoto(
+            @RequestPart("mainPhoto") @Valid @ValidImageFileList MultipartFile mainPhoto,
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long tourId
+    ) {
+        return tourService.updateTourPhoto(mainPhoto, userId, tourId);
+    }
+
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
+    @PatchMapping("/{tourId}/photo/{userId}")
+    @Operation(summary = "",
+            description = "")
+    public DetailsRespondDto updateTourDetailsPhotos(
+            @RequestPart("additionalPhotos") @Valid @ValidImageFileList List<MultipartFile> additionalPhotos,
+            @PathVariable @Positive Long userId,
+            @PathVariable @Positive Long tourId
+    ) {
+        return tourService.updateTourDetailsPhotos(additionalPhotos, userId, tourId);
     }
 
     @GetMapping("/{id}")
@@ -82,17 +109,23 @@ public class TourController {
     @GetMapping("/search")
     @Operation(summary = "",
             description = "")
-    public List<TourRespondWithoutDetailsAndReviews> searchTours(
-            @Valid TourSearchParameters params,
-            @ParameterObject @PageableDefault Pageable pageable
-    ) {
+    public List<TourRespondWithoutDetailsAndReviews> searchTours(@Valid TourSearchParameters params,
+                                                                 @ParameterObject @PageableDefault Pageable pageable) {
         return tourService.search(params, pageable);
     }
 
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{tourId}/{userId}")
     @Operation(summary = "", description = "")
-    public void deleteTour(@PathVariable @Positive Long id) {
-        tourService.deleteById(id);
+    public void deleteTour(@PathVariable @Positive Long tourId,
+                           @PathVariable @Positive Long userId) {
+        tourService.deleteTourByIdAndUserId(tourId, userId);
+    }
+
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
+    @DeleteMapping("/photo/{additionalPhotoId}")
+    @Operation(summary = "", description = "")
+    public void deleteSingleTourDetailsPhoto(@PathVariable @Positive Long additionalPhotoId) {
+        tourService.deleteTourDetailsPhotoById(additionalPhotoId);
     }
 }

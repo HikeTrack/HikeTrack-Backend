@@ -1,5 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
+import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.details.TourPhotosUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.*;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
@@ -13,6 +15,7 @@ import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.repository.ReviewRepository;
+import com.hiketrackbackend.hiketrackbackend.repository.TourDetailsFileRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourSpecificationBuilder;
@@ -46,6 +49,7 @@ public class TourServiceImpl implements TourService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
     private final FileStorageService s3Service;
+    private final TourDetailsFileRepository tourDetailsFileRepository;
 
     @Override
     @Transactional
@@ -55,14 +59,14 @@ public class TourServiceImpl implements TourService {
             MultipartFile mainPhoto,
             List<MultipartFile> additionalPhotos
     ) {
-        isExistTour(requestDto.getName(), user.getId());
+        isExistTourByName(requestDto.getName(), user.getId());
         Tour tour = tourMapper.toEntity(requestDto);
         tour.setUser(user);
 
         Country country = findCountry(requestDto.getCountryId());
         tour.setCountry(country);
 
-        List<String> mainPhotoUrl = s3Service.uploadFile(FOLDER_NAME, Collections.singletonList(mainPhoto));
+        List<String> mainPhotoUrl = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(mainPhoto));
         tour.setMainPhoto(mainPhotoUrl.get(FIRST_ELEMENT));
 
         // TODO сделать дитеился сервис и перенести все что по деталям туда
@@ -81,6 +85,45 @@ public class TourServiceImpl implements TourService {
         tourMapper.updateEntityFromDto(requestDto, tour);
         Country country = findCountry(requestDto.getCountryId());
         tour.setCountry(country);
+        return tourMapper.toDtoWithoutReviews(tourRepository.save(tour));
+    }
+
+    @Override
+    @Transactional
+    public DetailsRespondDto updateTourDetailsPhotos(
+            List<MultipartFile> additionalPhotos,
+            Long userId,
+            Long tourId
+    ) {
+        Tour tour = findTourByIdAndUserId(tourId, userId);
+        Details details = tour.getDetails();
+        List<TourDetailsFile> savedPhotos = details.getAdditionalPhotos();
+        if (additionalPhotos.size() > (savedPhotos.size() - additionalPhotos.size())) {
+            throw new MemoryLimitException("Max storage is limited by "
+                    + 5 + ". Delete some photos or add " + (savedPhotos.size() - additionalPhotos.size());
+        }
+        setAdditionalFilesToTourDetails(additionalPhotos, details);
+        details.setTour(tour);
+        tour.setDetails(details);
+        tourRepository.save(tour);
+        return tourMapper.toDto(details);
+    }
+
+    @Override
+    @Transactional
+    public TourRespondWithoutReviews updateTourPhoto(MultipartFile mainPhoto, Long userId, Long tourId) {
+        Tour tour = findTourByIdAndUserId(tourId, userId);
+
+        String savedMainPhoto = tour.getMainPhoto();
+        if (savedMainPhoto != null) {
+            int lastSlashIndex = savedMainPhoto.lastIndexOf("/");
+            String keyName = savedMainPhoto.substring(lastSlashIndex + 1);
+            s3Service.deleteFileFromS3(keyName);
+        }
+
+        List<String> newMainPhotoUrl = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(mainPhoto));
+        tour.setMainPhoto(newMainPhotoUrl.get(FIRST_ELEMENT));
+
         return tourMapper.toDtoWithoutReviews(tourRepository.save(tour));
     }
 
@@ -133,10 +176,25 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        //TODO доставать тур по ид юзера и ид тура что бы гарантировать что удаляет тот что надо юзер тот что надо тур
-        findTour(id);
-        tourRepository.deleteById(id);
+    public void deleteTourByIdAndUserId(Long tourId, Long userId) {
+        boolean exist = isExistTourById(tourId, userId);
+        if (exist) {
+            throw new EntityExistsException("Tour with id " + tourId + " already exists");
+        }
+        tourRepository.deleteById(tourId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteTourDetailsPhotoById(Long id) {
+        TourDetailsFile photo = tourDetailsFileRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Tour details photo not found with id: " + id)
+        );
+        tourDetailsFileRepository.delete(photo);
+    }
+
+    private boolean isExistTourById(Long tourId, Long userId) {
+        return tourRepository.existsByIdAndUserId(tourId, userId);
     }
 
     private Country findCountry(Long id) {
@@ -151,7 +209,7 @@ public class TourServiceImpl implements TourService {
         );
     }
 
-    private void isExistTour(String tourName, Long guideId) {
+    private void isExistTourByName(String tourName, Long guideId) {
         boolean exist = tourRepository.existsTourByUserIdAndName(guideId, tourName);
         if (exist) {
             throw new EntityExistsException("Tour already exists fot this guide with id: " +
@@ -161,7 +219,7 @@ public class TourServiceImpl implements TourService {
 
     private void setAdditionalFilesToTourDetails(List<MultipartFile> files, Details details) {
         List<TourDetailsFile> photos = new ArrayList<>();
-        List<String> urls = s3Service.uploadFile(FOLDER_NAME, files);
+        List<String> urls = s3Service.uploadFileToS3(FOLDER_NAME, files);
         for (String url : urls) {
             TourDetailsFile file = new TourDetailsFile();
             file.setFileUrl(url);
@@ -176,23 +234,4 @@ public class TourServiceImpl implements TourService {
                 () -> new EntityNotFoundException("Tour not found with id: " + id + " and user id: " + userId)
         );
     }
-
-    // TODO что бы удалять фото надо сделать отдельный сервис у гида будет просто страницчка с загружеными фото и будет
-    //  возможность удалить каждую, соотв мне будет приходить ид какой фото удалить и я просто удаляю ее
-    //  и удаляю с деталей, а потом они себе грузят новые, тут главное проверить что в сохраненых фото не
-    //  больше 5 фото + 1 мейн фото. Разделить по факту обновление тура и обновление его фото
-//     if (photo != null) {
-//        // Метод удаления файлов с с3
-//        // и потом добавляю мейн фото
-//    }
-//
-//    Details details = tour.getDetails();
-//    List<TourDetailsFile> additionalPhotos = details.getAdditionalPhotos();
-//            if (additionalPhoto.size() == 5) {
-//        throw new MemoryLimitException("Max storage is limited by " + 5);
-//    }
-//
-//    // беру первые фото что бы стало 5ть и сохнаряю
-//    // если уже есть 5 сейвов то возврат ошибку
-//    // после сохранения возвразаю все вместе с сылками
 }

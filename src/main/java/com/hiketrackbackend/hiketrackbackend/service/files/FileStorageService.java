@@ -5,5 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface FileStorageService {
-    List<String> uploadFile(String folderName, List<MultipartFile> multipartFiles);
+    List<String> uploadFileToS3(String folderName, List<MultipartFile> multipartFiles);
+
+    void deleteFileFromS3(String keyName);
 }
