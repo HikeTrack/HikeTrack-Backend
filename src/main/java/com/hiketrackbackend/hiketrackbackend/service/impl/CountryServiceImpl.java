@@ -5,6 +5,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhotoDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
+import com.hiketrackbackend.hiketrackbackend.exception.AASdasdExeption;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.CountryMapper;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
@@ -36,7 +37,7 @@ public class CountryServiceImpl implements CountryService {
     @Transactional
     public CountryRespondDto createCountry(CountryRequestDto requestDto, MultipartFile file) {
         if (file == null || file.isEmpty()) {
-            throw new RuntimeException("Country photo cannot be empty of null");
+            throw new AASdasdExeption("Country photo cannot be empty of null");
         }
         Country country = countryMapper.toEntity(requestDto);
         String photoUrl = saveFile(file);
