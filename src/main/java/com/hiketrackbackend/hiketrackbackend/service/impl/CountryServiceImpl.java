@@ -5,7 +5,6 @@ import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhotoDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
-import com.hiketrackbackend.hiketrackbackend.exception.AASdasdExeption;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.CountryMapper;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
@@ -13,6 +12,7 @@ import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepositor
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountrySpecificationBuilder;
 import com.hiketrackbackend.hiketrackbackend.service.CountryService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,8 +36,11 @@ public class CountryServiceImpl implements CountryService {
     @Override
     @Transactional
     public CountryRespondDto createCountry(CountryRequestDto requestDto, MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            throw new AASdasdExeption("Country photo cannot be empty of null");
+//        if (file == null || file.isEmpty()) {
+//            throw new RuntimeException("Country photo cannot be empty of null");
+//        }
+        if (requestDto.getName() == null || requestDto.getName().isEmpty()) {
+            throw new EntityNotFoundException("Country name is required");
         }
         Country country = countryMapper.toEntity(requestDto);
         String photoUrl = saveFile(file);
