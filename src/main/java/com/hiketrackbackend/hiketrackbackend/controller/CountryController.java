@@ -39,11 +39,11 @@ public class CountryController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "", description = "")
     public CountryRespondDto createCountry(
-            @RequestParam("data") @Valid String request,
+            @RequestParam("data") @Valid CountryRequestDto data,
             @RequestParam("file") @Valid MultipartFile file
     ) {
 
-        return countryService.createCountry(request, file);
+        return countryService.createCountry(data, file);
     }
 
     @GetMapping("/search")
