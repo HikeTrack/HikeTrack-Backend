@@ -39,9 +39,7 @@ public class CountryServiceImpl implements CountryService {
 //        if (file == null || file.isEmpty()) {
 //            throw new RuntimeException("Country photo cannot be empty of null");
 //        }
-        if (requestDto.getName() == null || requestDto.getName().isEmpty()) {
-            throw new EntityNotFoundException("Country name is required");
-        }
+        //TODO переделать сейв напрямую как это есть в туре(+ в юзере тоже переделать)
         Country country = countryMapper.toEntity(requestDto);
         String photoUrl = saveFile(file);
         country.setPhoto(photoUrl);
