@@ -1,5 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryDeleteRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
@@ -7,11 +9,13 @@ import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhoto
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.CountryMapper;
+import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountrySpecificationBuilder;
 import com.hiketrackbackend.hiketrackbackend.service.CountryService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,14 +38,32 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     @Transactional
-    public CountryRespondDto createCountry(CountryRequestDto requestDto, MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            throw new RuntimeException("Country photo cannot be empty of null");
+    public CountryRespondDto createCountry(String request, MultipartFile file) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            CountryRequestDto requestDto = objectMapper.readValue(request, CountryRequestDto.class);
+            // Далі обробляємо файл і метадані...
+            Country country = countryMapper.toEntity(requestDto);
+            String photoUrl = saveFile(file);
+            country.setPhoto(photoUrl);
+            return countryMapper.toDto(countryRepository.save(country));
+        } catch (JsonProcessingException e) {
+            return new CountryRespondDto();
         }
-        Country country = countryMapper.toEntity(requestDto);
-        String photoUrl = saveFile(file);
-        country.setPhoto(photoUrl);
-        return countryMapper.toDto(countryRepository.save(country));
+
+
+
+
+
+
+
+
+//        if (file == null || file.isEmpty()) {
+//            throw new RuntimeException("Country photo cannot be empty of null");
+//        }
+        //TODO переделать сейв напрямую как это есть в туре(+ в юзере тоже переделать)
+
     }
 
     @Override
