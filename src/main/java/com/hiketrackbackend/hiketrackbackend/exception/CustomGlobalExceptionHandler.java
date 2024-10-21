@@ -68,6 +68,11 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return createBodyMessage(ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(MemoryLimitException.class)
+    public ResponseEntity<Object> handleMemoryLimitException(MemoryLimitException ex) {
+        return createBodyMessage(ex, HttpStatus.PAYLOAD_TOO_LARGE);
+    }
+
     private ResponseEntity<Object> createBodyMessage(Exception ex, HttpStatus status) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
