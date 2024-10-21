@@ -1,9 +1,13 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
 import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.details.TourPhotosUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.*;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.MemoryLimitException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
@@ -100,7 +104,7 @@ public class TourServiceImpl implements TourService {
         List<TourDetailsFile> savedPhotos = details.getAdditionalPhotos();
         if (additionalPhotos.size() > (savedPhotos.size() - additionalPhotos.size())) {
             throw new MemoryLimitException("Max storage is limited by "
-                    + 5 + ". Delete some photos or add " + (savedPhotos.size() - additionalPhotos.size());
+                    + 5 + ". Delete some photos or add " + (savedPhotos.size() - additionalPhotos.size()));
         }
         setAdditionalFilesToTourDetails(additionalPhotos, details);
         details.setTour(tour);
@@ -204,7 +208,7 @@ public class TourServiceImpl implements TourService {
     }
 
     private Tour findTour(Long id) {
-       return tourRepository.findById(id).orElseThrow(
+        return tourRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Tour is not found with id: " + id)
         );
     }
