@@ -40,15 +40,19 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public CountryRespondDto createCountry(String requestDto, MultipartFile file) {
-            ObjectMapper objectMapper = new ObjectMapper();
-        CountryRequestDto metadata = null;
-        try {
-            metadata = objectMapper.readValue(requestDto, CountryRequestDto.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+    public CountryRespondDto createCountry(CountryRequestDto requestDto, MultipartFile file) {
+        //TODO
+//            ObjectMapper objectMapper = new ObjectMapper();
+//        CountryRequestDto metadata = null;
+//        try {
+//            metadata = objectMapper.readValue(requestDto, CountryRequestDto.class);
+//        } catch (JsonProcessingException e) {
+//            throw new RuntimeException(e);
+//        }
+        if (file.isEmpty()) {
+            throw new RuntimeException("Country photo is mandatory. Please upload a file.");
         }
-        Country country = countryMapper.toEntity(metadata);
+        Country country = countryMapper.toEntity(requestDto);
             String photoUrl = saveFile(file);
             country.setPhoto(photoUrl);
             return countryMapper.toDto(countryRepository.save(country));
