@@ -22,6 +22,7 @@ public class UserProfile {
     private String city;
     private String phoneNumber;
     private String aboutMe;
+//    private String birthday;
 
     @Column(nullable = false, updatable = false)
     private LocalDate registrationDate;

@@ -1,5 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryDeleteRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
@@ -7,15 +9,19 @@ import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhoto
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.CountryMapper;
+import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountrySpecificationBuilder;
 import com.hiketrackbackend.hiketrackbackend.service.CountryService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.Metadata;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,16 +39,53 @@ public class CountryServiceImpl implements CountryService {
     private final FileStorageService s3Service;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CountryRespondDto createCountry(CountryRequestDto requestDto, MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            throw new RuntimeException("Country photo cannot be empty of null");
+        //TODO
+//            ObjectMapper objectMapper = new ObjectMapper();
+//        CountryRequestDto metadata = null;
+//        try {
+//            metadata = objectMapper.readValue(requestDto, CountryRequestDto.class);
+//        } catch (JsonProcessingException e) {
+//            throw new RuntimeException(e);
+//        }
+        if (file.isEmpty()) {
+            throw new RuntimeException("Country photo is mandatory. Please upload a file.");
         }
         Country country = countryMapper.toEntity(requestDto);
-        String photoUrl = saveFile(file);
-        country.setPhoto(photoUrl);
-        return countryMapper.toDto(countryRepository.save(country));
+            String photoUrl = saveFile(file);
+            country.setPhoto(photoUrl);
+            return countryMapper.toDto(countryRepository.save(country));
     }
+//
+
+//    @Override
+//    @Transactional
+//    public CountryRespondDto createCountry(CountryRespondDto request, MultipartFile file) {
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        try {
+//            CountryRequestDto requestDto = objectMapper.readValue(objectMapper.writeValueAsString(request), CountryRequestDto.class);
+//            // Далі обробляємо файл і метадані...
+//            Country country = countryMapper.toEntity(requestDto);
+//            String photoUrl = saveFile(file);
+//            country.setPhoto(photoUrl);
+//            return countryMapper.toDto(countryRepository.save(country));
+//        } catch (JsonProcessingException e) {
+//            return new CountryRespondDto();
+//        }
+//    }
+
+
+
+
+
+//        if (file == null || file.isEmpty()) {
+//            throw new RuntimeException("Country photo cannot be empty of null");
+//        }
+        //TODO переделать сейв напрямую как это есть в туре(+ в юзере тоже переделать)
+
+//    }
 
     @Override
     public CountryRespondDto getById(Long id) {
