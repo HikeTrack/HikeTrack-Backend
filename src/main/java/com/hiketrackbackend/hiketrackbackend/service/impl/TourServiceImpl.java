@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 public class TourServiceImpl implements TourService {
     private static final String FOLDER_NAME = "tours";
     private static final int FIRST_ELEMENT = 0;
+    private static final int ADDITIONAL_PHOTOS_LIMIT = 5;
     private final TourRepository tourRepository;
     private final TourMapper tourMapper;
     private final CountryRepository countryRepository;
@@ -70,6 +71,9 @@ public class TourServiceImpl implements TourService {
         Country country = findCountry(requestDto.getCountryId());
         tour.setCountry(country);
 
+        if (additionalPhotos.size() > ADDITIONAL_PHOTOS_LIMIT) {
+            throw new MemoryLimitException("Maximum 5 for uploading is " + ADDITIONAL_PHOTOS_LIMIT);
+        }
         List<String> mainPhotoUrl = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(mainPhoto));
         tour.setMainPhoto(mainPhotoUrl.get(FIRST_ELEMENT));
 
@@ -104,7 +108,7 @@ public class TourServiceImpl implements TourService {
         List<TourDetailsFile> savedPhotos = details.getAdditionalPhotos();
         if (additionalPhotos.size() > (savedPhotos.size() - additionalPhotos.size())) {
             throw new MemoryLimitException("Max storage is limited by "
-                    + 5 + ". Delete some photos or add " + (savedPhotos.size() - additionalPhotos.size()));
+                    + ADDITIONAL_PHOTOS_LIMIT + ". Delete some photos or add " + (savedPhotos.size() - additionalPhotos.size()));
         }
         setAdditionalFilesToTourDetails(additionalPhotos, details);
         details.setTour(tour);

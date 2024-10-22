@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -69,10 +70,12 @@ public class UserServiceImpl implements UserService {
     public UserRespondDto updateUser(UserUpdateRequestDto requestDto, Long id, MultipartFile file) {
         User user = findUserById(id);
         userMapper.updateUserFromDto(requestDto, user);
+
         UserProfile userProfile = user.getUserProfile();
         userMapper.updateUserProfileFromDto(requestDto.getUserProfileRequestDto(), user.getUserProfile());
-        String photoUrl = saveUserFile(file);
-        userProfile.setPhoto(photoUrl);
+
+        List<String> urls = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(file));
+        userProfile.setPhoto(urls.get(FIRST_ELEMENT));
         return userMapper.toRespondDto(userRepository.save(user));
     }
 
@@ -115,13 +118,5 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException("User with email " + email + " not found")
         );
-    }
-
-    // TODO придумать что то тут дубликат кода такой же в кантрис и в турах будет
-    private String saveUserFile(MultipartFile file) {
-        List<MultipartFile> files = new ArrayList<>();
-        files.add(file);
-        List<String> urls = s3Service.uploadFileToS3(FOLDER_NAME, files);
-        return urls.get(FIRST_ELEMENT);
     }
 }
