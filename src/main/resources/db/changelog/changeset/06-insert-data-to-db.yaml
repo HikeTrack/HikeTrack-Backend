@@ -340,10 +340,9 @@ databaseChangeLog:
               - column: {name: user_id, value: 1}
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
-            tableName: details
+            tableName: tour_details
             columns:
               - column: { name: id, value: 1 }
-              - column: { name: additional_photos, value: "link for photo" }
               - column: { name: duration, value: 320 }
               - column: { name: elevation_gain, value: 500 }
               - column: { name: route_type, value: "Point_to_Point" }
@@ -352,10 +351,9 @@ databaseChangeLog:
               - column: { name: tour_id, value: 1 }
               - column: { name: is_deleted, valueBoolean: false }
         - insert:
-            tableName: details
+            tableName: tour_details
             columns:
               - column: { name: id, value: 2 }
-              - column: { name: additional_photos, value: "link for photo2" }
               - column: { name: duration, value: 210 }
               - column: { name: elevation_gain, value: 300 }
               - column: { name: route_type, value: "Point_to_Point" }

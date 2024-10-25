@@ -1,6 +1,5 @@
 package com.hiketrackbackend.hiketrackbackend.service;
 
-import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.*;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import org.springframework.data.domain.Pageable;
@@ -17,12 +16,6 @@ public interface TourService {
     );
 
     TourRespondWithoutReviews updateTour(TourUpdateRequestDto requestDto, Long userId, Long tourId);
-
-    DetailsRespondDto updateTourDetailsPhotos(
-            List<MultipartFile> additionalPhotos,
-            Long userId,
-            Long tourId
-    );
 
     TourRespondWithoutReviews updateTourPhoto(MultipartFile mainPhoto, Long userId, Long tourId);
 

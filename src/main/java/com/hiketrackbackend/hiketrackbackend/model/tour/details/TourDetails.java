@@ -6,22 +6,23 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+
+import java.util.ArrayList;
 import java.util.List;
 
-// TODO переименовать в TOURDETAILS
 @Entity
 @Getter
 @Setter
-@Table(name = "details")
-@SQLDelete(sql = "UPDATE details SET is_deleted = true WHERE id = ?")
+@Table(name = "tour_details")
+@SQLDelete(sql = "UPDATE tour_details SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted=false")
-public class Details {
+public class TourDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "details")
-    private List<TourDetailsFile> additionalPhotos;
+    @OneToMany(mappedBy = "tourDetails")
+    private List<TourDetailsFile> additionalPhotos = new ArrayList<>();
 
     @Column(nullable = false)
     private int elevationGain;
