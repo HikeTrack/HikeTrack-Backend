@@ -1,9 +1,9 @@
 package com.hiketrackbackend.hiketrackbackend.model.tour;
 
+import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.bookmark.Bookmark;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
-import com.hiketrackbackend.hiketrackbackend.model.tour.details.Details;
 import com.hiketrackbackend.hiketrackbackend.model.Review;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -59,9 +60,8 @@ public class Tour {
     @OneToMany(mappedBy = "tour", cascade = CascadeType.REMOVE)
     private List<Review> reviews = new ArrayList<>();
 
-    // TODO сделать как я сделал с юзер и его профилем
     @OneToOne(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Details details;
+    private TourDetails tourDetails;
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Bookmark> bookmarks = new HashSet<>();

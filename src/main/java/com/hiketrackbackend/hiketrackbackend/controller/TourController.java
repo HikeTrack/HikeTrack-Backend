@@ -8,6 +8,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
+import com.hiketrackbackend.hiketrackbackend.service.TourDetailsService;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFileList;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,8 +35,8 @@ import java.util.List;
 @Tag(name = "Tour Management", description = "Work with tour endpoints")
 public class TourController {
     private final TourService tourService;
+    private final TourDetailsService tourDetailsService;
 
-    // TODO set max 5 additional photo
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "", description = "")
@@ -82,7 +83,7 @@ public class TourController {
             @PathVariable @Positive Long userId,
             @PathVariable @Positive Long tourId
     ) {
-        return tourService.updateTourDetailsPhotos(additionalPhotos, userId, tourId);
+        return tourDetailsService.updateTourDetailsPhotos(additionalPhotos, userId, tourId);
     }
 
     @GetMapping("/{id}")

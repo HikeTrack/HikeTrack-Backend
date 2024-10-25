@@ -6,7 +6,7 @@ databaseChangeLog:
   - include:
       file: db/changelog/changeset/03-create-tours-table.yaml
   - include:
-      file: db/changelog/changeset/04-create-details-table.yaml
+      file: db/changelog/changeset/04-create-tour-details-table.yaml
   - include:
       file: db/changelog/changeset/05-create-review-table.yaml
   - include:

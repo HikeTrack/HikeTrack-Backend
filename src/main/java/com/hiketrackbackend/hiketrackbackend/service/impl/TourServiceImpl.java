@@ -1,6 +1,5 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
-import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
@@ -9,11 +8,10 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
-import com.hiketrackbackend.hiketrackbackend.exception.MemoryLimitException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
 import com.hiketrackbackend.hiketrackbackend.model.Review;
-import com.hiketrackbackend.hiketrackbackend.model.tour.details.Details;
+import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetailsFile;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
@@ -23,6 +21,7 @@ import com.hiketrackbackend.hiketrackbackend.repository.TourDetailsFileRepositor
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourSpecificationBuilder;
+import com.hiketrackbackend.hiketrackbackend.service.TourDetailsService;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import jakarta.persistence.EntityExistsException;
@@ -36,7 +35,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +44,6 @@ import java.util.stream.Collectors;
 public class TourServiceImpl implements TourService {
     private static final String FOLDER_NAME = "tours";
     private static final int FIRST_ELEMENT = 0;
-    private static final int ADDITIONAL_PHOTOS_LIMIT = 5;
     private final TourRepository tourRepository;
     private final TourMapper tourMapper;
     private final CountryRepository countryRepository;
@@ -55,6 +52,7 @@ public class TourServiceImpl implements TourService {
     private final ReviewMapper reviewMapper;
     private final FileStorageService s3Service;
     private final TourDetailsFileRepository tourDetailsFileRepository;
+    private final TourDetailsService tourDetailsService;
 
     @Override
     @Transactional
@@ -67,21 +65,16 @@ public class TourServiceImpl implements TourService {
         isExistTourByName(requestDto.getName(), user.getId());
         Tour tour = tourMapper.toEntity(requestDto);
         tour.setUser(user);
+        List<String> mainPhotoUrl = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(mainPhoto));
+        tour.setMainPhoto(mainPhotoUrl.get(FIRST_ELEMENT));
 
         Country country = findCountry(requestDto.getCountryId());
         tour.setCountry(country);
 
-        if (additionalPhotos.size() > ADDITIONAL_PHOTOS_LIMIT) {
-            throw new MemoryLimitException("Maximum 5 for uploading is " + ADDITIONAL_PHOTOS_LIMIT);
-        }
-        List<String> mainPhotoUrl = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(mainPhoto));
-        tour.setMainPhoto(mainPhotoUrl.get(FIRST_ELEMENT));
-
-        // TODO сделать дитеился сервис и перенести все что по деталям туда
-        Details details = tourMapper.toEntity(requestDto.getDetailsRequestDto());
-        setAdditionalFilesToTourDetails(additionalPhotos, details);
-        details.setTour(tour);
-        tour.setDetails(details);
+        TourDetails tourDetails = tourDetailsService.createTourDetails(
+                tour, requestDto.getDetailsRequestDto(), additionalPhotos
+        );
+        tour.setTourDetails(tourDetails);
 
         return tourMapper.toDtoWithoutReviews(tourRepository.save(tour));
     }
@@ -94,27 +87,6 @@ public class TourServiceImpl implements TourService {
         Country country = findCountry(requestDto.getCountryId());
         tour.setCountry(country);
         return tourMapper.toDtoWithoutReviews(tourRepository.save(tour));
-    }
-
-    @Override
-    @Transactional
-    public DetailsRespondDto updateTourDetailsPhotos(
-            List<MultipartFile> additionalPhotos,
-            Long userId,
-            Long tourId
-    ) {
-        Tour tour = findTourByIdAndUserId(tourId, userId);
-        Details details = tour.getDetails();
-        List<TourDetailsFile> savedPhotos = details.getAdditionalPhotos();
-        if (additionalPhotos.size() > (savedPhotos.size() - additionalPhotos.size())) {
-            throw new MemoryLimitException("Max storage is limited by "
-                    + ADDITIONAL_PHOTOS_LIMIT + ". Delete some photos or add " + (savedPhotos.size() - additionalPhotos.size()));
-        }
-        setAdditionalFilesToTourDetails(additionalPhotos, details);
-        details.setTour(tour);
-        tour.setDetails(details);
-        tourRepository.save(tour);
-        return tourMapper.toDto(details);
     }
 
     @Override
@@ -150,7 +122,7 @@ public class TourServiceImpl implements TourService {
     @Override
     @Transactional
     public TourRespondDto getById(Long id, int page, int size) {
-        Tour tour = findTour(id);
+        Tour tour = findTourByIdWithDetailsAndAdditionalPhotos(id);
         TourRespondDto respondDto = tourMapper.toDto(tour);
         Pageable pageable = PageRequest.of(page, size, Sort.by("dateCreated").descending());
         Page<Review> reviewPage = reviewRepository.findByTourId(id, pageable);
@@ -211,9 +183,9 @@ public class TourServiceImpl implements TourService {
         );
     }
 
-    private Tour findTour(Long id) {
-        return tourRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Tour is not found with id: " + id)
+    private Tour findTourByIdWithDetailsAndAdditionalPhotos(Long id) {
+        return tourRepository.findTourByIdAndTourDetailsWithAdditionalPhotos(id).orElseThrow(
+                () -> new EntityNotFoundException("Tour details photo not found with id: " + id)
         );
     }
 
@@ -223,18 +195,6 @@ public class TourServiceImpl implements TourService {
             throw new EntityExistsException("Tour already exists fot this guide with id: " +
                     guideId + " and with tour name: " + tourName);
         }
-    }
-
-    private void setAdditionalFilesToTourDetails(List<MultipartFile> files, Details details) {
-        List<TourDetailsFile> photos = new ArrayList<>();
-        List<String> urls = s3Service.uploadFileToS3(FOLDER_NAME, files);
-        for (String url : urls) {
-            TourDetailsFile file = new TourDetailsFile();
-            file.setFileUrl(url);
-            file.setDetails(details);
-            photos.add(file);
-        }
-        details.setAdditionalPhotos(photos);
     }
 
     private Tour findTourByIdAndUserId(Long id, Long userId) {
