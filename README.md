@@ -29,7 +29,7 @@ Checkstyle	3.5.0
 Docker	latest
 Redis	7.4.0
 MySQL	8.0.33
-Project details:
+Project tourDetails:
 Detailed project folders description:
 COPY
 C:\Users\suige\IdeaProjects\HikeTrack-Backend
@@ -51,7 +51,7 @@ C:\Users\suige\IdeaProjects\HikeTrack-Backend
 │   │               ├── 01-create-countries-table.yaml - Liquibase changeset for creating the countries table
 │   │               ├── 02-insert-data-to-countries-table.yaml - Liquibase changeset for inserting data into the countries table
 │   │               ├── 03-create-tours-table.yaml - Liquibase changeset for creating the tours table
-│   │               ├── 04-create-details-table.yaml - Liquibase changeset for creating the details table
+│   │               ├── 04-create-tourDetails-table.yaml - Liquibase changeset for creating the tourDetails table
 │   │               ├── 05-create-review-table.yaml - Liquibase changeset for creating the reviews table
 │   │               ├── 07-create-user-table.yaml - Liquibase changeset for creating the users table
 │   │               ├── 08-create-role-table.yaml - Liquibase changeset for creating the roles table
@@ -95,9 +95,9 @@ C:\Users\suige\IdeaProjects\HikeTrack-Backend
 │                   │   ├── country
 │                   │   │   ├── Continent.java - Enum for continents
 │                   │   │   └── Country.java - Model for countries
-│                   │   ├── details
+│                   │   ├── tourDetails
 │                   │   │   ├── Activity.java - Enum for activities
-│                   │   │   ├── Details.java - Model for tour details
+│                   │   │   ├── Details.java - Model for tour tourDetails
 │                   │   │   └── RouteType.java - Enum for route types
 │                   │   └── tour
 │                   │       ├── Difficulty.java - Enum for tour difficulties
@@ -124,7 +124,7 @@ C:\Users\suige\IdeaProjects\HikeTrack-Backend
 │                   ├── security
 │                   │   ├── AuthenticationService.java - Service for authentication
 │                   │   ├── CustomOAuth2UserService.java - Custom OAuth2 user service
-│                   │   ├── CustomUserDetailsService.java - Custom user details service
+│                   │   ├── CustomUserDetailsService.java - Custom user tourDetails service
 │                   │   ├── JwtAuthenticationFilter.java - JWT authentication filter
 │                   │   ├── JwtTokenServiceImpl.java - Service for managing JWT tokens
 │                   │   ├── JwtUtil.java - Utility class for JWT operations
@@ -155,16 +155,16 @@ C:\Users\suige\IdeaProjects\HikeTrack-Backend
 │                       │   ├── CountryRequestDto.java - DTO for country requests
 │                       │   ├── CountryRespondDto.java - DTO for country responses
 │                       │   └── CountrySearchParameters.java - DTO for country search parameters
-│                       ├── details
-│                       │   ├── DetailsRequestDto.java - DTO for tour details requests
-│                       │   └── DetailsRespondDto.java - DTO for tour details responses
+│                       ├── tourDetails
+│                       │   ├── DetailsRequestDto.java - DTO for tour tourDetails requests
+│                       │   └── DetailsRespondDto.java - DTO for tour tourDetails responses
 │                       ├── reviews
 │                       │   ├── ReviewRequestDto.java - DTO for review requests
 │                       │   └── ReviewsRespondDto.java - DTO for review responses
 │                       ├── tour
 │                       │   ├── TourRequestDto.java - DTO for tour requests
 │                       │   ├── TourRespondDto.java - DTO for tour responses
-│                       │   ├── TourRespondWithoutDetailsAndReviews.java - DTO for tour responses without details and reviews
+│                       │   ├── TourRespondWithoutDetailsAndReviews.java - DTO for tour responses without tourDetails and reviews
 │                       │   ├── TourRespondWithoutReviews.java - DTO for tour responses without reviews
 │                       │   └── TourSearchParameters.java - DTO for tour search parameters
 │                       ├── user
@@ -200,11 +200,11 @@ Search Countries: Enables users to search for countries based on continent or co
 Get Country by ID: Retrieves a specific country by its ID.
 Get All Countries: Retrieves a list of all countries.
 Tour Management:
-Create Tour: Allows authorized users to create new tours with name, length, price, date, difficulty, country ID, main photo, and details.
+Create Tour: Allows authorized users to create new tours with name, length, price, date, difficulty, country ID, main photo, and tourDetails.
 Update Tour: Allows authorized users to update existing tours.
 Delete Tour: Allows authorized users to soft delete tours, making them invisible to users.
 Get All Tours: Retrieves a list of all tours.
-Get Tour by ID: Retrieves a specific tour by its ID, including details and reviews.
+Get Tour by ID: Retrieves a specific tour by its ID, including tourDetails and reviews.
 Get Most Rated Tours: Retrieves a list of the top 7 most rated tours.
 Search Tours: Enables users to search for tours based on various parameters, including route type, difficulty, length, activity, date, duration, price, and country.
 Review Management:
@@ -364,7 +364,7 @@ Docker:
 COPY
 docker-compose up -d
 Build and run the application in a Docker container using Docker Compose.
-Sequence diagrams for each API/event with all downstream dependencies and data details:
+Sequence diagrams for each API/event with all downstream dependencies and data tourDetails:
 Event: User registration
 COPY
 Frontend->AuthenticationController: registration(email, password, firstName, lastName)
@@ -442,9 +442,9 @@ CountryController->CountryMapper: toDto(countries)
 CountryController->Frontend: countries
 Event: Create tour
 COPY
-Frontend->TourController: createTour(name, length, price, date, difficulty, countryId, mainPhoto, details)
-TourController->TourService: createTour(name, length, price, date, difficulty, countryId, mainPhoto, details)
-TourService->TourMapper: toEntity(name, length, price, date, difficulty, countryId, mainPhoto, details)
+Frontend->TourController: createTour(name, length, price, date, difficulty, countryId, mainPhoto, tourDetails)
+TourController->TourService: createTour(name, length, price, date, difficulty, countryId, mainPhoto, tourDetails)
+TourService->TourMapper: toEntity(name, length, price, date, difficulty, countryId, mainPhoto, tourDetails)
 TourService->CountryRepository: findById(countryId)
 CountryRepository->MySQL: SELECT * FROM countries WHERE id = ?
 TourService->TourRepository: save(tour)
@@ -453,11 +453,11 @@ TourService->TourMapper: toDtoWithoutReviews(tour)
 TourController->Frontend: tour
 Event: Update tour
 COPY
-Frontend->TourController: updateTour(tourId, name, length, price, date, difficulty, countryId, mainPhoto, details)
-TourController->TourService: updateTour(tourId, name, length, price, date, difficulty, countryId, mainPhoto, details)
+Frontend->TourController: updateTour(tourId, name, length, price, date, difficulty, countryId, mainPhoto, tourDetails)
+TourController->TourService: updateTour(tourId, name, length, price, date, difficulty, countryId, mainPhoto, tourDetails)
 TourService->TourRepository: findById(tourId)
 TourRepository->MySQL: SELECT * FROM tours WHERE id = ?
-TourService->TourMapper: updateEntityFromDto(tour, name, length, price, date, difficulty, countryId, mainPhoto, details)
+TourService->TourMapper: updateEntityFromDto(tour, name, length, price, date, difficulty, countryId, mainPhoto, tourDetails)
 TourService->TourRepository: save(tour)
 TourRepository->MySQL: UPDATE tours SET name = ?, length = ?, price = ?, date = ?, difficulty = ?, country_id = ?, mainPhoto = ? WHERE id = ?
 TourService->TourMapper: toDtoWithoutReviews(tour)

@@ -1,12 +1,14 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryDeleteRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhotoDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
 import com.hiketrackbackend.hiketrackbackend.service.CountryService;
-import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFileList;
+import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -18,7 +20,14 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -30,15 +39,23 @@ import java.util.List;
 @Tag(name = "", description = "")
 public class CountryController {
     private final CountryService countryService;
+    private final ObjectMapper objectMapper;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "", description = "")
+    @Operation(summary = "Create a new country",
+            description = "Allows administrators to create a new country entry, including related file upload.")
     public CountryRespondDto createCountry(
-            @RequestPart("requestDto") @Valid CountryRequestDto requestDto,
-            @RequestPart("files") @Valid @ValidImageFileList MultipartFile file
+            @RequestPart("data") String dataString,
+            @RequestPart("file") @ValidImageFile MultipartFile file
     ) {
-        return countryService.createCountry(requestDto, file);
+        CountryRequestDto data;
+        try {
+            data = objectMapper.readValue(dataString, CountryRequestDto.class);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Invalid data format: " + e.getMessage());
+        }
+        return countryService.createCountry(data, file);
     }
 
     @GetMapping("/search")

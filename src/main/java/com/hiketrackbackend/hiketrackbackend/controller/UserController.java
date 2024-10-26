@@ -1,5 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
@@ -7,7 +9,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
-import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFileList;
+import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,6 +38,7 @@ public class UserController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
     private final RoleService roleService;
+    private final ObjectMapper objectMapper;
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @GetMapping("/me")
@@ -45,6 +48,9 @@ public class UserController {
     }
 
     // TODO послать линк на востановление пароля повторно( точно так же сделать и на регистрацию)
+    // TODO спросить у соломии делала ли она логаут и как обноляет токен потому что когда юзер долго не был в сети он
+    //  делается неавторизированым может надо сделать что бы фронт просто удалял
+    //  сесию спустя какое то время что бы ему надо было логиниться(скорее всего так и надо)
     @Operation(summary = "",
             description = "")
     @PostMapping("/logout")
@@ -57,11 +63,16 @@ public class UserController {
     @PatchMapping("/{id}")
     @Operation(summary = "", description = "")
     public UserRespondDto updateUser(
-            @RequestPart("requestDto") @Valid UserUpdateRequestDto requestDto,
+            @RequestPart("data") String dataString,
             @PathVariable @Positive Long id,
-            //TODO  исправить аннотацию с файл лист на файл или может и не надо
-            @RequestPart("photo") @Valid @ValidImageFileList MultipartFile photo
+            @RequestPart("photo") @Valid @ValidImageFile MultipartFile photo
     ) {
+        UserUpdateRequestDto requestDto;
+        try {
+            requestDto = objectMapper.readValue(dataString, UserUpdateRequestDto.class);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Invalid data format: " + e.getMessage());
+        }
         return userService.updateUser(requestDto, id, photo);
     }
 

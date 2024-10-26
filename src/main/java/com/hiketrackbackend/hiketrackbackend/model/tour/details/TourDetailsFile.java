@@ -12,6 +12,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,7 +20,8 @@ import java.time.LocalDateTime;
 @Setter
 @Table(name = "tour_details_files")
 public class TourDetailsFile {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -29,8 +31,8 @@ public class TourDetailsFile {
     private String fileUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "details_id", nullable = false)
-    private Details details;
+    @JoinColumn(name = "tour_details_id", nullable = false)
+    private TourDetails tourDetails;
 
     @PrePersist
     private void onCreate() {

@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-details-table
+      id: create-tour-details-table
       author: Vadym P
       changes:
         - createTable:
-            tableName: details
+            tableName: tour_details
             columns:
               - column:
                   name: id
@@ -13,9 +13,6 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     nullable: false
-              - column:
-                  name: additional_photos
-                  type: VARCHAR(255)
               - column:
                   name: elevation_gain
                   type: INT
@@ -36,6 +33,9 @@ databaseChangeLog:
                   defaultValue: 0
               - column:
                   name: map
+                  type: VARCHAR(255)
+              - column:
+                  name: description
                   type: VARCHAR(255)
               - column:
                   name: activity
