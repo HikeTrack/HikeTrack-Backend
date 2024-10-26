@@ -62,6 +62,9 @@ public class TourServiceImpl implements TourService {
             MultipartFile mainPhoto,
             List<MultipartFile> additionalPhotos
     ) {
+        if (mainPhoto.isEmpty()) {
+            throw new RuntimeException("Tour main photo is mandatory. Please upload a file.");
+        }
         isExistTourByName(requestDto.getName(), user.getId());
         Tour tour = tourMapper.toEntity(requestDto);
         tour.setUser(user);
@@ -93,12 +96,8 @@ public class TourServiceImpl implements TourService {
     @Transactional
     public TourRespondWithoutReviews updateTourPhoto(MultipartFile mainPhoto, Long userId, Long tourId) {
         Tour tour = findTourByIdAndUserId(tourId, userId);
-
-        String savedMainPhoto = tour.getMainPhoto();
-        if (savedMainPhoto != null) {
-            int lastSlashIndex = savedMainPhoto.lastIndexOf("/");
-            String keyName = savedMainPhoto.substring(lastSlashIndex + 1);
-            s3Service.deleteFileFromS3(keyName);
+        if (mainPhoto != null) {
+            s3Service.deleteFileFromS3(tour.getMainPhoto());
         }
 
         List<String> newMainPhotoUrl = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(mainPhoto));

@@ -72,6 +72,9 @@ public class UserServiceImpl implements UserService {
         UserProfile userProfile = user.getUserProfile();
         userMapper.updateUserProfileFromDto(requestDto.getUserProfileRequestDto(), user.getUserProfile());
 
+        if (file != null) {
+            s3Service.deleteFileFromS3(userProfile.getPhoto());
+        }
         List<String> urls = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(file));
         userProfile.setPhoto(urls.get(FIRST_ELEMENT));
         return userMapper.toRespondDto(userRepository.save(user));
