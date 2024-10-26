@@ -11,8 +11,6 @@ import com.hiketrackbackend.hiketrackbackend.exception.RegistrationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 public interface UserService {
     UserRegistrationRespondDto register(UserRegistrationRequestDto requestDto) throws RegistrationException;
 

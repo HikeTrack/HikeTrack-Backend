@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -55,7 +54,10 @@ public class S3Service implements FileStorageService {
     }
 
     @Override
-    public void deleteFileFromS3(String keyName) {
+    public void deleteFileFromS3(String url) {
+        int lastSlashIndex = url.lastIndexOf("/");
+        String keyName = url.substring(lastSlashIndex + 1);
+
         try {
             DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
                     .bucket(bucketName)

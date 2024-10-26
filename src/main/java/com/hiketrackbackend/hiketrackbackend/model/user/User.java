@@ -45,6 +45,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String firstName;
     private String lastName;
+    private boolean isConfirmed = false;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(

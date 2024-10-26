@@ -14,18 +14,19 @@ import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.user.UserProfile;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
+import com.hiketrackbackend.hiketrackbackend.security.token.impl.ConfirmationTokenService;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,8 +40,23 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
     private final RoleService roleService;
-    private final EmailSender promotionRequestEmailSenderImpl;
     private final FileStorageService s3Service;
+    private final ConfirmationTokenService confirmationTokenService;
+    private EmailSender confirmationEmailSenderImpl;
+    private EmailSender promotionRequestEmailSenderImpl;
+
+    @Autowired
+    @Qualifier("confirmationRequestEmailSenderImpl")
+    public void setConfirmationEmailSenderImpl(EmailSender confirmationEmailSenderImpl) {
+        this.confirmationEmailSenderImpl = confirmationEmailSenderImpl;
+    }
+
+    @Autowired
+    @Qualifier("promotionRequestEmailSenderImpl")
+    public void setPromotionRequestEmailSenderImpl(EmailSender promotionRequestEmailSenderImpl) {
+        this.promotionRequestEmailSenderImpl = promotionRequestEmailSenderImpl;
+    }
+
 
     @Override
     @Transactional
@@ -48,10 +64,14 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsUserByEmail(request.getEmail())) {
             throw new RegistrationException("This email is already used: " + request.getEmail());
         }
+
         User user = userMapper.toEntity(request);
         setUserPassword(user, request.getPassword());
         roleService.setUserDefaultRole(user);
         userRepository.save(user);
+
+        String token = confirmationTokenService.save(user.getEmail());
+        confirmationEmailSenderImpl.send(request.getEmail(), token);
         return userMapper.toDto(user);
     }
 
@@ -74,11 +94,15 @@ public class UserServiceImpl implements UserService {
         UserProfile userProfile = user.getUserProfile();
         userMapper.updateUserProfileFromDto(requestDto.getUserProfileRequestDto(), user.getUserProfile());
 
+        if (file != null) {
+            s3Service.deleteFileFromS3(userProfile.getPhoto());
+        }
         List<String> urls = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(file));
         userProfile.setPhoto(urls.get(FIRST_ELEMENT));
         return userMapper.toRespondDto(userRepository.save(user));
     }
 
+    // TODO if isConfirmed = false do not return user
     @Override
     public UserRespondDto getLoggedInUser(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");

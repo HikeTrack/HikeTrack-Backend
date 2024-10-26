@@ -24,6 +24,7 @@ databaseChangeLog:
               - column: {name: first_name, value: "Vadym"}
               - column: {name: last_name, value: "Pantielieienko"}
               - column: {name: user_profile_id, value: 1}
+              - column: {name: is_confirmed, value: 1}
         - insert:
             tableName: roles
             columns:
