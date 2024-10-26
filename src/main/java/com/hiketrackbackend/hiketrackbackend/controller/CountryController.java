@@ -1,5 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryDeleteRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/countries")
@@ -37,14 +40,41 @@ import java.util.List;
 public class CountryController {
     private final CountryService countryService;
 
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    @Operation(summary = "", description = "")
+//    public CountryRespondDto createCountry(
+//            // TODO
+//            @RequestPart("data") @Valid CountryRequestDto data,
+//            @RequestPart("file") MultipartFile file
+//    ) {
+//        return countryService.createCountry(data, file);
+//    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "", description = "")
+    @Operation(summary = "Create a new country", description = "Allows administrators to create a new country entry, including related file upload.")
     public CountryRespondDto createCountry(
-            // TODO
-            @RequestPart("data") @Valid CountryRequestDto data,
+            @RequestPart("data") String dataString,
             @RequestPart("file") MultipartFile file
     ) {
+
+        // Convert dataString to CountryRequestDto
+        ObjectMapper objectMapper = new ObjectMapper();
+        CountryRequestDto data;
+        try {
+            data = objectMapper.readValue(dataString, CountryRequestDto.class);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Invalid data format: " + e.getMessage());
+        }
+
+        if (!Objects.equals(file.getContentType(), "image/jpeg") && !Objects.equals(file.getContentType(), "image/png")) {
+            throw new IllegalArgumentException("Only JPEG and PNG files are allowed");
+        }
+        if (file.getSize() > 5 * 1024 * 1024) { // 5MB limit
+            throw new IllegalArgumentException("File size must not exceed 5MB");
+        }
+
         return countryService.createCountry(data, file);
     }
 
