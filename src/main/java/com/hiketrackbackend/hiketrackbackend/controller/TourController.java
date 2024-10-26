@@ -1,5 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
@@ -10,7 +12,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.service.TourDetailsService;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
-import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFileList;
+import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -36,16 +38,23 @@ import java.util.List;
 public class TourController {
     private final TourService tourService;
     private final TourDetailsService tourDetailsService;
+    private final ObjectMapper objectMapper;
 
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "", description = "")
     public TourRespondWithoutReviews createTour(
-            @RequestPart("requestDto") @Valid TourRequestDto requestDto,
-            @RequestPart("mainPhoto") @Valid @ValidImageFileList MultipartFile mainPhoto,
-            @RequestPart("additionalPhotos") @Valid @ValidImageFileList List<MultipartFile> additionalPhotos,
+            @RequestPart("data") String dataString,
+            @RequestPart("mainPhoto") @Valid @ValidImageFile MultipartFile mainPhoto,
+            @RequestPart("additionalPhotos") @Valid  List<@ValidImageFile MultipartFile> additionalPhotos,
             Authentication authentication
     ) {
+        TourRequestDto requestDto;
+        try {
+            requestDto = objectMapper.readValue(dataString, TourRequestDto.class);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Invalid data format: " + e.getMessage());
+        }
         User user = (User) authentication.getPrincipal();
         return tourService.createTour(requestDto, user, mainPhoto, additionalPhotos);
     }
@@ -67,7 +76,7 @@ public class TourController {
     @Operation(summary = "",
             description = "")
     public TourRespondWithoutReviews updateTourPhoto(
-            @RequestPart("mainPhoto") @Valid @ValidImageFileList MultipartFile mainPhoto,
+            @RequestPart("mainPhoto") @Valid @ValidImageFile MultipartFile mainPhoto,
             @PathVariable @Positive Long userId,
             @PathVariable @Positive Long tourId
     ) {
@@ -79,7 +88,7 @@ public class TourController {
     @Operation(summary = "",
             description = "")
     public DetailsRespondDto updateTourDetailsPhotos(
-            @RequestPart("additionalPhotos") @Valid @ValidImageFileList List<MultipartFile> additionalPhotos,
+            @RequestPart("additionalPhotos") @Valid List<@ValidImageFile MultipartFile> additionalPhotos,
             @PathVariable @Positive Long userId,
             @PathVariable @Positive Long tourId
     ) {

@@ -12,7 +12,6 @@ import java.util.List;
 
 @Mapper(config = MapperConfig.class)
 public interface CountryMapper {
-    @Mapping(target = "name", source = "country")
     Country toEntity(CountryRequestDto requestDto);
 
     CountryRespondDto toDto(Country country);

@@ -12,10 +12,10 @@ import java.lang.annotation.Target;
 
 @Documented
 @Constraint(validatedBy = ImageFileListValidator.class)
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
+@Target({ElementType.TYPE_USE, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidImageFileList {
-    String message() default "Список файлів містить непідтримуваний тип файлу. Допустимі тільки JPEG або PNG.";
+public @interface ValidImageFile {
+    String message() default "Invalid image file";
 
     Class<?>[] groups() default {};
 
