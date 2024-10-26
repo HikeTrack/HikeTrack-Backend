@@ -2,6 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.model.tour.details;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
@@ -25,13 +26,18 @@ public class TourDetails {
     private List<TourDetailsFile> additionalPhotos = new ArrayList<>();
 
     @Column(nullable = false)
+    // meters
     private int elevationGain;
+
+    @Size(max = 500)
+    private String description;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private RouteType routeType;
 
     @Column(nullable = false)
+    //minutes
     private int duration;
 
     // TODO link for map photo(later add map api?)

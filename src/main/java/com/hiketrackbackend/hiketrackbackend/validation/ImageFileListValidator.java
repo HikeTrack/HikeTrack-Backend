@@ -3,32 +3,25 @@ package com.hiketrackbackend.hiketrackbackend.validation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.Objects;
 
-import java.util.List;
-
-public class ImageFileListValidator implements ConstraintValidator<ValidImageFileList, List<MultipartFile>> {
+public class ImageFileListValidator implements ConstraintValidator<ValidImageFile, MultipartFile> {
 
     @Override
-    public void initialize(ValidImageFileList constraintAnnotation) {
+    public void initialize(ValidImageFile constraintAnnotation) {
     }
 
     @Override
-    public boolean isValid(List<MultipartFile> files, ConstraintValidatorContext context) {
-        // Skip empty list, so we can do work with other changes
-        if (files == null || files.isEmpty()) {
+    public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
+        if (file == null || file.isEmpty()) { // Skip empty file, so we can do work with other changes
             return true;
         }
-
-        for (MultipartFile file : files) {
-            // Skip empty file, so we can do work with other changes
-            if (file == null) {
-                continue;
-            }
-
-            String contentType = file.getContentType();
-            if (contentType == null || !(contentType.equals("image/jpeg") || contentType.equals("image/png"))) {
-                return false;
-            }
+        if (file.getSize() > 5 * 1024 * 1024) {
+            throw new IllegalArgumentException("File size must not exceed 5MB");
+        }
+        if (!Objects.equals(file.getContentType(), "image/jpeg") && !Objects.equals(file.getContentType(), "image/png")
+                && !Objects.equals(file.getContentType(), "image/jpg")) {
+            throw new IllegalArgumentException("Only JPEG, PNG, JPG files are allowed");
         }
         return true;
     }

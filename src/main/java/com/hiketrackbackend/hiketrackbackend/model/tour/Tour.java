@@ -33,6 +33,7 @@ public class Tour {
     @Column(nullable = false, unique = true)
     private String name;
 
+    // meters
     @Column(nullable = false)
     @Min(0)
     private int length;
