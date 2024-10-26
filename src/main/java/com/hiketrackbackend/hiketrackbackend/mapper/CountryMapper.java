@@ -6,11 +6,13 @@ import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhotoDto;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
 @Mapper(config = MapperConfig.class)
 public interface CountryMapper {
+    @Mapping(target = "name", source = "country")
     Country toEntity(CountryRequestDto requestDto);
 
     CountryRespondDto toDto(Country country);
