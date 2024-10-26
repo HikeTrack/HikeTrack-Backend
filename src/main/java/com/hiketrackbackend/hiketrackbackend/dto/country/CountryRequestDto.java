@@ -11,7 +11,8 @@ import lombok.Setter;
 public class CountryRequestDto {
     @NotBlank(message = "Country name cannot be empty")
     @Size(max = 170, message = "Maximum name size is 170 symbols")
-    private String name;
+    // TODO сменить на нейм обратно когда она сменит это у себя
+    private String country;
 
     @NotBlank(message = "Continent cannot be empty")
     private Continent continent;

@@ -59,7 +59,6 @@ public class CountryController {
             @RequestPart("file") MultipartFile file
     ) {
 
-        // Convert dataString to CountryRequestDto
         ObjectMapper objectMapper = new ObjectMapper();
         CountryRequestDto data;
         try {
