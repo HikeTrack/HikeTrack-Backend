@@ -36,3 +36,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     unique: true
+              - column:
+                  name: is_confirmed
+                  type: TINYINT(1)

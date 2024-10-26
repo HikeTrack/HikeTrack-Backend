@@ -73,6 +73,11 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return createBodyMessage(ex, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
+    @ExceptionHandler(UserNotConfirmedException.class)
+    public ResponseEntity<Object> handleUserNotConfirmedException(UserNotConfirmedException ex) {
+        return createBodyMessage(ex, HttpStatus.FORBIDDEN);
+    }
+
     private ResponseEntity<Object> createBodyMessage(Exception ex, HttpStatus status) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());

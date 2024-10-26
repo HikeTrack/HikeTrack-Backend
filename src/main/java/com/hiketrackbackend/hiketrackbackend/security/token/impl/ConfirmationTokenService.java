@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class PasswordResetUserTokenService extends UserTokenService<String> {
-    private static final long TIME_TO_LIVE = 3600;
+public class ConfirmationTokenService extends UserTokenService<String> {
+    private static final long TIME_TO_LIVE = 18000;
     private final RedisTemplate<String, String> redisTemplate;
 
     @Override

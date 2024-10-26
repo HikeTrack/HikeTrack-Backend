@@ -15,11 +15,11 @@ public class PasswordResetEmailSenderImpl implements EmailSender {
     private String resetPasswordBaseUrl;
 
     @Override
-    public void send(String userEmail, String token) {
+    public void send(String toEmail, String token) {
         String resetUrl = resetPasswordBaseUrl + token;
         String resetMessage = "To reset your password please use this link:\n" + resetUrl
                 + ". If it was not you who sent this request, please visit our website and change the password.";
-        emailUtils.sendEmail(userEmail, SUBJECT, resetMessage);
+        emailUtils.sendEmail(toEmail, SUBJECT, resetMessage);
     }
 
     @PostConstruct
