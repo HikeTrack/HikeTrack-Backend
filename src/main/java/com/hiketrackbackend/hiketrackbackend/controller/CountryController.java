@@ -43,7 +43,7 @@ public class CountryController {
     public CountryRespondDto createCountry(
             // TODO
             @RequestPart("data") @Valid CountryRequestDto data,
-            @RequestPart("file") @Valid MultipartFile file
+            @RequestPart("file") MultipartFile file
     ) {
         return countryService.createCountry(data, file);
     }
