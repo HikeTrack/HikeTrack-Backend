@@ -1,6 +1,8 @@
 package com.hiketrackbackend.hiketrackbackend.service.notification;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,6 +14,6 @@ public class PromotionRequestEmailSenderImpl implements EmailSender {
     @Override
     public void send(String userEmail, String request) {
         String message = "We have a promotion request from user with email: " + userEmail + ". Request: " + request;
-        emailUtils.sendEmail(userEmail, SUBJECT, message);
+        emailUtils.sendEmail(emailUtils.getFrom(), SUBJECT, message);
     }
 }

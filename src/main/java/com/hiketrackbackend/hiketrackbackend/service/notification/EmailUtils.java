@@ -18,7 +18,7 @@ public class EmailUtils {
     @Value("${mail.port}")
     private String mailPort;
 
-    @Getter
+    @Getter                 // made to have access out of this class
     @Value("${from.email}")
     private String from;
 
