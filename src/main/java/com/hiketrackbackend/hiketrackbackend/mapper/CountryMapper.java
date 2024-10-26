@@ -6,7 +6,6 @@ import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhotoDto;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.List;
 
