@@ -35,7 +35,6 @@ public class BookmarkController {
     @Operation(summary = "", description = "")
     public BookmarkRespondDto addToBookmark(@RequestBody @Valid BookmarkRequestDto requestDto,
                                             Authentication authentication) {
-        // TODO вроде как не правильно так доставать юзера, но может и норм, подумай оставить или что то придумать
         User user = (User) authentication.getPrincipal();
         return bookmarkService.addToBookmarks(requestDto, user);
     }

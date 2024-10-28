@@ -34,8 +34,7 @@ public class AuthenticationController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
-    // TODO послать линк на подверждения сброса пароля повторно
-    @Operation(summary = "")
+    @Operation(summary = "", description = "")
     @PostMapping("/registration")
     public UserRegistrationRespondDto registration(@RequestBody @Valid UserRegistrationRequestDto requestDto)
             throws RegistrationException {

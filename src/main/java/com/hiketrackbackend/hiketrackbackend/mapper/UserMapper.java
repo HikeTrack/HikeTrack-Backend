@@ -24,9 +24,6 @@ public interface UserMapper {
 
     UserRegistrationRespondDto toDto(User user);
 
-    // TODO нет смысла тк делать потому что  даже если и
-    //  захочешь добавить что то еще в дев смс то мапер туда не замапит бо принимает только
-    //  стрингу так что убери и отдавай обычную стригу на контролеер
     UserDevMsgRespondDto toDto(String message);
 
     @Mapping(target = "userProfileRespondDto", source = "userProfile")
