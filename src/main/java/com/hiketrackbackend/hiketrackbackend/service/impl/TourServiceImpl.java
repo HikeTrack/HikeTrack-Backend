@@ -10,7 +10,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
-import com.hiketrackbackend.hiketrackbackend.model.Review;
+import com.hiketrackbackend.hiketrackbackend.model.tour.Review;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetailsFile;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 public class TourServiceImpl implements TourService {
     private static final String FOLDER_NAME = "tours";
     private static final int FIRST_ELEMENT = 0;
+    private static final int AMOUNT_OF_MOST_RATED_TOURS = 7;
     private final TourRepository tourRepository;
     private final TourMapper tourMapper;
     private final CountryRepository countryRepository;
@@ -148,7 +149,7 @@ public class TourServiceImpl implements TourService {
     @Override
     public List<TourRespondWithoutDetailsAndReviews> getByRating() {
         return tourRepository
-                .findTop7ByRatingGreaterThanOrderByRatingDesc(0)
+                .findTopToursWithHighestRatings(Pageable.ofSize(AMOUNT_OF_MOST_RATED_TOURS))
                 .stream()
                 .map(tourMapper::toDtoWithoutDetailsAndReviews)
                 .toList();
@@ -183,7 +184,7 @@ public class TourServiceImpl implements TourService {
     }
 
     private Tour findTourByIdWithDetailsAndAdditionalPhotos(Long id) {
-        return tourRepository.findTourByIdAndTourDetailsWithAdditionalPhotos(id).orElseThrow(
+        return tourRepository.findTourById(id).orElseThrow(
                 () -> new EntityNotFoundException("Tour details photo not found with id: " + id)
         );
     }

@@ -26,4 +26,6 @@ public class TourRespondDto {
     private long totalReviewElements;
     private String mainPhoto;
     private Long guideId;
+    private Long averageRating;
+    private Long totalAmountOfMarks;
 }

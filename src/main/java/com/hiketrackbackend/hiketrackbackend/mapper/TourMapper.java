@@ -6,10 +6,14 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
+import com.hiketrackbackend.hiketrackbackend.model.tour.Rating;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+
+import java.util.List;
 
 @Mapper(config = MapperConfig.class, uses = {TourDetailsMapper.class})
 public interface TourMapper {
@@ -30,4 +34,16 @@ public interface TourMapper {
     TourRespondWithoutReviews toDtoWithoutReviews(Tour tour);
 
     void updateEntityFromDto(TourUpdateRequestDto requestDto, @MappingTarget Tour tour);
+
+    @AfterMapping
+    default void setRating(Tour tour, @MappingTarget TourRespondDto respondDto) {
+        List<Rating> ratings = tour.getRatings();
+        respondDto.setTotalAmountOfMarks((long) ratings.size());
+        Long ratingSum = 0L;
+        for (Rating value : ratings) {
+            Long rating = value.getRating();
+            ratingSum += rating;
+        }
+        respondDto.setAverageRating(ratingSum / ratings.size());
+    }
 }

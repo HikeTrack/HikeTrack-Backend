@@ -1,7 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.repository.country;
 
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
