@@ -35,9 +35,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: rating
-                  type: INT
-              - column:
                   name: difficulty
                   type: VARCHAR(255)
                   constraints:

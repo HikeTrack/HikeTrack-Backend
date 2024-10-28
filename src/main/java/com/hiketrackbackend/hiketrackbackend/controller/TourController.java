@@ -43,6 +43,7 @@ public class TourController {
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "", description = "")
+    // tyt tolko s foto
     public TourRespondWithoutReviews createTour(
             @RequestPart("data") String dataString,
             @RequestPart("mainPhoto") @Valid @ValidImageFile MultipartFile mainPhoto,

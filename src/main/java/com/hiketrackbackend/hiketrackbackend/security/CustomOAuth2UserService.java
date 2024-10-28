@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.security;
 
-import com.hiketrackbackend.hiketrackbackend.model.Role;
+import com.hiketrackbackend.hiketrackbackend.model.user.Role;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.repository.RoleRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
