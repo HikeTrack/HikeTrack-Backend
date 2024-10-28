@@ -48,9 +48,6 @@ public class UserController {
         return userService.getLoggedInUser(request);
     }
 
-    // TODO спросить у соломии делала ли она логаут и как обноляет токен потому что когда юзер долго не был в сети он
-    //  делается неавторизированым может надо сделать что бы фронт просто удалял
-    //  сесию спустя какое то время что бы ему надо было логиниться(скорее всего так и надо)
     @Operation(summary = "",
             description = "")
     @PostMapping("/logout")
@@ -91,9 +88,6 @@ public class UserController {
         return roleService.changeUserRoleToGuide(request);
     }
 
-    // TODO temporary decision to sent only email for promote.
-    //  Next feat accept a FULL form with data and send it to admins mail.
-    //TODO когда придет линка при регистрации надо проверить подтвердил ли чел имейл
     @PostMapping("/request")
     @Operation(summary = "", description = "")
     public UserDevMsgRespondDto promoteRequestFromUser(@RequestBody UserRequestDto request) {

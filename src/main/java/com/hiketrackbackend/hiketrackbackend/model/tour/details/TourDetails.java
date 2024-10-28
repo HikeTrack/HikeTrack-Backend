@@ -35,7 +35,7 @@ public class TourDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "tourDetails")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tourDetails")
     private List<TourDetailsFile> additionalPhotos = new ArrayList<>();
 
     @Column(nullable = false)
@@ -51,7 +51,6 @@ public class TourDetails {
     @Column(nullable = false)
     private int duration;
 
-    // TODO link for map photo(later add map api?)
     @Column(nullable = false)
     private String map;
 

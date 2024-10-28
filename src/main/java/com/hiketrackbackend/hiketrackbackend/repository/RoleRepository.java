@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.repository;
 
-import com.hiketrackbackend.hiketrackbackend.model.Role;
+import com.hiketrackbackend.hiketrackbackend.model.user.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {

@@ -18,5 +18,6 @@ public class TourRespondWithoutDetailsAndReviews {
     private Long countryId;
     private String mainPhoto;
     private Long guideId;
-    private int rating;
+    private Long averageRating;
+    private Long totalAmountOfMarks;
 }

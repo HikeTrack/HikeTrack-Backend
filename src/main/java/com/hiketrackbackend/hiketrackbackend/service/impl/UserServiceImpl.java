@@ -20,8 +20,6 @@ import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,6 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private static final String FOLDER_NAME = "user_profile";
     private static final int FIRST_ELEMENT = 0;
@@ -42,18 +39,28 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final FileStorageService s3Service;
     private final ConfirmationTokenService confirmationTokenService;
-    private EmailSender confirmationEmailSenderImpl;
-    private EmailSender promotionRequestEmailSenderImpl;
+    private final EmailSender confirmationEmailSenderImpl;
+    private final EmailSender promotionRequestEmailSenderImpl;
 
-    @Autowired
-    @Qualifier("confirmationRequestEmailSenderImpl")
-    public void setConfirmationEmailSenderImpl(EmailSender confirmationEmailSenderImpl) {
+    public UserServiceImpl(
+            JwtUtil jwtUtil,
+            UserRepository userRepository,
+            UserMapper userMapper,
+            PasswordEncoder encoder,
+            RoleService roleService,
+            FileStorageService s3Service,
+            ConfirmationTokenService confirmationTokenService,
+            @Qualifier("confirmationRequestEmailSenderImpl") EmailSender confirmationEmailSenderImpl,
+            @Qualifier("promotionRequestEmailSenderImpl") EmailSender promotionRequestEmailSenderImpl) {
+
+        this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.encoder = encoder;
+        this.roleService = roleService;
+        this.s3Service = s3Service;
+        this.confirmationTokenService = confirmationTokenService;
         this.confirmationEmailSenderImpl = confirmationEmailSenderImpl;
-    }
-
-    @Autowired
-    @Qualifier("promotionRequestEmailSenderImpl")
-    public void setPromotionRequestEmailSenderImpl(EmailSender promotionRequestEmailSenderImpl) {
         this.promotionRequestEmailSenderImpl = promotionRequestEmailSenderImpl;
     }
 
@@ -102,7 +109,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.toRespondDto(userRepository.save(user));
     }
 
-    // TODO if isConfirmed = false do not return user
     @Override
     public UserRespondDto getLoggedInUser(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
@@ -121,7 +127,6 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-    // TODO later add some other info instead of second email
     @Override
     public UserDevMsgRespondDto promoteRequest(UserRequestDto request) {
         promotionRequestEmailSenderImpl.send(request.getEmail(), request.getEmail());

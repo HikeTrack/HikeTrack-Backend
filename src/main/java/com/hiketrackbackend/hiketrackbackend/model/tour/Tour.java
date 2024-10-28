@@ -4,7 +4,6 @@ import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.bookmark.Bookmark;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
-import com.hiketrackbackend.hiketrackbackend.model.Review;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
@@ -44,8 +43,8 @@ public class Tour {
     @Column(nullable = false)
     private ZonedDateTime date;
 
-    @Min(0)
-    private int rating;
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.REMOVE)
+    private List<Rating> ratings = new ArrayList<>();
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

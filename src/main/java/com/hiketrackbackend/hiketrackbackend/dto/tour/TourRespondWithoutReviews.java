@@ -20,5 +20,6 @@ public class TourRespondWithoutReviews {
     private String mainPhoto;
     private DetailsRespondDto details;
     private Long guideId;
-    private int rating;
+    private Long averageRating;
+    private Long totalAmountOfMarks;
 }

@@ -3,7 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.mapper;
 import com.hiketrackbackend.hiketrackbackend.config.MapperConfig;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
-import com.hiketrackbackend.hiketrackbackend.model.Review;
+import com.hiketrackbackend.hiketrackbackend.model.tour.Review;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

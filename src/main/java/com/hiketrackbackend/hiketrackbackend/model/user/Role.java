@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.model;
+package com.hiketrackbackend.hiketrackbackend.model.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

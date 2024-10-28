@@ -35,6 +35,6 @@ public enum Continent {
                 return continent;
             }
         }
-        throw new IllegalArgumentException("Unknown continent tyoe: " + value);
+        throw new IllegalArgumentException("Unknown continent type: " + value);
     }
 }
