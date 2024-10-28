@@ -127,7 +127,6 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-    // TODO later add some other info instead of second email
     @Override
     public UserDevMsgRespondDto promoteRequest(UserRequestDto request) {
         promotionRequestEmailSenderImpl.send(request.getEmail(), request.getEmail());

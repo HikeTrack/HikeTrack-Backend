@@ -51,7 +51,6 @@ public class TourDetails {
     @Column(nullable = false)
     private int duration;
 
-    // TODO link for map photo(later add map api?)
     @Column(nullable = false)
     private String map;
 
