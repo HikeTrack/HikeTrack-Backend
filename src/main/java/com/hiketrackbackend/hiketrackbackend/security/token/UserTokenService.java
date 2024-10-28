@@ -12,7 +12,7 @@ public abstract class UserTokenService<P> {
 
     public String getValue(String token) {
         if (!isKeyExist(token)) {
-            throw new InvalidTokenException("Invalid password reset token: " + token);
+            throw new InvalidTokenException("Invalid token: " + token);
         }
         return redisTemplate.opsForValue().get(token);
     }
@@ -20,5 +20,8 @@ public abstract class UserTokenService<P> {
     public boolean isKeyExist(String token) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(token));
     }
-}
 
+    public void delete(String token) {
+        redisTemplate.delete(token);
+    }
+}

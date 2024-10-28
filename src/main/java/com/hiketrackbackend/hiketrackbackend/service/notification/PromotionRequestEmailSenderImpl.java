@@ -12,6 +12,6 @@ public class PromotionRequestEmailSenderImpl implements EmailSender {
     @Override
     public void send(String userEmail, String request) {
         String message = "We have a promotion request from user with email: " + userEmail + ". Request: " + request;
-        emailUtils.sendEmail(userEmail, SUBJECT, message);
+        emailUtils.sendEmail(emailUtils.getFrom(), SUBJECT, message);
     }
 }

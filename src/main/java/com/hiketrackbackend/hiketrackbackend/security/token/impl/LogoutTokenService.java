@@ -7,14 +7,13 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class LogoutTokenService extends UserTokenService<HttpServletRequest> {
-    private final RedisTemplate<String, String> redisTemplate;
     private static final long TIME_TO_LIVE = 900;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public String save(HttpServletRequest request) {

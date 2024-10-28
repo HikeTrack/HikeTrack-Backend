@@ -28,6 +28,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         saveUserToDB(oAuth2User);
         return oAuth2User;
     }
+    //TODO send jwt token back in handler(solomia)
 
     // TODO make sure that profile is created when register via google
     private void saveUserToDB(OAuth2User oAuth2User) {

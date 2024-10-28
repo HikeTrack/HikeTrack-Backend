@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,7 +48,6 @@ public class UserController {
         return userService.getLoggedInUser(request);
     }
 
-    // TODO послать линк на востановление пароля повторно( точно так же сделать и на регистрацию)
     // TODO спросить у соломии делала ли она логаут и как обноляет токен потому что когда юзер долго не был в сети он
     //  делается неавторизированым может надо сделать что бы фронт просто удалял
     //  сесию спустя какое то время что бы ему надо было логиниться(скорее всего так и надо)
@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
-    @PatchMapping("/{id}")
+    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "", description = "")
     public UserRespondDto updateUser(
             @RequestPart("data") String dataString,

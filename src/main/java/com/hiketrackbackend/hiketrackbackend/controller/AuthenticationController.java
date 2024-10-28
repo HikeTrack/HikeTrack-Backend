@@ -34,6 +34,7 @@ public class AuthenticationController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
+    // TODO послать линк на подверждения сброса пароля повторно
     @Operation(summary = "")
     @PostMapping("/registration")
     public UserRegistrationRespondDto registration(@RequestBody @Valid UserRegistrationRequestDto requestDto)
@@ -60,5 +61,12 @@ public class AuthenticationController {
     public UserDevMsgRespondDto resetPassword(@RequestParam("token") String token,
                                               @RequestBody @Valid UserUpdatePasswordRequestDto request) {
         return authenticationService.restorePassword(token, request);
+    }
+
+    @Operation(summary = "",
+            description = "")
+    @PostMapping("/confirmation")
+    public UserDevMsgRespondDto emailConfirmation(@RequestParam("token") String token) {
+        return authenticationService.changeConfirmingStatus(token);
     }
 }
