@@ -17,8 +17,7 @@ public class PasswordResetEmailSenderImpl implements EmailSender {
     @Override
     public void send(String toEmail, String token) {
         String resetUrl = resetPasswordBaseUrl + token;
-        String resetMessage = "To reset your password please use this link:\n" + resetUrl
-                + ". If it was not you who sent this request, please visit our website and change the password.";
+        String resetMessage = generateConfirmationEmail(resetUrl);
         emailUtils.sendEmail(toEmail, SUBJECT, resetMessage);
     }
 
@@ -27,5 +26,17 @@ public class PasswordResetEmailSenderImpl implements EmailSender {
         if (resetPasswordBaseUrl == null) {
             throw new IllegalStateException("Reset password base URL is not initialized.");
         }
+    }
+
+    private String generateConfirmationEmail(String url) {
+        return String.format(
+                "Dear user,\n\n" +
+                        "To reset your password please use this link below:\n\n"
+                        + url + "\n\n"
+                        + ". If it was not you who sent this request, please visit "
+                        + "our website and change the password please.\n\n"
+                        + "Best regards,\n"
+                        + "Hike Track Team"
+        );
     }
 }

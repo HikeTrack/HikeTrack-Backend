@@ -7,30 +7,39 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.RegistrationException;
 import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.user.UserProfile;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
+import com.hiketrackbackend.hiketrackbackend.security.CustomUserDetailsService;
 import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
 import com.hiketrackbackend.hiketrackbackend.security.token.impl.ConfirmationTokenService;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
+import com.hiketrackbackend.hiketrackbackend.service.notification.EmailUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
     private static final String FOLDER_NAME = "user_profile";
+    private static final String SUBJECT = "Email Change Notification";
     private static final int FIRST_ELEMENT = 0;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
@@ -41,6 +50,8 @@ public class UserServiceImpl implements UserService {
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender confirmationEmailSenderImpl;
     private final EmailSender promotionRequestEmailSenderImpl;
+    private final CustomUserDetailsService userDetailsService;
+    private final EmailUtils emailUtils;
 
     public UserServiceImpl(
             JwtUtil jwtUtil,
@@ -51,7 +62,7 @@ public class UserServiceImpl implements UserService {
             FileStorageService s3Service,
             ConfirmationTokenService confirmationTokenService,
             @Qualifier("confirmationRequestEmailSenderImpl") EmailSender confirmationEmailSenderImpl,
-            @Qualifier("promotionRequestEmailSenderImpl") EmailSender promotionRequestEmailSenderImpl) {
+            @Qualifier("promotionRequestEmailSenderImpl") EmailSender promotionRequestEmailSenderImpl, CustomUserDetailsService userDetailsService, EmailUtils emailUtils) {
 
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
@@ -62,8 +73,9 @@ public class UserServiceImpl implements UserService {
         this.confirmationTokenService = confirmationTokenService;
         this.confirmationEmailSenderImpl = confirmationEmailSenderImpl;
         this.promotionRequestEmailSenderImpl = promotionRequestEmailSenderImpl;
+        this.userDetailsService = userDetailsService;
+        this.emailUtils = emailUtils;
     }
-
 
     @Override
     @Transactional
@@ -91,22 +103,28 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto("Password successfully changed.");
     }
 
-    // TODO при апдейте мыла надо его как тообновлять в контексте
     @Override
     @Transactional
-    public UserRespondDto updateUser(UserUpdateRequestDto requestDto, Long id, MultipartFile file) {
+    public UserUpdateRespondDto updateUser(UserUpdateRequestDto requestDto, Long id, MultipartFile file) {
         User user = findUserById(id);
+        String oldEmail = user.getEmail();
         userMapper.updateUserFromDto(requestDto, user);
 
         UserProfile userProfile = user.getUserProfile();
         userMapper.updateUserProfileFromDto(requestDto.getUserProfileRequestDto(), user.getUserProfile());
-
         if (file != null) {
-            s3Service.deleteFileFromS3(userProfile.getPhoto());
+            updateUserProfilePhoto(userProfile, file);
         }
-        List<String> urls = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(file));
-        userProfile.setPhoto(urls.get(FIRST_ELEMENT));
-        return userMapper.toRespondDto(userRepository.save(user));
+
+        userRepository.save(user);
+        UserUpdateRespondDto responseDto = userMapper.toUpdateRespondDto(user);
+
+        if (!oldEmail.equals(user.getEmail())) {
+            setNewToken(responseDto, user);
+        }
+
+        generateEmailChangeNotification(oldEmail, user.getEmail());
+        return responseDto;
     }
 
     @Override
@@ -147,5 +165,39 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException("User with email " + email + " not found")
         );
+    }
+
+    private void setNewToken(UserUpdateRespondDto responseDto, User user) {
+        String newToken = jwtUtil.generateToken(user.getEmail());
+        responseDto.setToken(newToken);
+        updateSecurityContext(user);
+    }
+
+    private void updateSecurityContext(User user) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    private void updateUserProfilePhoto(UserProfile userProfile, MultipartFile newPhoto) {
+        s3Service.deleteFileFromS3(userProfile.getPhoto());
+        List<String> urls = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(newPhoto));
+        userProfile.setPhoto(urls.get(FIRST_ELEMENT));
+    }
+
+    private void generateEmailChangeNotification(String oldEmail, String newEmail) {
+        String notification = String.format(
+                "Dear user,\n\n" +
+                        "Your email has been successfully changed from %s to %s.\n\n" +
+                        "If you did not initiate this change, please contact our support team immediately.\n\n" +
+                        "Best regards,\n" +
+                        "Hike Track Team",
+                oldEmail, newEmail
+        );
+        emailUtils.sendEmail(oldEmail, SUBJECT, notification);
+
+        String token = UUID.randomUUID().toString();
+        confirmationEmailSenderImpl.send(newEmail, token);
     }
 }

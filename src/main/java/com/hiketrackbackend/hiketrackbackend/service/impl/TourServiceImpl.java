@@ -173,6 +173,14 @@ public class TourServiceImpl implements TourService {
         tourDetailsFileRepository.delete(photo);
     }
 
+    @Override
+    public List<TourRespondWithoutDetailsAndReviews> getAllToursMadeByGuide(Long userId, Pageable pageable) {
+        return tourRepository.findAllTourByUserId(userId, pageable)
+                .stream()
+                .map(tourMapper::toDtoWithoutDetailsAndReviews)
+                .toList();
+    }
+
     private boolean isExistTourById(Long tourId, Long userId) {
         return tourRepository.existsByIdAndUserId(tourId, userId);
     }

@@ -43,7 +43,6 @@ public class TourController {
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "", description = "")
-    // tyt tolko s foto
     public TourRespondWithoutReviews createTour(
             @RequestPart("data") String dataString,
             @RequestPart("mainPhoto") @Valid @ValidImageFile MultipartFile mainPhoto,
@@ -60,7 +59,7 @@ public class TourController {
         return tourService.createTour(requestDto, user, mainPhoto, additionalPhotos);
     }
 
-    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @PatchMapping("/{tourId}/{userId}")
     @Operation(summary = "",
             description = "")
@@ -72,7 +71,7 @@ public class TourController {
         return tourService.updateTour(requestDto, userId, tourId);
     }
 
-    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @PatchMapping("/{tourId}/photo/{userId}")
     @Operation(summary = "",
             description = "")
@@ -84,7 +83,7 @@ public class TourController {
         return tourService.updateTourPhoto(mainPhoto, userId, tourId);
     }
 
-    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @PatchMapping("/{tourId}/additionalPhotos/{userId}")
     @Operation(summary = "",
             description = "")
@@ -104,17 +103,26 @@ public class TourController {
         return tourService.getById(id, page, size);
     }
 
-    @GetMapping
-    @Operation(summary = "")
-    public List<TourRespondWithoutDetailsAndReviews> getAllTours(@ParameterObject @PageableDefault Pageable pageable) {
-        return tourService.getAll(pageable);
-    }
-
     @GetMapping("/popular")
     @Operation(summary = "",
             description = "")
     public List<TourRespondWithoutDetailsAndReviews> getMostRatedTours() {
         return tourService.getByRating();
+    }
+
+    @GetMapping("/guide/{guideId}")
+    @Operation(summary = "", description = "")
+    public List<TourRespondWithoutDetailsAndReviews> getAllToursMadeByGuide(
+            @PathVariable @Positive Long guideId,
+            @ParameterObject @PageableDefault Pageable pageable
+    ) {
+        return tourService.getAllToursMadeByGuide(guideId, pageable);
+    }
+
+    @GetMapping
+    @Operation(summary = "")
+    public List<TourRespondWithoutDetailsAndReviews> getAllTours(@ParameterObject @PageableDefault Pageable pageable) {
+        return tourService.getAll(pageable);
     }
 
     @GetMapping("/search")
