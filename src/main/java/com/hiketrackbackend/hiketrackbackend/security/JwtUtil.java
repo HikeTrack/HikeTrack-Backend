@@ -52,7 +52,7 @@ public class JwtUtil {
         return getClaimsFromToken(token, Claims::getSubject);
     }
 
-    protected String getToken(HttpServletRequest request) {
+    public String getToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_NAME)) {
             return bearerToken.substring(TOKEN_NAME.length());

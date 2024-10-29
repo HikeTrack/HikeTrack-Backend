@@ -52,7 +52,7 @@ public class ReviewController {
     }
 
     @GetMapping("/{userId}")
-    @PreAuthorize("hasAnyRole('GUIDE', 'USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'USER', 'ADMIN') && #userId == authentication.principal.id")
     @Operation(summary = "",
             description = "")
     public List<ReviewsRespondDto> getAllReviewsByUser(@PathVariable @Positive Long userId, Pageable pageable) {

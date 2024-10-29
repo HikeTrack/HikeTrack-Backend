@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class RatingController {
     private final RatingService ratingService;
 
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @PatchMapping("/{userId}/{tourId}")
     @Operation(summary = "", description = "")
     public RatingRespondDto updateRating(@RequestBody @Valid RatingRequestDto requestDto,

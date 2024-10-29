@@ -39,7 +39,7 @@ public class BookmarkController {
         return bookmarkService.addToBookmarks(requestDto, user);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @GetMapping("/{userId}")
     @Operation(summary = "",
             description = "")
@@ -47,7 +47,7 @@ public class BookmarkController {
         return bookmarkService.getByUserId(userId);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @DeleteMapping("/{userId}/{tourId}")
     @Operation(summary = "",
             description = "")

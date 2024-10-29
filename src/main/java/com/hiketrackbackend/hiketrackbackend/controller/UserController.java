@@ -6,6 +6,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
@@ -56,10 +57,10 @@ public class UserController {
         return "Logged out successfully";
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #id == authentication.principal.id")
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "", description = "")
-    public UserRespondDto updateUser(
+    public UserUpdateRespondDto updateUser(
             @RequestPart("data") String dataString,
             @PathVariable @Positive Long id,
             @RequestPart("photo") @Valid @ValidImageFile MultipartFile photo
@@ -73,7 +74,7 @@ public class UserController {
         return userService.updateUser(requestDto, id, photo);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @DeleteMapping("/{userId}")
     @Operation(summary = "", description = "")
     public void deleteUser(@PathVariable @Positive Long userId) {

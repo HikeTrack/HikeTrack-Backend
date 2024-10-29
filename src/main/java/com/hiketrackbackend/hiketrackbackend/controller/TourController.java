@@ -59,7 +59,7 @@ public class TourController {
         return tourService.createTour(requestDto, user, mainPhoto, additionalPhotos);
     }
 
-    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @PatchMapping("/{tourId}/{userId}")
     @Operation(summary = "",
             description = "")
@@ -71,7 +71,7 @@ public class TourController {
         return tourService.updateTour(requestDto, userId, tourId);
     }
 
-    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @PatchMapping("/{tourId}/photo/{userId}")
     @Operation(summary = "",
             description = "")
@@ -83,7 +83,7 @@ public class TourController {
         return tourService.updateTourPhoto(mainPhoto, userId, tourId);
     }
 
-    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @PatchMapping("/{tourId}/additionalPhotos/{userId}")
     @Operation(summary = "",
             description = "")
