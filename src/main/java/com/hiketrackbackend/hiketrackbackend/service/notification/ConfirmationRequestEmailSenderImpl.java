@@ -17,8 +17,7 @@ public class ConfirmationRequestEmailSenderImpl implements EmailSender {
     @Override
     public void send(String toEmail, String token) {
         String url = confirmationBaseUrl + token;
-        String message = "Hello mate, Thank you for signing up! To complete your registration, "
-                + "please confirm your email address by clicking the link below: " + url + " . If you did not create an account, you can ignore this email. Thank you, The Hike Track Team";
+        String message = generateConfirmationEmail(url);
         emailUtils.sendEmail(toEmail, SUBJECT, message);
     }
 
@@ -27,5 +26,20 @@ public class ConfirmationRequestEmailSenderImpl implements EmailSender {
         if (confirmationBaseUrl == null) {
             throw new IllegalStateException("Confirmation base URL is not initialized.");
         }
+    }
+
+    private String generateConfirmationEmail(String url) {
+        return String.format(
+                "<html>" +
+                        "<body>" +
+                        "<p>Hello mate,</p>" +
+                        "<p>Thank you for signing up! To complete your registration, please confirm your email address by clicking the link below:</p>" +
+                        "<p><a href=\"%s\">Confirm your email</a></p>" +
+                        "<p>If you did not create an account, you can ignore this email.</p>" +
+                        "<p>Thank you,<br>The Hike Track Team</p>" +
+                        "</body>" +
+                        "</html>",
+                url
+        );
     }
 }

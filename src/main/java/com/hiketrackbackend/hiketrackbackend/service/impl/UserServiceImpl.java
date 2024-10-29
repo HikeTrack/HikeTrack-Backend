@@ -21,6 +21,7 @@ import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
+import com.hiketrackbackend.hiketrackbackend.service.notification.EmailUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,10 +34,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
     private static final String FOLDER_NAME = "user_profile";
+    private static final String SUBJECT = "Email Change Notification";
     private static final int FIRST_ELEMENT = 0;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
@@ -48,6 +51,7 @@ public class UserServiceImpl implements UserService {
     private final EmailSender confirmationEmailSenderImpl;
     private final EmailSender promotionRequestEmailSenderImpl;
     private final CustomUserDetailsService userDetailsService;
+    private final EmailUtils emailUtils;
 
     public UserServiceImpl(
             JwtUtil jwtUtil,
@@ -58,7 +62,7 @@ public class UserServiceImpl implements UserService {
             FileStorageService s3Service,
             ConfirmationTokenService confirmationTokenService,
             @Qualifier("confirmationRequestEmailSenderImpl") EmailSender confirmationEmailSenderImpl,
-            @Qualifier("promotionRequestEmailSenderImpl") EmailSender promotionRequestEmailSenderImpl, CustomUserDetailsService userDetailsService) {
+            @Qualifier("promotionRequestEmailSenderImpl") EmailSender promotionRequestEmailSenderImpl, CustomUserDetailsService userDetailsService, EmailUtils emailUtils) {
 
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
@@ -70,8 +74,8 @@ public class UserServiceImpl implements UserService {
         this.confirmationEmailSenderImpl = confirmationEmailSenderImpl;
         this.promotionRequestEmailSenderImpl = promotionRequestEmailSenderImpl;
         this.userDetailsService = userDetailsService;
+        this.emailUtils = emailUtils;
     }
-
 
     @Override
     @Transactional
@@ -99,8 +103,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto("Password successfully changed.");
     }
 
-    // TODO послать еще конферм если имейл поменялся
-    //  а так же послать на старый имейл что он поменялся на новый и указать новый
     @Override
     @Transactional
     public UserUpdateRespondDto updateUser(UserUpdateRequestDto requestDto, Long id, MultipartFile file) {
@@ -120,6 +122,8 @@ public class UserServiceImpl implements UserService {
         if (!oldEmail.equals(user.getEmail())) {
             setNewToken(responseDto, user);
         }
+
+        generateEmailChangeNotification(oldEmail, user.getEmail());
         return responseDto;
     }
 
@@ -180,5 +184,20 @@ public class UserServiceImpl implements UserService {
         s3Service.deleteFileFromS3(userProfile.getPhoto());
         List<String> urls = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(newPhoto));
         userProfile.setPhoto(urls.get(FIRST_ELEMENT));
+    }
+
+    private void generateEmailChangeNotification(String oldEmail, String newEmail) {
+        String notification = String.format(
+                "Dear user,\n\n" +
+                        "Your email has been successfully changed from %s to %s.\n\n" +
+                        "If you did not initiate this change, please contact our support team immediately.\n\n" +
+                        "Best regards,\n" +
+                        "Hike Track Team",
+                oldEmail, newEmail
+        );
+        emailUtils.sendEmail(oldEmail, SUBJECT, notification);
+
+        String token = UUID.randomUUID().toString();
+        confirmationEmailSenderImpl.send(newEmail, token);
     }
 }
