@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-social-subscription-table
+      author: Vadym P
+      changes:
+        - createTable:
+            tableName: social_subscription
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true

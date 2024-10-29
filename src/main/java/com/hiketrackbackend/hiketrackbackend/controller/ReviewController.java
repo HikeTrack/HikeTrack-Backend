@@ -5,6 +5,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/reviews")
 @Validated
+@Tag(name = "", description = "")
 public class ReviewController {
     private final ReviewService reviewService;
 

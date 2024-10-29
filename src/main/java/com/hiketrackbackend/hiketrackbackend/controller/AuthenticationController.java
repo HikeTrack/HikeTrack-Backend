@@ -3,7 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserResponseDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;

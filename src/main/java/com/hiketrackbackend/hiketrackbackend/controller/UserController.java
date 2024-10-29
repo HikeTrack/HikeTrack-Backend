@@ -2,13 +2,12 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
-import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFile;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,7 +38,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
-    private final RoleService roleService;
     private final ObjectMapper objectMapper;
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
@@ -79,14 +77,6 @@ public class UserController {
     @Operation(summary = "", description = "")
     public void deleteUser(@PathVariable @Positive Long userId) {
         userService.deleteUser(userId);
-    }
-
-    // for admin profile
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/role_change")
-    @Operation(summary = "", description = "")
-    public UserDevMsgRespondDto promoteUserToGuide(@RequestBody UserRequestDto request) {
-        return roleService.changeUserRoleToGuide(request);
     }
 
     @PostMapping("/request")
