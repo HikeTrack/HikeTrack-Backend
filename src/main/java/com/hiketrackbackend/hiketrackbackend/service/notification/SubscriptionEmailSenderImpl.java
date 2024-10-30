@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class SubscriptionEmailSenderImpl implements EmailSender {
-    private static final String SUBJECT = "Hike Track Subscribe";
+    private static final String SUBJECT = "Join the Adventure - Hike Track Newsletter";
     private final EmailUtils emailUtils;
 
     @Value("${unsubscribe.base.url}")
@@ -15,11 +17,18 @@ public class SubscriptionEmailSenderImpl implements EmailSender {
 
     @Override
     public void send(String toEmail, String param) {
-        String message = generateConfirmationEmail(toEmail);
+        String message = generateConfirmationMessage(toEmail);
         emailUtils.sendEmail(toEmail, SUBJECT, message);
     }
 
-    private String generateConfirmationEmail(String email) {
+    @Override
+    public void newsletterDistribution(String message, List<String> emails) {
+        for (String email : emails) {
+            emailUtils.sendEmail(email, SUBJECT, message);
+        }
+    }
+
+    private String generateConfirmationMessage(String email) {
         return String.format(
                 "Dear customer,\n\n" +
                         "Thank you for subscribing to our newsletter! We are thrilled to welcome " +
