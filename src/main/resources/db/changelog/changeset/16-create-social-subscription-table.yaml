@@ -4,7 +4,7 @@ databaseChangeLog:
       author: Vadym P
       changes:
         - createTable:
-            tableName: social_subscription
+            tableName: social_subscriptions
             columns:
               - column:
                   name: id
