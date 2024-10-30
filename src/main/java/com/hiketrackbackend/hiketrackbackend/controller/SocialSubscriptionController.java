@@ -7,26 +7,43 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/social")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "", description = "")
+@Tag(name = "Social Subscriptions",
+        description = "Operations related to managing social subscriptions and newsletters distribution.")
 public class SocialSubscriptionController {
     private final SocialSubscriptionService socialSubscriptionService;
 
     @PostMapping("/subscribe")
-    @Operation(summary = "", description = "")
-    public UserDevMsgRespondDto createRegularEmailNewsletterSubscription(@RequestBody @Valid SubscriptionRequestDto requestDto) {
+    @Operation(summary = "Subscribe to Newsletter",
+            description = "Subscribe to the email newsletter using the provided email address.")
+    public UserDevMsgRespondDto createEmailNewsletterSubscription(
+            @RequestBody @Valid SubscriptionRequestDto requestDto
+    ) {
         return socialSubscriptionService.create(requestDto);
     }
 
     @PostMapping("/unsubscribe")
-    @Operation(summary = "", description = "")
-    public UserDevMsgRespondDto deleteRegularEmailNewsletterSubscription(@RequestParam("email") String email) {
+    @Operation(summary = "Unsubscribe from Newsletter",
+            description = "Unsubscribe from the email newsletter using the provided email address.")
+    public UserDevMsgRespondDto deleteEmailNewsletterSubscription(@RequestParam("email") String email) {
         return socialSubscriptionService.delete(email);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/newsletter")
+    @Operation(summary = "Send Newsletter", description = "Allows an admin to send a newsletter to all subscribers.")
+    public UserDevMsgRespondDto sendNewsletterToAllSubs(@RequestBody String text) {
+        return socialSubscriptionService.createNewsletter(text);
     }
 }

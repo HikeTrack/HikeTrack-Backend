@@ -26,7 +26,7 @@ public class BookmarkServiceImpl implements BookmarkService {
     @Override
     public BookmarkRespondDto addToBookmarks(BookmarkRequestDto requestDto, User user) {
         BookmarkId bookmarkId = new BookmarkId(user.getId(), requestDto.getTourId());
-        findBookmarkById(bookmarkId);
+        isExistBookmark(bookmarkId);
         Bookmark bookmark = new Bookmark();
         bookmark.setUser(user);
         bookmark.setId(bookmarkId);
@@ -56,7 +56,7 @@ public class BookmarkServiceImpl implements BookmarkService {
         );
     }
 
-    private void findBookmarkById(BookmarkId id) {
+    private void isExistBookmark(BookmarkId id) {
         boolean exists = bookmarkRepository.existsById(id);
         if (exists) {
             throw new IllegalStateException("This tour is already saved");

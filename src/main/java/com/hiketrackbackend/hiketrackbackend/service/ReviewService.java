@@ -13,5 +13,7 @@ public interface ReviewService {
 
     List<ReviewsRespondDto> getAllByUserId(Long userId, Pageable pageable);
 
+    List<ReviewsRespondDto> getAllByTourId(Long tourId, Pageable pageable);
+
     void deleteById(Long reviewId);
 }

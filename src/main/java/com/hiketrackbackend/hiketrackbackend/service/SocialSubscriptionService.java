@@ -7,4 +7,6 @@ public interface SocialSubscriptionService {
     UserDevMsgRespondDto create(SubscriptionRequestDto requestDto);
 
     UserDevMsgRespondDto delete(String email);
+
+    UserDevMsgRespondDto createNewsletter(String message);
 }

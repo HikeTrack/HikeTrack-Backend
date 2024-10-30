@@ -52,6 +52,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public List<ReviewsRespondDto> getAllByTourId(Long tourId, Pageable pageable) {
+        return reviewRepository.findByTourId(tourId, pageable)
+                .stream()
+                .map(reviewMapper::toDto)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public void deleteById(Long reviewId) {
         Tour tour = getTourByReviewId(reviewId);

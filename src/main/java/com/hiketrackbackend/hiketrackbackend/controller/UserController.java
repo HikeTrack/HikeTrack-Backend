@@ -8,6 +8,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDt
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
+import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFile;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,16 +40,16 @@ public class UserController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
     private final ObjectMapper objectMapper;
+    private final RoleService roleService;
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @GetMapping("/me")
-    @Operation(summary = "", description = "")
+    @Tag(name = "User Management", description = "Endpoints for managing users")
     public UserRespondDto getLoggedInUser(HttpServletRequest request) {
         return userService.getLoggedInUser(request);
     }
 
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Logout user", description = "Logout the currently logged-in user.")
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) {
         authenticationService.logout(request);
@@ -57,7 +58,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #id == authentication.principal.id")
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "", description = "")
+    @Operation(summary = "Update user", description = "Update the details of the user with the given ID.")
     public UserUpdateRespondDto updateUser(
             @RequestPart("data") String dataString,
             @PathVariable @Positive Long id,
@@ -74,14 +75,22 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @DeleteMapping("/{userId}")
-    @Operation(summary = "", description = "")
+    @Operation(summary = "Delete user", description = "Delete the user with the given ID.")
     public void deleteUser(@PathVariable @Positive Long userId) {
         userService.deleteUser(userId);
     }
 
     @PostMapping("/request")
-    @Operation(summary = "", description = "")
+    @Operation(summary = "Promote request from user", description = "Submit a request to promote user to the guide.")
     public UserDevMsgRespondDto promoteRequestFromUser(@RequestBody UserRequestDto request) {
         return userService.promoteRequest(request);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/role_change")
+    @Operation(summary = "Promote User to Guide",
+            description = "Allows an admin to change a user's role to a guide.")
+    public UserDevMsgRespondDto promoteUserToGuide(@RequestBody UserRequestDto request) {
+        return roleService.changeUserRoleToGuide(request);
     }
 }

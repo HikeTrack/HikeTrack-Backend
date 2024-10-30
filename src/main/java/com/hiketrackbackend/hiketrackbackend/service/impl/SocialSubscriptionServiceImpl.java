@@ -10,6 +10,7 @@ import com.hiketrackbackend.hiketrackbackend.service.SocialSubscriptionService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +40,12 @@ public class SocialSubscriptionServiceImpl implements SocialSubscriptionService 
         }
         socialSubscriptionRepository.deleteByEmail(email);
         return new UserDevMsgRespondDto("Email has been deleted from subscription successfully");
+    }
+
+    @Override
+    public UserDevMsgRespondDto createNewsletter(String message) {
+        List<String> emails = socialSubscriptionRepository.findAllEmails();
+        subscriptionEmailSenderImpl.newsletterDistribution(message, emails);
+        return new UserDevMsgRespondDto("Newsletters has been send successfully");
     }
 }

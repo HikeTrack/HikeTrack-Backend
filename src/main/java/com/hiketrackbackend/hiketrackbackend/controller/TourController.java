@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.api.annotations.ParameterObject;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
@@ -27,14 +27,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/tours")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Tour Management", description = "Work with tour endpoints")
+@Tag(name = "Tour Management", description = "Endpoints for managing tours")
 public class TourController {
     private final TourService tourService;
     private final TourDetailsService tourDetailsService;
@@ -42,7 +41,8 @@ public class TourController {
 
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "", description = "")
+    @Operation(summary = "Create a new tour",
+            description = "Create a new tour with the provided details, main photo, and additional photos.")
     public TourRespondWithoutReviews createTour(
             @RequestPart("data") String dataString,
             @RequestPart("mainPhoto") @Valid @ValidImageFile MultipartFile mainPhoto,
@@ -61,8 +61,7 @@ public class TourController {
 
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @PatchMapping("/{tourId}/{userId}")
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Update tour information", description = "Update the general information of an existing tour.")
     public TourRespondWithoutReviews updateGeneralInfoAboutTour(
             @RequestBody @Valid TourUpdateRequestDto requestDto,
             @PathVariable @Positive Long userId,
@@ -73,8 +72,7 @@ public class TourController {
 
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @PatchMapping("/{tourId}/photo/{userId}")
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Update tour main photo", description = "Update the main photo of an existing tour.")
     public TourRespondWithoutReviews updateTourPhoto(
             @RequestPart("mainPhoto") @Valid @ValidImageFile MultipartFile mainPhoto,
             @PathVariable @Positive Long userId,
@@ -85,8 +83,8 @@ public class TourController {
 
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @PatchMapping("/{tourId}/additionalPhotos/{userId}")
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Update tour additional photos",
+            description = "Update the additional photos of an existing tour.")
     public DetailsRespondDto updateTourDetailsPhotos(
             @RequestPart("additionalPhotos") @Valid List<@ValidImageFile MultipartFile> additionalPhotos,
             @PathVariable @Positive Long userId,
@@ -96,7 +94,7 @@ public class TourController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "", description = "")
+    @Operation(summary = "Get tour by ID", description = "Retrieve the details of a tour by its ID.")
     public TourRespondDto getTourById(@PathVariable @Positive Long id,
                                       @RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "5") int size) {
@@ -104,14 +102,13 @@ public class TourController {
     }
 
     @GetMapping("/popular")
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Get most rated tours", description = "Retrieve a list of the most highly rated tours.")
     public List<TourRespondWithoutDetailsAndReviews> getMostRatedTours() {
         return tourService.getByRating();
     }
 
     @GetMapping("/guide/{guideId}")
-    @Operation(summary = "", description = "")
+    @Operation(summary = "Get tours by guide", description = "Retrieve all tours created by a specific guide.")
     public List<TourRespondWithoutDetailsAndReviews> getAllToursMadeByGuide(
             @PathVariable @Positive Long guideId,
             @ParameterObject @PageableDefault Pageable pageable
@@ -120,22 +117,21 @@ public class TourController {
     }
 
     @GetMapping
-    @Operation(summary = "")
+    @Operation(summary = "Get all tours", description = "Retrieve a paginated list of all tours.")
     public List<TourRespondWithoutDetailsAndReviews> getAllTours(@ParameterObject @PageableDefault Pageable pageable) {
         return tourService.getAll(pageable);
     }
 
     @GetMapping("/search")
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Search tours", description = "Search for tours based on various parameters.")
     public List<TourRespondWithoutDetailsAndReviews> searchTours(@Valid TourSearchParameters params,
                                                                  @ParameterObject @PageableDefault Pageable pageable) {
         return tourService.search(params, pageable);
     }
 
-    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @DeleteMapping("/{tourId}/{userId}")
-    @Operation(summary = "", description = "")
+    @Operation(summary = "Delete tour", description = "Delete a tour by its ID and the user ID of the guide or admin.")
     public void deleteTour(@PathVariable @Positive Long tourId,
                            @PathVariable @Positive Long userId) {
         tourService.deleteTourByIdAndUserId(tourId, userId);
@@ -143,7 +139,8 @@ public class TourController {
 
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
     @DeleteMapping("/photo/{additionalPhotoId}")
-    @Operation(summary = "", description = "")
+    @Operation(summary = "Delete additional photo",
+            description = "Delete a specific additional photo from a tour by its ID.")
     public void deleteSingleTourDetailsPhoto(@PathVariable @Positive Long additionalPhotoId) {
         tourService.deleteTourDetailsPhotoById(additionalPhotoId);
     }
