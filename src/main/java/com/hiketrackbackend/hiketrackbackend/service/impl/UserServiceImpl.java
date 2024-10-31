@@ -62,7 +62,10 @@ public class UserServiceImpl implements UserService {
             FileStorageService s3Service,
             ConfirmationTokenService confirmationTokenService,
             @Qualifier("confirmationRequestEmailSenderImpl") EmailSender confirmationEmailSenderImpl,
-            @Qualifier("promotionRequestEmailSenderImpl") EmailSender promotionRequestEmailSenderImpl, CustomUserDetailsService userDetailsService, EmailUtils emailUtils) {
+            @Qualifier("promotionRequestEmailSenderImpl") EmailSender promotionRequestEmailSenderImpl,
+            CustomUserDetailsService userDetailsService,
+            EmailUtils emailUtils
+    ) {
 
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
@@ -119,11 +122,10 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         UserUpdateRespondDto responseDto = userMapper.toUpdateRespondDto(user);
 
-        if (!oldEmail.equals(user.getEmail())) {
-            setNewToken(responseDto, user);
+        if (!oldEmail.equals(requestDto.getEmail())) {
+            setNewToken(responseDto, requestDto.getEmail());
+            generateEmailChangeNotification(oldEmail, requestDto.getEmail());
         }
-
-        generateEmailChangeNotification(oldEmail, user.getEmail());
         return responseDto;
     }
 
@@ -167,14 +169,14 @@ public class UserServiceImpl implements UserService {
         );
     }
 
-    private void setNewToken(UserUpdateRespondDto responseDto, User user) {
-        String newToken = jwtUtil.generateToken(user.getEmail());
-        responseDto.setToken(newToken);
-        updateSecurityContext(user);
+    private void setNewToken(UserUpdateRespondDto respondDto, String newEmail) {
+        String newToken = jwtUtil.generateToken(newEmail);
+        respondDto.setToken(newToken);
+        updateSecurityContext(newEmail);
     }
 
-    private void updateSecurityContext(User user) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+    private void updateSecurityContext(String newEmail) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(newEmail);
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);

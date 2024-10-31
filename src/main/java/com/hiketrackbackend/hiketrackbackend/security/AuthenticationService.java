@@ -16,6 +16,7 @@ import com.hiketrackbackend.hiketrackbackend.security.token.impl.PasswordResetUs
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -64,7 +65,7 @@ public class AuthenticationService {
         return userService.updatePassword(request, user.getId());
     }
 
-    public void logout(HttpServletRequest request) {
+    public void logout(@NotNull HttpServletRequest request) {
         request.getSession().invalidate();
         logoutTokenService.save(request);
     }

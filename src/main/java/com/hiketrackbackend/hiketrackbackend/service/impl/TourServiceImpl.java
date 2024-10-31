@@ -67,12 +67,12 @@ public class TourServiceImpl implements TourService {
             throw new RuntimeException("Tour main photo is mandatory. Please upload a file.");
         }
         isExistTourByName(requestDto.getName(), user.getId());
+        Country country = findCountry(requestDto.getCountryId());
         Tour tour = tourMapper.toEntity(requestDto);
         tour.setUser(user);
         List<String> mainPhotoUrl = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(mainPhoto));
         tour.setMainPhoto(mainPhotoUrl.get(FIRST_ELEMENT));
 
-        Country country = findCountry(requestDto.getCountryId());
         tour.setCountry(country);
 
         TourDetails tourDetails = tourDetailsService.createTourDetails(
@@ -110,6 +110,14 @@ public class TourServiceImpl implements TourService {
     @Override
     public List<TourRespondWithoutDetailsAndReviews> getAll(Pageable pageable) {
         return tourRepository.findAll(pageable)
+                .stream()
+                .map(tourMapper::toDtoWithoutDetailsAndReviews)
+                .toList();
+    }
+
+    @Override
+    public List<TourRespondWithoutDetailsAndReviews> getAllToursMadeByGuide(Long userId, Pageable pageable) {
+        return tourRepository.findAllTourByUserId(userId, pageable)
                 .stream()
                 .map(tourMapper::toDtoWithoutDetailsAndReviews)
                 .toList();
@@ -171,14 +179,6 @@ public class TourServiceImpl implements TourService {
                 () -> new EntityNotFoundException("Tour details photo not found with id: " + id)
         );
         tourDetailsFileRepository.delete(photo);
-    }
-
-    @Override
-    public List<TourRespondWithoutDetailsAndReviews> getAllToursMadeByGuide(Long userId, Pageable pageable) {
-        return tourRepository.findAllTourByUserId(userId, pageable)
-                .stream()
-                .map(tourMapper::toDtoWithoutDetailsAndReviews)
-                .toList();
     }
 
     private boolean isExistTourById(Long tourId, Long userId) {
