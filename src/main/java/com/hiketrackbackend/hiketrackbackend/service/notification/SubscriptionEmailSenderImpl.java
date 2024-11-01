@@ -17,6 +17,9 @@ public class SubscriptionEmailSenderImpl implements EmailSender {
 
     @Override
     public void send(String toEmail, String param) {
+        if (toEmail == null || toEmail.isEmpty()) {
+            throw new IllegalArgumentException("Email is mandatory: " + toEmail);
+        }
         String message = generateConfirmationMessage(toEmail);
         emailUtils.sendEmail(toEmail, SUBJECT, message);
     }

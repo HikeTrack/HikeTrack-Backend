@@ -11,6 +11,9 @@ public class PromotionRequestEmailSenderImpl implements EmailSender {
 
     @Override
     public void send(String userEmail, String request) {
+        if (userEmail == null || userEmail.isEmpty()) {
+            throw new IllegalArgumentException("Email is mandatory: " + userEmail);
+        }
         String message = generateConfirmationEmail(userEmail, request);
         emailUtils.sendEmail(emailUtils.getFrom(), SUBJECT, message);
     }

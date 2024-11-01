@@ -10,5 +10,4 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, BookmarkId> 
     Set<Bookmark> findByUser_Id(Long user_id);
 
     boolean existsById(BookmarkId id);
-
 }
