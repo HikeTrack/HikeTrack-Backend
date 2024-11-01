@@ -29,3 +29,5 @@ databaseChangeLog:
       file: db/changelog/changeset/14-create-tour-details-file-table.yaml
   - include:
       file: db/changelog/changeset/15-create-rating-table.yaml
+  - include:
+      file: db/changelog/changeset/16-create-social-subscription-table.yaml

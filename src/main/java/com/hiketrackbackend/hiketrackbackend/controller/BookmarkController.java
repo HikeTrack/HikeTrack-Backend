@@ -19,38 +19,36 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.Set;
 
 @RestController
 @RequestMapping("/bookmarks")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "", description = "")
+@Tag(name = "Bookmarks", description = "Operations related to managing user bookmarks.")
 public class BookmarkController {
     private final BookmarkService bookmarkService;
 
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @PostMapping
-    @Operation(summary = "", description = "")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
+    @Operation(summary = "Add Bookmark", description = "Add a new bookmark for the authenticated user.")
     public BookmarkRespondDto addToBookmark(@RequestBody @Valid BookmarkRequestDto requestDto,
                                             Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return bookmarkService.addToBookmarks(requestDto, user);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @GetMapping("/{userId}")
-    @Operation(summary = "",
-            description = "")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")
+    @Operation(summary = "Get Bookmarks", description = "Retrieve all bookmarks for the specified user.")
     public Set<BookmarkRespondDto> getBookmarksByUserId(@PathVariable @Positive Long userId) {
         return bookmarkService.getByUserId(userId);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")
     @DeleteMapping("/{userId}/{tourId}")
-    @Operation(summary = "",
-            description = "")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")
+    @Operation(summary = "Delete Bookmark",
+            description = "Delete a bookmark for the specified user with specified tour.")
     public void deleteBookmark(@PathVariable @Positive Long userId,
                                @PathVariable @Positive Long tourId) {
         bookmarkService.deleteBookmarkById(tourId, userId);

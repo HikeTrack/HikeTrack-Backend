@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/token")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "", description = "")
+@Tag(name = "Token", description = "Operations related to JWT token management.")
 public class TokenController {
     private final JwtUtil jwtUtil;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
-    @Operation(summary = "", description = "")
+    @Operation(summary = "Refresh JWT Token", description = "Refresh the JWT token for the authenticated user.")
     public UserResponseDto refreshJWTToken(HttpServletRequest request) {
         return jwtUtil.refreshToken(request);
     }

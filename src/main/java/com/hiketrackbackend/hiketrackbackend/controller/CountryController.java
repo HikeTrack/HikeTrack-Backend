@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.api.annotations.ParameterObject;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
@@ -30,14 +30,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/countries")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "", description = "")
+@Tag(name = "Country Management", description = "Endpoints for managing countries")
 public class CountryController {
     private final CountryService countryService;
     private final ObjectMapper objectMapper;
@@ -78,38 +77,34 @@ public class CountryController {
     }
 
     @GetMapping("/search")
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Search countries", description = "Search for countries based on various parameters.")
     public List<CountryRespondDto> search(@Valid CountrySearchParameters params,
                                           @ParameterObject @PageableDefault Pageable pageable) {
         return countryService.search(params, pageable);
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Get country by ID", description = "Retrieve the details of a country by its ID.")
     public CountryRespondDto getById(@PathVariable @Positive Long id) {
         return countryService.getById(id);
     }
 
     @GetMapping
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Get all countries", description = "Retrieve a paginated list of all countries.")
     public List<CountryRespondDto> getAll(@ParameterObject @PageableDefault Pageable pageable) {
         return countryService.getAll(pageable);
     }
 
     @GetMapping("/random_ten")
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Get ten random countries", description = "Retrieve a list of ten random countries.")
     public List<CountryRespondWithPhotoDto> getTenRandomCountries() {
         return countryService.getTenRandomCountries();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Delete country by name",
+            description = "Allows administrators to delete a country by its name.")
     public void deleteByCountryName(@RequestBody CountryDeleteRequestDto requestDto) {
         countryService.deleteByName(requestDto);
     }

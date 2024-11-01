@@ -50,9 +50,9 @@ public class TourDetailsServiceImpl implements TourDetailsService {
 
         TourDetails tourDetails = tour.getTourDetails();
         List<TourDetailsFile> savedPhotos = tourDetails.getAdditionalPhotos();
-        if (additionalPhotos.size() > (savedPhotos.size() - additionalPhotos.size())) {
+        if (additionalPhotos.size() > (ADDITIONAL_PHOTOS_LIMIT - savedPhotos.size())) {
             throw new MemoryLimitException("Max storage is limited by "
-                    + ADDITIONAL_PHOTOS_LIMIT + ". Delete some photos or add " + (savedPhotos.size() - additionalPhotos.size()));
+                    + ADDITIONAL_PHOTOS_LIMIT + ". Delete some photos or add " + (ADDITIONAL_PHOTOS_LIMIT - savedPhotos.size()));
         }
         setAdditionalFilesToTourDetails(additionalPhotos, tourDetails);
         tourDetails.setTour(tour);

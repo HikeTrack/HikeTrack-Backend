@@ -13,6 +13,7 @@ import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import com.hiketrackbackend.hiketrackbackend.service.RatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,9 +36,11 @@ public class RatingServiceImpl implements RatingService {
     }
 
     private Rating createRating(RatingRequestDto requestDto, Long userId, Long tourId) {
+        User user = findUserById(userId);
+        Tour tour = findTourById(tourId);
         Rating rating = ratingMapper.toEntity(requestDto);
-        rating.setUser(findUserById(userId));
-        rating.setTour(findTourById(tourId));
+        rating.setUser(user);
+        rating.setTour(tour);
         return ratingRepository.save(rating);
     }
 
