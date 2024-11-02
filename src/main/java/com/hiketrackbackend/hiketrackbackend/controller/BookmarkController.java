@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +33,7 @@ public class BookmarkController {
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @Operation(summary = "Add Bookmark", description = "Add a new bookmark for the authenticated user.")
     public BookmarkRespondDto addToBookmark(@RequestBody @Valid BookmarkRequestDto requestDto,
-                                            Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+                                            @AuthenticationPrincipal User user) {
         return bookmarkService.addToBookmarks(requestDto, user);
     }
 

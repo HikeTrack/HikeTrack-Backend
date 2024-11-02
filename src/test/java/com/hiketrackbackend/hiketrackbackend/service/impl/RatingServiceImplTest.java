@@ -11,6 +11,7 @@ import com.hiketrackbackend.hiketrackbackend.repository.RatingRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,11 +23,13 @@ import java.util.Optional;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RatingServiceImplTest {
-
     @InjectMocks
     private RatingServiceImpl ratingService;
 
@@ -41,7 +44,6 @@ public class RatingServiceImplTest {
 
     @Mock
     private RatingMapper ratingMapper;
-
     private RatingRequestDto ratingRequestDto;
     private Rating rating;
     private User user;
@@ -50,7 +52,7 @@ public class RatingServiceImplTest {
     @BeforeEach
     public void setUp() {
         ratingRequestDto = new RatingRequestDto();
-        ratingRequestDto.setRating(5L);
+        ratingRequestDto.setRating(5);
 
         user = new User();
         user.setId(1L);
@@ -60,27 +62,25 @@ public class RatingServiceImplTest {
 
         rating = new Rating();
         rating.setId(1L);
-        rating.setRating(5L);
+        rating.setRating(5);
         rating.setUser(user);
         rating.setTour(tour);
     }
 
     @Test
+    @DisplayName("Update rating when tour was not rated yet")
     public void testUpdateRatingWhenRatingDoesNotExistThenCreateRating() {
-        // Arrange
         when(ratingRepository.existsByUserIdAndTourId(any(Long.class), any(Long.class))).thenReturn(false);
         when(ratingMapper.toEntity(any(RatingRequestDto.class))).thenReturn(rating);
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
         when(tourRepository.findById(any(Long.class))).thenReturn(Optional.of(tour));
         when(ratingRepository.save(any(Rating.class))).thenReturn(rating);
         RatingRespondDto ratingRespondDto = new RatingRespondDto();
-        ratingRespondDto.setRating(5L);
+        ratingRespondDto.setRating(5);
         when(ratingMapper.toDto(any(Rating.class))).thenReturn(ratingRespondDto);
 
-        // Act
         RatingRespondDto result = ratingService.updateRating(ratingRequestDto, 1L, 1L);
 
-        // Assert
         verify(ratingRepository, times(1)).existsByUserIdAndTourId(1L, 1L);
         verify(ratingMapper, times(1)).toEntity(ratingRequestDto);
         verify(userRepository, times(1)).findById(1L);
@@ -88,20 +88,17 @@ public class RatingServiceImplTest {
         verify(ratingRepository, times(2)).save(rating);
         verify(ratingMapper, times(1)).toDto(rating);
 
-        // Additional assertions
-        assertEquals(5L, result.getRating());
+        assertEquals(5, result.getRating());
     }
 
 
-
     @Test
+    @DisplayName("Update rating with not valid tour id")
     public void testUpdateRatingWhenTourDoesNotExistThenThrowException() {
-        // Arrange
         when(ratingRepository.existsByUserIdAndTourId(any(Long.class), any(Long.class))).thenReturn(false);
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
         when(tourRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
-        // Act & Assert
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
             ratingService.updateRating(ratingRequestDto, 1L, 1L);
         });

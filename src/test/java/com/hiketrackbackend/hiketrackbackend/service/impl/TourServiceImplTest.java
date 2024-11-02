@@ -3,7 +3,12 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 
 import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.*;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
@@ -23,6 +28,7 @@ import com.hiketrackbackend.hiketrackbackend.service.TourDetailsService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import jakarta.persistence.EntityExistsException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,15 +45,19 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TourServiceImplTest {
-
     @Mock
     private TourRepository tourRepository;
 
@@ -77,7 +87,6 @@ public class TourServiceImplTest {
 
     @InjectMocks
     private TourServiceImpl tourService;
-
     private TourRequestDto tourRequestDto;
     private TourUpdateRequestDto tourUpdateRequestDto;
     private User user;
@@ -121,11 +130,10 @@ public class TourServiceImplTest {
     }
 
     @Test
+    @DisplayName("Create tour with empty main photo")
     public void testCreateTourWhenMainPhotoIsEmptyThenThrowRuntimeException() {
-        // Arrange
         when(mainPhoto.isEmpty()).thenReturn(true);
 
-        // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             tourService.createTour(tourRequestDto, user, mainPhoto, additionalPhotos);
         });
@@ -134,12 +142,11 @@ public class TourServiceImplTest {
     }
 
     @Test
+    @DisplayName("Create tour when its already exist")
     public void testCreateTourWhenTourAlreadyExistsThenThrowEntityExistsException() {
-        // Arrange
         when(mainPhoto.isEmpty()).thenReturn(false);
         when(tourRepository.existsTourByUserIdAndName(user.getId(), tourRequestDto.getName())).thenReturn(true);
 
-        // Act & Assert
         EntityExistsException exception = assertThrows(EntityExistsException.class, () -> {
             tourService.createTour(tourRequestDto, user, mainPhoto, additionalPhotos);
         });
@@ -148,13 +155,12 @@ public class TourServiceImplTest {
     }
 
     @Test
+    @DisplayName("Create tour with not exist country")
     public void testCreateTourWhenCountryDoesNotExistThenThrowEntityNotFoundException() {
-        // Arrange
         when(mainPhoto.isEmpty()).thenReturn(false);
         when(tourRepository.existsTourByUserIdAndName(user.getId(), tourRequestDto.getName())).thenReturn(false);
         when(countryRepository.findById(tourRequestDto.getCountryId())).thenReturn(Optional.empty());
 
-        // Act & Assert
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
             tourService.createTour(tourRequestDto, user, mainPhoto, additionalPhotos);
         });
@@ -163,8 +169,8 @@ public class TourServiceImplTest {
     }
 
     @Test
+    @DisplayName("Create tour with valid data")
     public void testCreateTourWhenTourIsSuccessfullyCreatedThenReturnTourRespondWithoutReviews() {
-        // Arrange
         when(mainPhoto.isEmpty()).thenReturn(false);
         when(tourRepository.existsTourByUserIdAndName(user.getId(), tourRequestDto.getName())).thenReturn(false);
         when(countryRepository.findById(tourRequestDto.getCountryId())).thenReturn(Optional.of(country));
@@ -174,36 +180,31 @@ public class TourServiceImplTest {
         when(tourRepository.save(any(Tour.class))).thenReturn(tour);
         when(tourMapper.toDtoWithoutReviews(any(Tour.class))).thenReturn(new TourRespondWithoutReviews());
 
-        // Act
         TourRespondWithoutReviews result = tourService.createTour(tourRequestDto, user, mainPhoto, additionalPhotos);
 
-        // Assert
         assertThat(result).isNotNull();
         verify(tourRepository, times(1)).save(any(Tour.class));
     }
 
     @Test
+    @DisplayName("Update tour with all valid data")
     public void testUpdateTourWhenTourIsSuccessfullyUpdatedThenReturnUpdatedTour() {
-        // Arrange
         when(tourRepository.findTourByIdAndUserId(tour.getId(), user.getId())).thenReturn(Optional.of(tour));
         when(countryRepository.findById(tourUpdateRequestDto.getCountryId())).thenReturn(Optional.of(country));
         when(tourRepository.save(any(Tour.class))).thenReturn(tour);
         when(tourMapper.toDtoWithoutReviews(any(Tour.class))).thenReturn(new TourRespondWithoutReviews());
 
-        // Act
         TourRespondWithoutReviews result = tourService.updateTour(tourUpdateRequestDto, user.getId(), tour.getId());
 
-        // Assert
         assertThat(result).isNotNull();
         verify(tourRepository, times(1)).save(any(Tour.class));
     }
 
     @Test
+    @DisplayName("Update tour when tour is not exist")
     public void testUpdateTourWhenTourIsNotFoundThenThrowEntityNotFoundException() {
-        // Arrange
         when(tourRepository.findTourByIdAndUserId(tour.getId(), user.getId())).thenReturn(Optional.empty());
 
-        // Act & Assert
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
             tourService.updateTour(tourUpdateRequestDto, user.getId(), tour.getId());
         });
@@ -212,12 +213,11 @@ public class TourServiceImplTest {
     }
 
     @Test
+    @DisplayName("Update tour with not exist country")
     public void testUpdateTourWhenCountryIsNotFoundThenThrowEntityNotFoundException() {
-        // Arrange
         when(tourRepository.findTourByIdAndUserId(tour.getId(), user.getId())).thenReturn(Optional.of(tour));
         when(countryRepository.findById(tourUpdateRequestDto.getCountryId())).thenReturn(Optional.empty());
 
-        // Act & Assert
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
             tourService.updateTour(tourUpdateRequestDto, user.getId(), tour.getId());
         });
@@ -226,17 +226,15 @@ public class TourServiceImplTest {
     }
 
     @Test
+    @DisplayName("Update tour with mail photo as null")
     public void testUpdateTourPhotoWhenMainPhotoIsNull() {
-        // Arrange
         when(tourRepository.findTourByIdAndUserId(tour.getId(), user.getId())).thenReturn(Optional.of(tour));
         when(s3Service.uploadFileToS3(anyString(), anyList())).thenReturn(Collections.singletonList("newMainPhotoUrl"));
         when(tourRepository.save(any(Tour.class))).thenReturn(tour);
         when(tourMapper.toDtoWithoutReviews(any(Tour.class))).thenReturn(new TourRespondWithoutReviews());
 
-        // Act
         TourRespondWithoutReviews result = tourService.updateTourPhoto(null, user.getId(), tour.getId());
 
-        // Assert
         assertThat(result).isNotNull();
         verify(s3Service, never()).deleteFileFromS3(anyString());
         verify(s3Service, times(1)).uploadFileToS3(anyString(), anyList());
@@ -244,18 +242,16 @@ public class TourServiceImplTest {
     }
 
     @Test
+    @DisplayName("Update tour when main photo is exist and upcoming is null")
     public void testUpdateTourPhotoWhenMainPhotoIsNotNull() {
-        // Arrange
-        tour.setMainPhoto("oldMainPhotoUrl"); // Установим значение mainPhoto у объекта tour
+        tour.setMainPhoto("oldMainPhotoUrl");
         when(tourRepository.findTourByIdAndUserId(tour.getId(), user.getId())).thenReturn(Optional.of(tour));
         when(s3Service.uploadFileToS3(anyString(), anyList())).thenReturn(Collections.singletonList("newMainPhotoUrl"));
         when(tourRepository.save(any(Tour.class))).thenReturn(tour);
         when(tourMapper.toDtoWithoutReviews(any(Tour.class))).thenReturn(new TourRespondWithoutReviews());
 
-        // Act
         TourRespondWithoutReviews result = tourService.updateTourPhoto(mainPhoto, user.getId(), tour.getId());
 
-        // Assert
         assertThat(result).isNotNull();
         verify(s3Service, times(1)).deleteFileFromS3("oldMainPhotoUrl");
         verify(s3Service, times(1)).uploadFileToS3(anyString(), anyList());
@@ -263,39 +259,35 @@ public class TourServiceImplTest {
     }
 
     @Test
+    @DisplayName("Get all tours")
     public void testGetAllWhenRepositoryReturnsListOfTours() {
-        // Arrange
         List<Tour> tours = List.of(tour);
         Pageable pageable = PageRequest.of(0, 10);
         when(tourRepository.findAll(pageable)).thenReturn(new PageImpl<>(tours));
         when(tourMapper.toDtoWithoutDetailsAndReviews(any(Tour.class))).thenReturn(new TourRespondWithoutDetailsAndReviews());
 
-        // Act
         List<TourRespondWithoutDetailsAndReviews> result = tourService.getAll(pageable);
 
-        // Assert
         assertThat(result).isNotEmpty();
         assertThat(result.size()).isEqualTo(tours.size());
         verify(tourRepository, times(1)).findAll(pageable);
     }
 
     @Test
+    @DisplayName("Get all tours when DB empty")
     public void testGetAllWhenRepositoryReturnsEmptyList() {
-        // Arrange
         Pageable pageable = PageRequest.of(0, 10);
         when(tourRepository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        // Act
         List<TourRespondWithoutDetailsAndReviews> result = tourService.getAll(pageable);
 
-        // Assert
         assertThat(result).isEmpty();
         verify(tourRepository, times(1)).findAll(pageable);
     }
 
     @Test
+    @DisplayName("Get tour by valid id")
     public void testGetByIdWhenTourFoundThenReturnDto() {
-        // Arrange
         Long tourId = 1L;
         int page = 0;
         int size = 10;
@@ -308,10 +300,8 @@ public class TourServiceImplTest {
         when(reviewRepository.findByTourId(tourId, PageRequest.of(page, size, Sort.by("dateCreated").descending()))).thenReturn(reviewPage);
         when(reviewMapper.toDto(any(Review.class))).thenReturn(new ReviewsRespondDto());
 
-        // Act
         TourRespondDto result = tourService.getById(tourId, page, size);
 
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result.getReviews()).isNotEmpty();
         assertThat(result.getCurrentReviewPage()).isEqualTo(reviewPage.getNumber());
@@ -322,15 +312,14 @@ public class TourServiceImplTest {
     }
 
     @Test
+    @DisplayName("Get tour by not existed id ")
     public void testGetByIdWhenTourNotFoundThenThrowException() {
-        // Arrange
         Long tourId = 1L;
         int page = 0;
         int size = 10;
 
         when(tourRepository.findTourById(tourId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
             tourService.getById(tourId, page, size);
         });
@@ -340,8 +329,8 @@ public class TourServiceImplTest {
     }
 
     @Test
+    @DisplayName("Search by all params")
     public void testSearchWhenRepositoryReturnsListOfToursThenReturnListOfTours() {
-        // Arrange
         TourSearchParameters params = new TourSearchParameters(
                 new String[]{"routeType1", "routeType2"},
                 new String[]{"difficulty1", "difficulty2"},
@@ -360,18 +349,16 @@ public class TourServiceImplTest {
         when(tourRepository.findAll(specification, pageable)).thenReturn(new PageImpl<>(tours));
         when(tourMapper.toDtoWithoutDetailsAndReviews(any(Tour.class))).thenReturn(new TourRespondWithoutDetailsAndReviews());
 
-        // Act
         List<TourRespondWithoutDetailsAndReviews> result = tourService.search(params, pageable);
 
-        // Assert
         assertThat(result).isNotEmpty();
         assertThat(result.size()).isEqualTo(tours.size());
         verify(tourRepository, times(1)).findAll(specification, pageable);
     }
 
     @Test
+    @DisplayName("Search with all params and empty DB")
     public void testSearchWhenRepositoryReturnsEmptyListThenReturnEmptyList() {
-        // Arrange
         TourSearchParameters params = new TourSearchParameters(
                 new String[]{"routeType1", "routeType2"},
                 new String[]{"difficulty1", "difficulty2"},
@@ -388,46 +375,40 @@ public class TourServiceImplTest {
         when(tourSpecificationBuilder.build(params)).thenReturn(specification);
         when(tourRepository.findAll(specification, pageable)).thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        // Act
         List<TourRespondWithoutDetailsAndReviews> result = tourService.search(params, pageable);
 
-        // Assert
         assertThat(result).isEmpty();
         verify(tourRepository, times(1)).findAll(specification, pageable);
     }
 
     @Test
+    @DisplayName("Get most rated tours")
     public void testGetByRatingWhenRepositoryReturnsListOfToursThenReturnListOfTours() {
-        // Arrange
         List<Tour> tours = List.of(tour);
         when(tourRepository.findTopToursWithHighestRatings(Pageable.ofSize(7))).thenReturn(tours);
         when(tourMapper.toDtoWithoutDetailsAndReviews(any(Tour.class))).thenReturn(new TourRespondWithoutDetailsAndReviews());
 
-        // Act
         List<TourRespondWithoutDetailsAndReviews> result = tourService.getByRating();
 
-        // Assert
         assertThat(result).isNotEmpty();
         assertThat(result.size()).isEqualTo(tours.size());
         verify(tourRepository, times(1)).findTopToursWithHighestRatings(Pageable.ofSize(7));
     }
 
     @Test
+    @DisplayName("Get tours by rating with no tours")
     public void testGetByRatingWhenRepositoryReturnsEmptyListThenReturnEmptyList() {
-        // Arrange
         when(tourRepository.findTopToursWithHighestRatings(Pageable.ofSize(7))).thenReturn(Collections.emptyList());
 
-        // Act
         List<TourRespondWithoutDetailsAndReviews> result = tourService.getByRating();
 
-        // Assert
         assertThat(result).isEmpty();
         verify(tourRepository, times(1)).findTopToursWithHighestRatings(Pageable.ofSize(7));
     }
 
     @Test
+    @DisplayName("Get all tours by guide id")
     public void testGetAllToursMadeByGuideWhenToursExistThenReturnTours() {
-        // Arrange
         Long userId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
         Tour tour = new Tour();
@@ -439,60 +420,53 @@ public class TourServiceImplTest {
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
         when(tourMapper.toDtoWithoutDetailsAndReviews(tour)).thenReturn(tourDto);
 
-        // Act
         List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
-        // Assert
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).getId());
     }
 
     @Test
+    @DisplayName("Get all tours by guide id with no data")
     public void testGetAllToursMadeByGuideWhenNoToursExistThenReturnEmptyList() {
-        // Arrange
         Long userId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
         List<Tour> tours = Collections.emptyList();
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
 
-        // Act
         List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
-        // Assert
         assertEquals(0, result.size());
     }
 
     @Test
+    @DisplayName("Delete tour by not valid id and user valid id")
     public void testDeleteTourByIdAndUserIdWhenTourDoesNotExistThenDeleteTour() {
-        // Arrange
         Long tourId = 1L;
         Long userId = 1L;
 
         when(tourRepository.existsByIdAndUserId(tourId, userId)).thenReturn(false);
 
-        // Act
         tourService.deleteTourByIdAndUserId(tourId, userId);
 
-        // Assert
         verify(tourRepository, times(1)).deleteById(tourId);
     }
 
     @Test
+    @DisplayName("Delete tour by id and user id")
     public void testDeleteTourByIdAndUserIdWhenTourExistsThenThrowException() {
-        // Arrange
         Long tourId = 1L;
         Long userId = 1L;
 
         when(tourRepository.existsByIdAndUserId(tourId, userId)).thenReturn(true);
 
-        // Act & Assert
         assertThrows(EntityExistsException.class, () -> tourService.deleteTourByIdAndUserId(tourId, userId));
     }
 
     @Test
+    @DisplayName("Get all tour by guide id")
     public void testGetAllToursMadeByGuideWhenRepositoryReturnsToursThenReturnTours() {
-        // Arrange
         Long userId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
         Tour tour = new Tour();
@@ -504,54 +478,47 @@ public class TourServiceImplTest {
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
         when(tourMapper.toDtoWithoutDetailsAndReviews(tour)).thenReturn(tourDto);
 
-        // Act
         List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
-        // Assert
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).getId());
     }
 
     @Test
+    @DisplayName("Get all tours by guide when guide has no tours")
     public void testGetAllToursMadeByGuideWhenRepositoryReturnsEmptyListThenReturnEmptyList() {
-        // Arrange
         Long userId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
         List<Tour> tours = Collections.emptyList();
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
 
-        // Act
         List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
-        // Assert
         assertEquals(0, result.size());
     }
 
     @Test
+    @DisplayName("Delete additional tour photo")
     public void testDeleteTourDetailsPhotoByIdWhenPhotoFoundThenDeletePhoto() {
-        // Arrange
         Long photoId = 1L;
         TourDetailsFile photo = new TourDetailsFile();
         photo.setId(photoId);
 
         when(tourDetailsFileRepository.findById(photoId)).thenReturn(Optional.of(photo));
 
-        // Act
         tourService.deleteTourDetailsPhotoById(photoId);
 
-        // Assert
         verify(tourDetailsFileRepository, times(1)).delete(photo);
     }
 
     @Test
+    @DisplayName("Delete additional tour photo with not valid id")
     public void testDeleteTourDetailsPhotoByIdWhenPhotoNotFoundThenThrowEntityNotFoundException() {
-        // Arrange
         Long photoId = 1L;
 
         when(tourDetailsFileRepository.findById(photoId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(EntityNotFoundException.class, () -> tourService.deleteTourDetailsPhotoById(photoId));
     }
 }

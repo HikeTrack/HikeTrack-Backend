@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -27,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class TourRepositoryTest {
-
     @Autowired
     private TourRepository tourRepository;
 
@@ -82,12 +82,12 @@ public class TourRepositoryTest {
         tour2.setDeleted(false);
 
         Rating rating1 = new Rating();
-        rating1.setRating(5L);
+        rating1.setRating(5);
         rating1.setUser(user);
         rating1.setTour(tour1);
 
         Rating rating2 = new Rating();
-        rating2.setRating(3L);
+        rating2.setRating(3);
         rating2.setUser(user);
         rating2.setTour(tour2);
 

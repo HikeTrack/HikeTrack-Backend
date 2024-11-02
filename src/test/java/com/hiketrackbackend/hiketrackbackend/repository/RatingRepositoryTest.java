@@ -1,7 +1,5 @@
 package com.hiketrackbackend.hiketrackbackend.repository;
 
-import com.hiketrackbackend.hiketrackbackend.model.bookmark.Bookmark;
-import com.hiketrackbackend.hiketrackbackend.model.bookmark.BookmarkId;
 import com.hiketrackbackend.hiketrackbackend.model.country.Continent;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
@@ -18,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
@@ -80,7 +77,7 @@ public class RatingRepositoryTest {
     @DisplayName("Find rating by user and tour id")
     public void testFindRatingByUserIdAndTourIdWhenRatingExists() {
         Rating rating = new Rating();
-        rating.setRating(5L);
+        rating.setRating(5);
         rating.setUser(user);
         rating.setTour(tour);
 
@@ -107,7 +104,7 @@ public class RatingRepositoryTest {
     @DisplayName("Find if rating exists by user and tour id")
     public void testExistsByUserIdAndTourIdWhenRatingExists() {
         Rating rating = new Rating();
-        rating.setRating(5L);
+        rating.setRating(5);
         rating.setUser(user);
         rating.setTour(tour);
 

@@ -1,7 +1,11 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hiketrackbackend.hiketrackbackend.dto.country.*;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryDeleteRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhotoDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.model.country.Continent;
 import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
@@ -16,32 +20,33 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 @WebMvcTest(CountryController.class)
 public class CountryControllerTest {
-
     protected static MockMvc mockMvc;
 
     @MockBean
@@ -68,15 +73,12 @@ public class CountryControllerTest {
 
     @DisplayName("Successfully create a country with valid data and image file")
     @Test
-    public void test_create_country_with_valid_data_and_image() {
+    public void testCreateCountryWithValidDataAndImage() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
 
         String dataString = "{\"name\":\"TestCountry\",\"continent\":\"EUROPE\"}";
         MultipartFile file = mock(MultipartFile.class);
-        CountryRequestDto requestDto = new CountryRequestDto();
-        requestDto.setName("TestCountry");
-        requestDto.setContinent(Continent.EUROPE);
         CountryRespondDto expectedResponse = new CountryRespondDto();
 
         when(countryService.createCountry(any(CountryRequestDto.class), any(MultipartFile.class)))
@@ -85,7 +87,6 @@ public class CountryControllerTest {
         CountryRespondDto response = countryController.createCountry(dataString, file);
 
         assertNotNull(response);
-        // Verify that the service is called with the correct requestDto
         verify(countryService).createCountry(argThat(countryRequestDto ->
                 "TestCountry".equals(countryRequestDto.getName()) &&
                         Continent.EUROPE.equals(countryRequestDto.getContinent())
@@ -95,7 +96,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle invalid JSON format in dataString gracefully")
-    public void test_create_country_with_invalid_json_format() {
+    public void testCreateCountryWithInvalidJsonFormat() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         String invalidDataString = "invalid json";
@@ -108,7 +109,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle valid image file uploads correctly")
-    public void handle_create_valid_image_file_uploads_correctly() {
+    public void handleCreateValidImageFileUploadsCorrectly() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         String dataString = "{\"name\":\"TestCountry\",\"continent\":\"EUROPE\"}";
@@ -129,7 +130,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle missing or null dataString parameter")
-    public void test_create_handle_missing_or_null_dataString_parameter() {
+    public void testCreateHandleMissingOrNullDataStringParameter() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         MultipartFile file = mock(MultipartFile.class);
@@ -141,15 +142,12 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Update country with valid data")
-    public void test_update_country_with_valid_data_and_image() {
+    public void testUpdateCountryWithValidDataAndImage() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         Long id = 1L;
         String dataString = "{\"name\":\"CountryName\",\"continent\":\"EUROPE\"}";
         MultipartFile file = mock(MultipartFile.class);
-        CountryRequestDto requestDto = new CountryRequestDto();
-        requestDto.setName("CountryName");
-        requestDto.setContinent(Continent.valueOf("EUROPE"));
         CountryRespondDto expectedResponse = new CountryRespondDto();
 
         when(countryService.updateCountry(any(CountryRequestDto.class), eq(file), eq(id)))
@@ -169,7 +167,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle invalid JSON data string gracefully")
-    public void test_update_country_with_invalid_json_data() {
+    public void testUpdateCountryWithInvalidJsonData() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         Long id = 1L;
@@ -183,15 +181,12 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle non-existent country ID gracefully")
-    public void test_handle_update_non_existent_country_id_gracefully() {
+    public void testHandleUpdateNonExistentCountryIdGracefully() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         Long id = 999L;
         String dataString = "{\"name\":\"CountryName\",\"continent\":\"EUROPE\"}";
         MultipartFile file = mock(MultipartFile.class);
-        CountryRequestDto requestDto = new CountryRequestDto();
-        requestDto.setName("CountryName");
-        requestDto.setContinent(Continent.valueOf("EUROPE"));
 
         when(countryService.updateCountry(any(CountryRequestDto.class), eq(file), eq(id)))
                 .thenThrow(new IllegalArgumentException("Invalid data format: Cannot find country with ID " + id));
@@ -201,15 +196,12 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle valid JSON data string conversion to CountryRequestDto")
-    public void test_handle_update_valid_json_data_conversion() {
+    public void testHandleUpdateValidJsonDataConversion() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         Long id = 1L;
         String dataString = "{\"name\":\"CountryName\",\"continent\":\"EUROPE\"}";
         MultipartFile file = mock(MultipartFile.class);
-        CountryRequestDto requestDto = new CountryRequestDto();
-        requestDto.setName("CountryName");
-        requestDto.setContinent(Continent.valueOf("EUROPE"));
         CountryRespondDto expectedResponse = new CountryRespondDto();
 
         when(countryService.updateCountry(any(CountryRequestDto.class), eq(file), eq(id)))
@@ -222,7 +214,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Search returns a list of countries matching valid parameters")
-    public void test_search_with_valid_parameters() {
+    public void testSearchWithValidParameters() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         CountrySearchParameters params = new CountrySearchParameters(new String[]{"Europe"}, new String[]{"France"});
@@ -236,7 +228,7 @@ public class CountryControllerTest {
     }
     @Test
     @DisplayName("Search with invalid parameters returns an empty list")
-    public void test_search_with_invalid_parameters() {
+    public void testSearchWithInvalidParameters() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         CountrySearchParameters params = new CountrySearchParameters(new String[]{"InvalidContinent"}, new String[]{"InvalidCountry"});
@@ -250,7 +242,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Search handles empty parameters and returns all countries")
-    public void test_search_with_empty_parameters() {
+    public void testSearchWithEmptyParameters() {
         CountryService countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         CountrySearchParameters params = new CountrySearchParameters(new String[]{}, new String[]{});
@@ -265,7 +257,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Retrieve country details successfully with valid ID")
-    public void test_get_country_by_valid_id() {
+    public void testGetCountryByValidId() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         Long validId = 1L;
@@ -284,7 +276,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle non-existent country ID gracefully")
-    public void test_get_country_by_non_existent_id() {
+    public void testGetCountryByNonExistentId() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         Long nonExistentId = 999L;
@@ -298,7 +290,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle negative ID gracefully")
-    public void test_get_country_by_negative_id() {
+    public void testGetCountryByNegativeId() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         Long negativeId = -1L;
@@ -312,7 +304,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle situation with server exception")
-    public void test_get_country_by_id_service_exception() {
+    public void testGetCountryByIdServiceException() {
         countryService = mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         Long invalidId = -1L;
@@ -327,7 +319,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle situation with all valid data")
-    public void test_get_all_with_valid_pageable() {
+    public void testGetAllWithValidPageable() {
         Pageable pageable = PageRequest.of(0, 10);
         CountryRespondDto country1 = new CountryRespondDto();
         country1.setId(1L);
@@ -353,7 +345,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle situation with server exception")
-    public void test_get_all_countries_should_throw_exception_when_service_fails() {
+    public void testGetAllCountriesShouldThrowExceptionWhenServiceFails() {
         Pageable pageable = PageRequest.of(0, 10);
 
         countryService = Mockito.mock(CountryService.class);
@@ -370,7 +362,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle successfully receiving ten random countries")
-    public void test_get_ten_random_countries_success() {
+    public void testGetTenRandomCountriesSuccess() {
         List<CountryRespondWithPhotoDto> expectedCountries = new ArrayList<>();
         expectedCountries.add(new CountryRespondWithPhotoDto(1L, "Country1", Continent.ASIA, "photo1.jpg"));
         expectedCountries.add(new CountryRespondWithPhotoDto(2L, "Country2", Continent.EUROPE, "photo2.jpg"));
@@ -397,7 +389,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Successfully delete country by name")
-    public void test_delete_country_by_name_success() {
+    public void testDeleteCountryByNameSuccess() {
         countryService = Mockito.mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         CountryDeleteRequestDto requestDto = new CountryDeleteRequestDto();
@@ -410,7 +402,7 @@ public class CountryControllerTest {
 
     @Test
     @DisplayName("Handle situation when country not found")
-    public void test_delete_country_by_name_not_found() {
+    public void testDeleteCountryByNameNotFound() {
         countryService = Mockito.mock(CountryService.class);
         CountryController countryController = new CountryController(countryService, objectMapper);
         CountryDeleteRequestDto requestDto = new CountryDeleteRequestDto();

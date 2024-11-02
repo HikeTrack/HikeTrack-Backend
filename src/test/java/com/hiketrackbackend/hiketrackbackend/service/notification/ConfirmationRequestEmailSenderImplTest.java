@@ -2,6 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.service.notification;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,14 +46,15 @@ public class ConfirmationRequestEmailSenderImplTest {
     }
 
     @Test
+    @DisplayName("Send email successes")
     public void testSendWhenCalledThenEmailSent() {
         confirmationRequestEmailSender.send(TO_EMAIL, TOKEN);
 
         verify(emailUtils, times(1)).sendEmail(TO_EMAIL, SUBJECT, EXPECTED_MESSAGE);
     }
 
-    // Handles null or empty token gracefully
     @Test
+    @DisplayName("Handles null or empty token gracefully")
     public void test_handle_null_or_empty_token() {
         EmailUtils emailUtilsMock = Mockito.mock(EmailUtils.class);
         ConfirmationRequestEmailSenderImpl emailSender = new ConfirmationRequestEmailSenderImpl(emailUtilsMock);

@@ -46,7 +46,7 @@ public interface TourMapper {
         respondDto.setTotalAmountOfMarks((long) ratings.size());
         Long ratingSum = 0L;
         for (Rating value : ratings) {
-            Long rating = value.getRating();
+            Integer rating = value.getRating();
             ratingSum += rating;
         }
         respondDto.setAverageRating(ratingSum / ratings.size());

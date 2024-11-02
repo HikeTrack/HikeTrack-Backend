@@ -82,7 +82,7 @@ public class UserController {
 
     @PostMapping("/request")
     @Operation(summary = "Promote request from user", description = "Submit a request to promote user to the guide.")
-    public UserDevMsgRespondDto promoteRequestFromUser(@RequestBody UserRequestDto request) {
+    public UserDevMsgRespondDto promoteRequestFromUser(@RequestBody @Valid UserRequestDto request) {
         return userService.promoteRequest(request);
     }
 
@@ -90,7 +90,7 @@ public class UserController {
     @PostMapping("/role_change")
     @Operation(summary = "Promote User to Guide",
             description = "Allows an admin to change a user's role to a guide.")
-    public UserDevMsgRespondDto promoteUserToGuide(@RequestBody UserRequestDto request) {
+    public UserDevMsgRespondDto promoteUserToGuide(@RequestBody @Valid UserRequestDto request) {
         return roleService.changeUserRoleToGuide(request);
     }
 }

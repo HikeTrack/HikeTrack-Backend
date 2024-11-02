@@ -10,6 +10,7 @@ import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.repository.BookmarkRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,11 +26,11 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BookmarkServiceImplTest {
-
     @Mock
     private BookmarkRepository bookmarkRepository;
 
@@ -43,8 +44,8 @@ public class BookmarkServiceImplTest {
     private BookmarkServiceImpl bookmarkService;
 
     @Test
+    @DisplayName("Add bookmark with all valid data")
     public void testAddToBookmarksWhenBookmarkIsSuccessfullyAddedThenReturnBookmarkRespondDto() {
-        // Arrange
         BookmarkRequestDto requestDto = new BookmarkRequestDto();
         requestDto.setTourId(1L);
 
@@ -73,10 +74,8 @@ public class BookmarkServiceImplTest {
         respondDto.setAddedAt(LocalDateTime.now());
         when(bookmarkMapper.toDto(any(Bookmark.class))).thenReturn(respondDto);
 
-        // Act
         BookmarkRespondDto result = bookmarkService.addToBookmarks(requestDto, user);
 
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result.getUserId()).isEqualTo(user.getId());
         assertThat(result.getTourId()).isEqualTo(tour.getId());
@@ -84,8 +83,8 @@ public class BookmarkServiceImplTest {
     }
 
     @Test
+    @DisplayName("Add bookmark when bookmark already exists")
     public void testAddToBookmarksWhenBookmarkAlreadyExistsThenThrowIllegalStateException() {
-        // Arrange
         BookmarkRequestDto requestDto = new BookmarkRequestDto();
         requestDto.setTourId(1L);
 
@@ -96,15 +95,14 @@ public class BookmarkServiceImplTest {
 
         when(bookmarkRepository.existsById(bookmarkId)).thenReturn(true);
 
-        // Act & Assert
         assertThatThrownBy(() -> bookmarkService.addToBookmarks(requestDto, user))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("This tour is already saved");
     }
 
     @Test
+    @DisplayName("Add bookmark with not valid tour id")
     public void testAddToBookmarksWhenTourDoesNotExistThenThrowEntityNotFoundException() {
-        // Arrange
         BookmarkRequestDto requestDto = new BookmarkRequestDto();
         requestDto.setTourId(1L);
 
@@ -116,15 +114,14 @@ public class BookmarkServiceImplTest {
         when(bookmarkRepository.existsById(bookmarkId)).thenReturn(false);
         when(tourRepository.findById(requestDto.getTourId())).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThatThrownBy(() -> bookmarkService.addToBookmarks(requestDto, user))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("Tour not found with id: " + requestDto.getTourId());
     }
 
     @Test
+    @DisplayName("Get bookmarks by user id")
     public void testGetByUserIdWhenUserHasBookmarksThenReturnSetOfBookmarkRespondDto() {
-        // Arrange
         Long userId = 1L;
         Set<Bookmark> bookmarks = new HashSet<>();
         Bookmark bookmark = new Bookmark();
@@ -142,10 +139,8 @@ public class BookmarkServiceImplTest {
 
         when(bookmarkMapper.toDto(bookmarks)).thenReturn(bookmarkRespondDtos);
 
-        // Act
         Set<BookmarkRespondDto> result = bookmarkService.getByUserId(userId);
 
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result).hasSize(1);
         assertThat(result.iterator().next().getUserId()).isEqualTo(userId);
@@ -153,8 +148,8 @@ public class BookmarkServiceImplTest {
     }
 
     @Test
+    @DisplayName("Get bookmark by user id when user has no bookmarks")
     public void testGetByUserIdWhenUserHasNoBookmarksThenReturnEmptySet() {
-        // Arrange
         Long userId = 1L;
         Set<Bookmark> bookmarks = Collections.emptySet();
 
@@ -163,18 +158,16 @@ public class BookmarkServiceImplTest {
         Set<BookmarkRespondDto> bookmarkRespondDtos = Collections.emptySet();
         when(bookmarkMapper.toDto(bookmarks)).thenReturn(bookmarkRespondDtos);
 
-        // Act
         Set<BookmarkRespondDto> result = bookmarkService.getByUserId(userId);
 
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result).isEmpty();
         verify(bookmarkRepository).findByUser_Id(userId);
     }
 
     @Test
+    @DisplayName("Delete bookmark with valid id")
     public void testDeleteBookmarkByIdWhenBookmarkExistsThenDeleteBookmark() {
-        // Arrange
         Long userId = 1L;
         Long tourId = 1L;
         BookmarkId bookmarkId = new BookmarkId(userId, tourId);
@@ -184,23 +177,20 @@ public class BookmarkServiceImplTest {
 
         when(bookmarkRepository.findById(bookmarkId)).thenReturn(Optional.of(bookmark));
 
-        // Act
         bookmarkService.deleteBookmarkById(tourId, userId);
 
-        // Assert
         verify(bookmarkRepository).delete(bookmark);
     }
 
     @Test
+    @DisplayName("Delete bookmark with not valid id")
     public void testDeleteBookmarkByIdWhenBookmarkDoesNotExistThenThrowEntityNotFoundException() {
-        // Arrange
         Long userId = 1L;
         Long tourId = 1L;
         BookmarkId bookmarkId = new BookmarkId(userId, tourId);
 
         when(bookmarkRepository.findById(bookmarkId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThatThrownBy(() -> bookmarkService.deleteBookmarkById(tourId, userId))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("Bookmark with id BookmarkId{userId=1, tourId=1} not found");

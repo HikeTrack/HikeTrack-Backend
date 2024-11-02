@@ -7,6 +7,7 @@ import com.hiketrackbackend.hiketrackbackend.model.user.Role;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.repository.RoleRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,14 +15,18 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class RoleServiceImplTest {
-
     @Mock
     private UserRepository userRepository;
 
@@ -32,25 +37,23 @@ public class RoleServiceImplTest {
     private RoleServiceImpl roleService;
 
     @Test
-    public void testSetUserDefaultRoleWhenUserThenSetRoleToUser() {
-        // Arrange
+    @DisplayName("Set user default role for new user")
+    public void testSetUserDefaultRoleWhenNewUserRegisterThenSetRoleToUser() {
         User user = new User();
         Role roleUser = new Role(Role.RoleName.ROLE_USER);
 
         when(roleRepository.findByName(Role.RoleName.ROLE_USER)).thenReturn(roleUser);
 
-        // Act
         roleService.setUserDefaultRole(user);
 
-        // Assert
         verify(roleRepository, times(1)).findByName(Role.RoleName.ROLE_USER);
-        verify(userRepository, never()).save(user); // Ensure save is not called in this method
+        verify(userRepository, never()).save(user);
         assertTrue(user.getRoles().contains(roleUser));
     }
 
     @Test
+    @DisplayName("Change user role to guide with valid email")
     public void testChangeUserRoleToGuideWhenUserFoundThenRoleChanged() {
-        // Arrange
         UserRequestDto request = new UserRequestDto();
         request.setEmail("test@example.com");
 
@@ -61,10 +64,8 @@ public class RoleServiceImplTest {
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
         when(roleRepository.findByName(Role.RoleName.ROLE_GUIDE)).thenReturn(roleGuide);
 
-        // Act
         UserDevMsgRespondDto response = roleService.changeUserRoleToGuide(request);
 
-        // Assert
         verify(userRepository, times(1)).findByEmail("test@example.com");
         verify(roleRepository, times(1)).findByName(Role.RoleName.ROLE_GUIDE);
         verify(userRepository, times(1)).save(user);
@@ -73,14 +74,13 @@ public class RoleServiceImplTest {
     }
 
     @Test
+    @DisplayName("Change user role to guide with not valid email")
     public void testChangeUserRoleToGuideWhenUserNotFoundThenThrowException() {
-        // Arrange
         UserRequestDto request = new UserRequestDto();
         request.setEmail("nonexistent@example.com");
 
         when(userRepository.findByEmail("nonexistent@example.com")).thenReturn(Optional.empty());
 
-        // Act & Assert
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
             roleService.changeUserRoleToGuide(request);
         });

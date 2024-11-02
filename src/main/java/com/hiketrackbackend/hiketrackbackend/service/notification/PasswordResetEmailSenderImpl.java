@@ -16,7 +16,7 @@ public class PasswordResetEmailSenderImpl implements EmailSender {
 
     @Override
     public void send(String email, String token) {
-        if (token ==null || token.isEmpty() || email == null || email.isEmpty()) {
+        if (token == null || token.isEmpty() || email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email " + email + " and token "
                     + token + " should be present");
         }
