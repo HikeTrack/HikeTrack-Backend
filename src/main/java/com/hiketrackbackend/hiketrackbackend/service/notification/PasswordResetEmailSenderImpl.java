@@ -15,10 +15,14 @@ public class PasswordResetEmailSenderImpl implements EmailSender {
     private String resetPasswordBaseUrl;
 
     @Override
-    public void send(String toEmail, String token) {
+    public void send(String email, String token) {
+        if (token == null || token.isEmpty() || email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email " + email + " and token "
+                    + token + " should be present");
+        }
         String resetUrl = resetPasswordBaseUrl + token;
         String resetMessage = generateConfirmationEmail(resetUrl);
-        emailUtils.sendEmail(toEmail, SUBJECT, resetMessage);
+        emailUtils.sendEmail(email, SUBJECT, resetMessage);
     }
 
     @PostConstruct

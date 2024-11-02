@@ -1,6 +1,10 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
-import com.hiketrackbackend.hiketrackbackend.dto.country.*;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryDeleteRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhotoDto;
+import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.CountryMapper;
 import com.hiketrackbackend.hiketrackbackend.model.country.Continent;
@@ -9,6 +13,7 @@ import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepositor
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountrySpecificationBuilder;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,12 +29,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CountryServiceImplTest {
-
     @Mock
     private CountryRepository countryRepository;
 
@@ -44,7 +58,6 @@ public class CountryServiceImplTest {
 
     @InjectMocks
     private CountryServiceImpl countryService;
-
     private CountryRequestDto countryRequestDto;
     private MultipartFile file;
     private Country country;
@@ -71,11 +84,10 @@ public class CountryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Create country with empty photo")
     public void testCreateCountryWhenFileIsEmptyThenThrowRuntimeException() {
-        // Arrange
         when(file.isEmpty()).thenReturn(true);
 
-        // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
                 countryService.createCountry(countryRequestDto, file)
         );
@@ -84,18 +96,16 @@ public class CountryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Create country with valid data")
     public void testCreateCountryWhenFileIsNotEmptyThenReturnCountryRespondDto() {
-        // Arrange
         when(file.isEmpty()).thenReturn(false);
         when(countryMapper.toEntity(countryRequestDto)).thenReturn(country);
         when(s3Service.uploadFileToS3(anyString(), anyList())).thenReturn(Collections.singletonList("photoUrl"));
         when(countryRepository.save(country)).thenReturn(country);
         when(countryMapper.toDto(country)).thenReturn(countryRespondDto);
 
-        // Act
         CountryRespondDto result = countryService.createCountry(countryRequestDto, file);
 
-        // Assert
         assertNotNull(result);
         assertEquals(countryRespondDto.getId(), result.getId());
         assertEquals(countryRespondDto.getName(), result.getName());
@@ -108,11 +118,10 @@ public class CountryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Update country with empty photo")
     public void testUpdateCountryWhenFileIsEmptyThenThrowRuntimeException() {
-        // Arrange
         when(file.isEmpty()).thenReturn(true);
 
-        // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () ->
                 countryService.updateCountry(countryRequestDto, file, 1L)
         );
@@ -121,18 +130,16 @@ public class CountryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Update country with valid photo")
     public void testUpdateCountryWhenFileIsNotEmptyThenReturnCountryRespondDto() {
-        // Arrange
         when(file.isEmpty()).thenReturn(false);
         when(countryRepository.findById(1L)).thenReturn(Optional.of(country));
         when(s3Service.uploadFileToS3(anyString(), anyList())).thenReturn(Collections.singletonList("photoUrl"));
         when(countryRepository.save(country)).thenReturn(country);
         when(countryMapper.toDto(country)).thenReturn(countryRespondDto);
 
-        // Act
         CountryRespondDto result = countryService.updateCountry(countryRequestDto, file, 1L);
 
-        // Assert
         assertNotNull(result);
         assertEquals(countryRespondDto.getId(), result.getId());
         assertEquals(countryRespondDto.getName(), result.getName());
@@ -146,30 +153,10 @@ public class CountryServiceImplTest {
     }
 
     @Test
-    public void testGetByIdWhenCountryExistsThenReturnCountryRespondDto() {
-        // Arrange
-        when(countryRepository.findById(1L)).thenReturn(Optional.of(country));
-        when(countryMapper.toDto(country)).thenReturn(countryRespondDto);
-
-        // Act
-        CountryRespondDto result = countryService.getById(1L);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(countryRespondDto.getId(), result.getId());
-        assertEquals(countryRespondDto.getName(), result.getName());
-        assertEquals(countryRespondDto.getContinent(), result.getContinent());
-
-        verify(countryRepository, times(1)).findById(1L);
-        verify(countryMapper, times(1)).toDto(country);
-    }
-
-    @Test
+    @DisplayName("Get country with not valid id")
     public void testGetByIdWhenCountryDoesNotExistThenThrowEntityNotFoundException() {
-        // Arrange
         when(countryRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Act & Assert
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
                 countryService.getById(1L)
         );
@@ -180,18 +167,33 @@ public class CountryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Get country by valid id")
+    public void testGetByIdWhenCountryExistsThenReturnCountryRespondDto() {
+        when(countryRepository.findById(1L)).thenReturn(Optional.of(country));
+        when(countryMapper.toDto(country)).thenReturn(countryRespondDto);
+
+        CountryRespondDto result = countryService.getById(1L);
+
+        assertNotNull(result);
+        assertEquals(countryRespondDto.getId(), result.getId());
+        assertEquals(countryRespondDto.getName(), result.getName());
+        assertEquals(countryRespondDto.getContinent(), result.getContinent());
+
+        verify(countryRepository, times(1)).findById(1L);
+        verify(countryMapper, times(1)).toDto(country);
+    }
+
+    @Test
+    @DisplayName("Search country with no data in DB")
     public void testSearchWhenRepositoryReturnsEmptyListThenReturnEmptyList() {
-        // Arrange
         CountrySearchParameters params = new CountrySearchParameters(new String[]{"Europe"}, new String[]{"Test Country"});
         Pageable pageable = PageRequest.of(0, 10);
 
         when(countrySpecificationBuilder.build(params)).thenReturn(mock(Specification.class));
         when(countryRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        // Act
         List<CountryRespondDto> result = countryService.search(params, pageable);
 
-        // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
 
@@ -200,14 +202,12 @@ public class CountryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Get all countries with empty DB")
     public void testGetAllWhenRepositoryReturnsEmptyListThenReturnEmptyList() {
-        // Arrange
         when(countryRepository.findAll()).thenReturn(Collections.emptyList());
 
-        // Act
         List<CountryRespondDto> result = countryService.getAll(PageRequest.of(0, 10));
 
-        // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
 
@@ -215,18 +215,16 @@ public class CountryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Get 10 random countries with valid data")
     public void testGetTenRandomCountriesWhenRepositoryReturnsCountriesThenReturnCountries() {
-        // Arrange
         List<Country> countries = Collections.singletonList(country);
         List<CountryRespondWithPhotoDto> countryRespondWithPhotoDtos = Collections.singletonList(new CountryRespondWithPhotoDto());
 
         when(countryRepository.findTenRandomCountry()).thenReturn(countries);
         when(countryMapper.toDto(anyList())).thenReturn(countryRespondWithPhotoDtos);
 
-        // Act
         List<CountryRespondWithPhotoDto> result = countryService.getTenRandomCountries();
 
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
 
@@ -235,14 +233,12 @@ public class CountryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Get 10 random countries with empty DB")
     public void testGetTenRandomCountriesWhenRepositoryReturnsEmptyListThenReturnEmptyList() {
-        // Arrange
         when(countryRepository.findTenRandomCountry()).thenReturn(Collections.emptyList());
 
-        // Act
         List<CountryRespondWithPhotoDto> result = countryService.getTenRandomCountries();
 
-        // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
 
@@ -250,29 +246,26 @@ public class CountryServiceImplTest {
     }
 
     @Test
+    @DisplayName("Delete country with valid data")
     public void testDeleteByNameWhenCountryIsFoundThenDeleteCountry() {
-        // Arrange
         CountryDeleteRequestDto requestDto = new CountryDeleteRequestDto();
         requestDto.setName("Test Country");
 
         when(countryRepository.findCountryByName("Test Country")).thenReturn(Optional.of(country));
 
-        // Act
         countryService.deleteByName(requestDto);
 
-        // Assert
         verify(countryRepository, times(1)).delete(country);
     }
 
     @Test
+    @DisplayName("Delete county with not valid name")
     public void testDeleteByNameWhenCountryIsNotFoundThenThrowEntityNotFoundException() {
-        // Arrange
         CountryDeleteRequestDto requestDto = new CountryDeleteRequestDto();
         requestDto.setName("Nonexistent Country");
 
         when(countryRepository.findCountryByName("Nonexistent Country")).thenReturn(Optional.empty());
 
-        // Act & Assert
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () ->
                 countryService.deleteByName(requestDto)
         );

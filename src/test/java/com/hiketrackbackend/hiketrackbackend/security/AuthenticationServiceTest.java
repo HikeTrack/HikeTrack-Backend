@@ -17,6 +17,7 @@ import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,12 +29,16 @@ import org.springframework.security.core.Authentication;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthenticationServiceTest {
-
     @Mock
     private AuthenticationManager authenticationManager;
 
@@ -65,8 +70,8 @@ public class AuthenticationServiceTest {
     private AuthenticationService authenticationService;
 
     @Test
+    @DisplayName("Fail to login not confirmed user")
     void testLoginWhenUserNotConfirmedThenThrowUserNotConfirmedException() {
-        // Arrange
         String email = "test@example.com";
         String password = "password";
         UserLoginRequestDto requestDto = new UserLoginRequestDto(email, password);
@@ -77,15 +82,14 @@ public class AuthenticationServiceTest {
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
-        // Act & Assert
         assertThrows(UserNotConfirmedException.class, () -> {
             authenticationService.login(requestDto);
         });
     }
 
     @Test
+    @DisplayName("Success login confirmed user")
     void testLoginWhenUserConfirmedThenReturnUserResponseDto() {
-        // Arrange
         String email = "test@example.com";
         String password = "password";
         String token = "generatedToken";
@@ -101,16 +105,14 @@ public class AuthenticationServiceTest {
         when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password))).thenReturn(authentication);
         when(jwtUtil.generateToken(email)).thenReturn(token);
 
-        // Act
         UserResponseDto responseDto = authenticationService.login(requestDto);
 
-        // Assert
         assertEquals(token, responseDto.Token());
     }
 
     @Test
+    @DisplayName("Create restore request with all valid data")
     void testCreateRestoreRequestWhenUserFoundThenReturnUserDevMsgRespondDto() {
-        // Arrange
         String email = "test@example.com";
         String token = "resetToken";
         UserRequestDto requestDto = new UserRequestDto();
@@ -123,45 +125,41 @@ public class AuthenticationServiceTest {
         doNothing().when(passwordResetEmailSenderImpl).send(email, token);
         when(userMapper.toDto("Password reset link sent to email.")).thenReturn(new UserDevMsgRespondDto("Password reset link sent to email."));
 
-        // Act
         UserDevMsgRespondDto responseDto = authenticationService.createRestoreRequest(requestDto);
 
-        // Assert
         assertEquals("Password reset link sent to email.", responseDto.message());
     }
 
     @Test
+    @DisplayName("Fail to create restore request with not exist user")
     void testCreateRestoreRequestWhenUserNotFoundThenThrowEntityNotFoundException() {
-        // Arrange
         String email = "test@example.com";
         UserRequestDto requestDto = new UserRequestDto();
         requestDto.setEmail(email);
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(EntityNotFoundException.class, () -> {
             authenticationService.createRestoreRequest(requestDto);
         });
     }
 
     @Test
+    @DisplayName("Fail to restore password with not valid token")
     void testRestorePasswordWhenTokenInvalidThenThrowException() {
-        // Arrange
         String token = "invalidToken";
         UserUpdatePasswordRequestDto requestDto = new UserUpdatePasswordRequestDto();
 
         when(passwordResetTokenService.getValue(token)).thenThrow(new EntityNotFoundException("Invalid token"));
 
-        // Act & Assert
         assertThrows(EntityNotFoundException.class, () -> {
             authenticationService.restorePassword(token, requestDto);
         });
     }
 
     @Test
+    @DisplayName("Fail to restore password for not exist user")
     void testRestorePasswordWhenUserNotFoundThenThrowException() {
-        // Arrange
         String token = "validToken";
         String email = "test@example.com";
         UserUpdatePasswordRequestDto requestDto = new UserUpdatePasswordRequestDto();
@@ -169,15 +167,14 @@ public class AuthenticationServiceTest {
         when(passwordResetTokenService.getValue(token)).thenReturn(email);
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(EntityNotFoundException.class, () -> {
             authenticationService.restorePassword(token, requestDto);
         });
     }
 
     @Test
+    @DisplayName("Successfully restore password")
     void testRestorePasswordWhenPasswordRestoredThenReturnUserDevMsgRespondDto() {
-        // Arrange
         String token = "validToken";
         String email = "test@example.com";
         Long userId = 1L;
@@ -192,16 +189,14 @@ public class AuthenticationServiceTest {
         doNothing().when(passwordResetTokenService).delete(token);
         when(userService.updatePassword(requestDto, userId)).thenReturn(expectedResponse);
 
-        // Act
         UserDevMsgRespondDto responseDto = authenticationService.restorePassword(token, requestDto);
 
-        // Assert
         assertEquals(expectedResponse.message(), responseDto.message());
     }
 
     @Test
+    @DisplayName("Successfully logout")
     void testLogoutWhenCalledThenLogoutTokenServiceSaveCalled() {
-        // Arrange
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpSession session = mock(HttpSession.class);
         String token = "someToken";
@@ -210,17 +205,15 @@ public class AuthenticationServiceTest {
         doNothing().when(session).invalidate();
         when(logoutTokenService.save(request)).thenReturn(token);
 
-        // Act
         authenticationService.logout(request);
 
-        // Assert
         verify(session).invalidate();
         verify(logoutTokenService).save(request);
     }
 
     @Test
+    @DisplayName("Change confirm status with all valid data")
     void testChangeConfirmingStatusWhenTokenIsValidThenUserConfirmed() {
-        // Arrange
         String token = "validToken";
         String email = "test@example.com";
         User user = new User();
@@ -232,30 +225,27 @@ public class AuthenticationServiceTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
 
-        // Act
         UserDevMsgRespondDto responseDto = authenticationService.changeConfirmingStatus(token);
 
-        // Assert
         assertEquals("User has been confirmed.", responseDto.message());
         assertTrue(user.isConfirmed());
     }
 
     @Test
+    @DisplayName("Fail to change status to user with not valid token")
     void testChangeConfirmingStatusWhenTokenIsInvalidThenThrowException() {
-        // Arrange
         String token = "invalidToken";
 
         when(confirmationTokenService.isKeyExist(token)).thenReturn(false);
 
-        // Act & Assert
         assertThrows(UserNotConfirmedException.class, () -> {
             authenticationService.changeConfirmingStatus(token);
         });
     }
 
     @Test
+    @DisplayName("Fail to change confirm status to not exist user")
     void testChangeConfirmingStatusWhenUserNotFoundThenThrowException() {
-        // Arrange
         String token = "validToken";
         String email = "test@example.com";
 
@@ -263,7 +253,6 @@ public class AuthenticationServiceTest {
         when(confirmationTokenService.getValue(token)).thenReturn(email);
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(EntityNotFoundException.class, () -> {
             authenticationService.changeConfirmingStatus(token);
         });

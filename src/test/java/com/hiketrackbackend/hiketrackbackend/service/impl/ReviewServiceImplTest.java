@@ -9,11 +9,11 @@ import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.repository.ReviewRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,11 +27,14 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ReviewServiceImplTest {
-
     @Mock
     private ReviewRepository reviewRepository;
 
@@ -45,8 +48,8 @@ public class ReviewServiceImplTest {
     private ReviewServiceImpl reviewService;
 
     @Test
+    @DisplayName("Create review with valid data")
     public void testCreateReviewWhenReviewIsSuccessfullyCreatedThenReturnReviewResponseDto() {
-        // Arrange
         ReviewRequestDto requestDto = new ReviewRequestDto();
         requestDto.setContent("Great tour!");
 
@@ -74,10 +77,8 @@ public class ReviewServiceImplTest {
         when(reviewRepository.save(any(Review.class))).thenReturn(review);
         when(reviewMapper.toDto(any(Review.class))).thenReturn(responseDto);
 
-        // Act
         ReviewsRespondDto result = reviewService.createReview(requestDto, user, tour.getId());
 
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result.getContent()).isEqualTo(requestDto.getContent());
         assertThat(result.getUserId()).isEqualTo(user.getId());
@@ -90,8 +91,8 @@ public class ReviewServiceImplTest {
     }
 
     @Test
+    @DisplayName("Create review with not valid tour id")
     public void testCreateReviewWhenTourIsNotFoundThenThrowEntityNotFoundException() {
-        // Arrange
         ReviewRequestDto requestDto = new ReviewRequestDto();
         requestDto.setContent("Great tour!");
 
@@ -102,7 +103,6 @@ public class ReviewServiceImplTest {
 
         when(tourRepository.findById(tourId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThatThrownBy(() -> reviewService.createReview(requestDto, user, tourId))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Tour not found with id " + tourId);
@@ -112,8 +112,8 @@ public class ReviewServiceImplTest {
     }
 
     @Test
+    @DisplayName("Update review with valid data")
     public void testUpdateReviewWhenReviewIsSuccessfullyUpdatedThenReturnReviewsRespondDto() {
-        // Arrange
         ReviewRequestDto requestDto = new ReviewRequestDto();
         requestDto.setContent("Updated review content");
 
@@ -139,10 +139,8 @@ public class ReviewServiceImplTest {
         when(reviewRepository.save(review)).thenReturn(review);
         when(reviewMapper.toDto(review)).thenReturn(responseDto);
 
-        // Act
         ReviewsRespondDto result = reviewService.updateReview(requestDto, review.getId());
 
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result.getContent()).isEqualTo(requestDto.getContent());
         assertThat(result.getTourId()).isEqualTo(tour.getId());
@@ -156,8 +154,8 @@ public class ReviewServiceImplTest {
     }
 
     @Test
+    @DisplayName("Update review with not valid tour id")
     public void testUpdateReviewWhenReviewIsNotFoundThenThrowEntityNotFoundException() {
-        // Arrange
         ReviewRequestDto requestDto = new ReviewRequestDto();
         requestDto.setContent("Updated review content");
 
@@ -165,7 +163,6 @@ public class ReviewServiceImplTest {
 
         when(tourRepository.findTourByReviewsId(reviewId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThatThrownBy(() -> reviewService.updateReview(requestDto, reviewId))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Tour not found with review id: " + reviewId);
@@ -177,8 +174,8 @@ public class ReviewServiceImplTest {
     }
 
     @Test
+    @DisplayName("Update review which not exist for tour id")
     public void testUpdateReviewWhenReviewDoesNotExistForGivenTourThenThrowEntityNotFoundException() {
-        // Arrange
         ReviewRequestDto requestDto = new ReviewRequestDto();
         requestDto.setContent("Updated review content");
 
@@ -190,7 +187,6 @@ public class ReviewServiceImplTest {
         when(tourRepository.findTourByReviewsId(reviewId)).thenReturn(Optional.of(tour));
         when(reviewRepository.existsByIdAndTourId(reviewId, tour.getId())).thenReturn(false);
 
-        // Act & Assert
         assertThatThrownBy(() -> reviewService.updateReview(requestDto, reviewId))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Review not found with id " + reviewId + " and tour id " + tour.getId());
@@ -202,8 +198,8 @@ public class ReviewServiceImplTest {
     }
 
     @Test
+    @DisplayName("Get all review by user id with all valid data")
     public void testGetAllByUserIdWhenRepositoryReturnsListOfReviewsThenReturnListOfReviewsRespondDto() {
-        // Arrange
         Long userId = 1L;
         Pageable pageable = Pageable.unpaged();
 
@@ -229,10 +225,8 @@ public class ReviewServiceImplTest {
         when(reviewMapper.toDto(review1)).thenReturn(responseDto1);
         when(reviewMapper.toDto(review2)).thenReturn(responseDto2);
 
-        // Act
         List<ReviewsRespondDto> result = reviewService.getAllByUserId(userId, pageable);
 
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result).hasSize(2);
         assertThat(result).containsExactly(responseDto1, responseDto2);
@@ -243,17 +237,15 @@ public class ReviewServiceImplTest {
     }
 
     @Test
+    @DisplayName("Get all review by user id with no data in DB")
     public void testGetAllByUserIdWhenRepositoryReturnsEmptyListThenReturnEmptyList() {
-        // Arrange
         Long userId = 1L;
         Pageable pageable = Pageable.unpaged();
 
         when(reviewRepository.findReviewsByUserId(userId, pageable)).thenReturn(Collections.emptyList());
 
-        // Act
         List<ReviewsRespondDto> result = reviewService.getAllByUserId(userId, pageable);
 
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result).isEmpty();
 
@@ -262,8 +254,8 @@ public class ReviewServiceImplTest {
     }
 
     @Test
+    @DisplayName("Get all review with valid data")
     public void testGetAllByTourIdWhenCalledWithValidParametersThenReturnsExpectedResult() {
-        // Arrange
         Long tourId = 1L;
         Pageable pageable = Pageable.unpaged();
 
@@ -290,10 +282,8 @@ public class ReviewServiceImplTest {
         when(reviewMapper.toDto(review1)).thenReturn(responseDto1);
         when(reviewMapper.toDto(review2)).thenReturn(responseDto2);
 
-        // Act
         List<ReviewsRespondDto> result = reviewService.getAllByTourId(tourId, pageable);
 
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result).hasSize(2);
         assertThat(result).containsExactly(responseDto1, responseDto2);
@@ -304,18 +294,16 @@ public class ReviewServiceImplTest {
     }
 
     @Test
+    @DisplayName("Get all review by tour id with exception")
     public void testGetAllByTourIdWhenCalledWithNonExistentTourIdThenReturnsEmptyList() {
-        // Arrange
         Long tourId = 1L;
         Pageable pageable = Pageable.unpaged();
         Page<Review> emptyPage = Page.empty(pageable);
 
         when(reviewRepository.findByTourId(tourId, pageable)).thenReturn(emptyPage);
 
-        // Act
         List<ReviewsRespondDto> result = reviewService.getAllByTourId(tourId, pageable);
 
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result).isEmpty();
 
@@ -324,11 +312,10 @@ public class ReviewServiceImplTest {
     }
 
     @Test
+    @DisplayName("Get all review by tour null id ")
     public void testGetAllByTourIdWhenCalledWithNullTourIdThenThrowsIllegalArgumentException() {
-        // Arrange
         Pageable pageable = Pageable.unpaged();
 
-        // Act & Assert
         assertThatThrownBy(() -> reviewService.getAllByTourId(null, pageable))
                 .isInstanceOf(IllegalArgumentException.class);
 
@@ -337,60 +324,16 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    public void testGetAllByTourIdWhenRepositoryReturnsListOfReviewsThenReturnListOfReviews() {
-        // Arrange
-        Long tourId = 1L;
-        Pageable pageable = Pageable.unpaged();
-
-        Review review1 = new Review();
-        review1.setId(1L);
-        review1.setContent("Review 1");
-
-        Review review2 = new Review();
-        review2.setId(2L);
-        review2.setContent("Review 2");
-
-        List<Review> reviews = List.of(review1, review2);
-        Page<Review> reviewPage = new PageImpl<>(reviews, pageable, reviews.size());
-
-        ReviewsRespondDto responseDto1 = new ReviewsRespondDto();
-        responseDto1.setId(review1.getId());
-        responseDto1.setContent(review1.getContent());
-
-        ReviewsRespondDto responseDto2 = new ReviewsRespondDto();
-        responseDto2.setId(review2.getId());
-        responseDto2.setContent(review2.getContent());
-
-        when(reviewRepository.findByTourId(tourId, pageable)).thenReturn(reviewPage);
-        when(reviewMapper.toDto(review1)).thenReturn(responseDto1);
-        when(reviewMapper.toDto(review2)).thenReturn(responseDto2);
-
-        // Act
-        List<ReviewsRespondDto> result = reviewService.getAllByTourId(tourId, pageable);
-
-        // Assert
-        assertThat(result).isNotNull();
-        assertThat(result).hasSize(2);
-        assertThat(result).containsExactly(responseDto1, responseDto2);
-
-        verify(reviewRepository).findByTourId(tourId, pageable);
-        verify(reviewMapper).toDto(review1);
-        verify(reviewMapper).toDto(review2);
-    }
-
-    @Test
+    @DisplayName("Get all review by tour id with no data in DB")
     public void testGetAllByTourIdWhenRepositoryReturnsEmptyListThenReturnEmptyList() {
-        // Arrange
         Long tourId = 1L;
         Pageable pageable = Pageable.unpaged();
         Page<Review> emptyPage = Page.empty(pageable);
 
         when(reviewRepository.findByTourId(tourId, pageable)).thenReturn(emptyPage);
 
-        // Act
         List<ReviewsRespondDto> result = reviewService.getAllByTourId(tourId, pageable);
 
-        // Assert
         assertThat(result).isNotNull();
         assertThat(result).isEmpty();
 
@@ -399,8 +342,8 @@ public class ReviewServiceImplTest {
     }
 
     @Test
+    @DisplayName("Delete review by id")
     public void testDeleteByIdWhenReviewExistsThenReviewIsDeleted() {
-        // Arrange
         Long reviewId = 1L;
         Tour tour = new Tour();
         tour.setId(1L);
@@ -408,18 +351,16 @@ public class ReviewServiceImplTest {
         when(tourRepository.findTourByReviewsId(reviewId)).thenReturn(Optional.of(tour));
         when(reviewRepository.existsByIdAndTourId(reviewId, tour.getId())).thenReturn(true);
 
-        // Act
         reviewService.deleteById(reviewId);
 
-        // Assert
         verify(tourRepository).findTourByReviewsId(reviewId);
         verify(reviewRepository).existsByIdAndTourId(reviewId, tour.getId());
         verify(reviewRepository).deleteById(reviewId);
     }
 
     @Test
+    @DisplayName("Delete review by not valid id")
     public void testDeleteByIdWhenReviewDoesNotExistThenExceptionIsThrown() {
-        // Arrange
         Long reviewId = 1L;
         Tour tour = new Tour();
         tour.setId(1L);
@@ -427,7 +368,6 @@ public class ReviewServiceImplTest {
         when(tourRepository.findTourByReviewsId(reviewId)).thenReturn(Optional.of(tour));
         when(reviewRepository.existsByIdAndTourId(reviewId, tour.getId())).thenReturn(false);
 
-        // Act & Assert
         assertThatThrownBy(() -> reviewService.deleteById(reviewId))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Review not found with id " + reviewId + " and tour id " + tour.getId());

@@ -23,7 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,7 +47,7 @@ public class TourController {
             @RequestPart("data") String dataString,
             @RequestPart("mainPhoto") @Valid @ValidImageFile MultipartFile mainPhoto,
             @RequestPart("additionalPhotos") @Valid  List<@ValidImageFile MultipartFile> additionalPhotos,
-            Authentication authentication
+            @AuthenticationPrincipal User user
     ) {
         TourRequestDto requestDto;
         try {
@@ -55,7 +55,6 @@ public class TourController {
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Invalid data format: " + e.getMessage());
         }
-        User user = (User) authentication.getPrincipal();
         return tourService.createTour(requestDto, user, mainPhoto, additionalPhotos);
     }
 

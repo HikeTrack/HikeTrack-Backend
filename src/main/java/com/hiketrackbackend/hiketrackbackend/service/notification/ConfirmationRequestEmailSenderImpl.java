@@ -16,6 +16,10 @@ public class ConfirmationRequestEmailSenderImpl implements EmailSender {
 
     @Override
     public void send(String toEmail, String token) {
+        if (token == null || token.isEmpty() || toEmail == null || toEmail.isEmpty()) {
+            throw new IllegalArgumentException("Email " + toEmail + " and token "
+                    + token + " should be present");
+        }
         String url = confirmationBaseUrl + token;
         String message = generateConfirmationEmail(url);
         emailUtils.sendEmail(toEmail, SUBJECT, message);

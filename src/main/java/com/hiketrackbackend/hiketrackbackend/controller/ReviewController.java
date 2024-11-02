@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,8 +37,7 @@ public class ReviewController {
             description = "Create a new review for a specific tour by the authenticated user.")
     public ReviewsRespondDto createReview(@RequestBody @Valid ReviewRequestDto requestDto,
                                           @PathVariable @Positive Long tourId,
-                                          Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+                                          @AuthenticationPrincipal User user) {
         return reviewService.createReview(requestDto, user, tourId);
     }
 
