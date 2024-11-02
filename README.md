@@ -19,7 +19,7 @@ Whether you're an adventure enthusiast looking to book and review hiking experie
 Get ready to explore, contribute, and maybe even take HikeTrack for your own adventure! 🌄
 
 <p align="center">
-    <img src="docs/logo.png" align="center" height="625" width="1000" />
+    <img src="docs/logo.png" align="center" height="500" width="1000" />
 </p>
 
 <div style="text-align: right; font-size: 34px; font-weight: bold;">
@@ -447,7 +447,7 @@ Build and run the application in a Docker container using Docker Compose.
 
 ### Search Countries
 
-- Frontend -> CountryController: search(continent, countryName) 
+- Frontend -> CountryController: search(continent, countryName)
 - CountryController -> CountrySpecificationBuilder: build(continent, countryName) 
 - CountrySpecificationBuilder -> CountrySpecificationProviderManager: getSpecificationProvider(continent) 
 - CountrySpecificationProviderManager -> ContinentSpecificationProvider: getSpecification(continent) 
@@ -502,52 +502,157 @@ Build and run the application in a Docker container using Docker Compose.
 
 ### Delete Tour
 
-- Frontend -> TourController: deleteTour(id) TourController -> TourService: deleteById(id) TourService -> TourRepository: deleteById(id) TourRepository -> MySQL: UPDATE tours SET is_deleted = true WHERE id = ?
+- Frontend -> TourController: deleteTour(id) 
+- TourController -> TourService: deleteById(id) 
+- TourService -> TourRepository: deleteById(id) 
+- TourRepository -> MySQL: UPDATE tours SET is_deleted = true WHERE id = ?
 
 ### Get All Tours
 
-- Frontend -> TourController: getAll(pageable) TourController -> TourRepository: findAll(pageable) TourRepository -> MySQL: SELECT * FROM tours WHERE is_deleted = false TourRepository -> TourController: tours TourController -> TourMapper: toDtoWithoutDetailsAndReviews(tours) TourController -> Frontend: tours
+- Frontend -> TourController: getAll(pageable) 
+- TourController -> TourRepository: findAll(pageable) 
+- TourRepository -> MySQL: SELECT * FROM tours WHERE is_deleted = false 
+- TourRepository -> TourController: tours 
+- TourController -> TourMapper: toDtoWithoutDetailsAndReviews(tours) 
+- TourController -> Frontend: tours
 
 ### Get Tour by ID
 
-- Frontend -> TourController: getById(id, page, size) TourController -> TourService: getById(id, page, size) TourService -> TourRepository: findById(id) TourRepository -> MySQL: SELECT * FROM tours WHERE id = ? TourRepository -> TourService: tour TourService -> TourMapper: toDto(tour) TourService -> ReviewRepository: findByTourId(id, pageable) ReviewRepository -> MySQL: SELECT * FROM reviews WHERE tour_id = ? ReviewRepository -> TourService: reviews TourService -> ReviewMapper: toDto(reviews) TourController -> Frontend: tour
+- Frontend -> TourController: getById(id, page, size) 
+- TourController -> TourService: getById(id, page, size) 
+- TourService -> TourRepository: findById(id) 
+- TourRepository -> MySQL: SELECT * FROM tours WHERE id = ? 
+- TourRepository -> TourService: tour 
+- TourService -> TourMapper: toDto(tour) 
+- TourService -> ReviewRepository: findByTourId(id, pageable) 
+- ReviewRepository -> MySQL: SELECT * FROM reviews WHERE tour_id = ? 
+- ReviewRepository -> TourService: reviews 
+- TourService -> ReviewMapper: toDto(reviews) TourController -> Frontend: tour
 
 ### Get Most Rated Tours
 
-- Frontend -> TourController: getMostRatedTour() TourController -> TourService: getByRating() TourService -> TourRepository: findTop7ByRatingGreaterThanOrderByRatingDesc(0) TourRepository -> MySQL: SELECT * FROM tours WHERE rating > 0 ORDER BY rating DESC LIMIT 7 TourRepository -> TourService: tours TourService -> TourMapper: toDtoWithoutReviews(tours) TourController -> Frontend: tours
+- Frontend -> TourController: getMostRatedTour() 
+- TourController -> TourService: getByRating() 
+- TourService -> TourRepository: findTop7ByRatingGreaterThanOrderByRatingDesc(0) 
+- TourRepository -> MySQL: SELECT * FROM tours WHERE rating > 0 ORDER BY rating DESC LIMIT 7 
+- TourRepository -> TourService: tours 
+- TourService -> TourMapper: toDtoWithoutReviews(tours) 
+- TourController -> Frontend: tours
 
 ### Search Tours
 
-- Frontend -> TourController: search(routeType, difficulty, length, activity, date, duration, price, country) TourController -> TourSpecificationBuilder: build(routeType, difficulty, length, activity, date, duration, price, country) TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(routeType) TourSpecificationProviderManager -> RouteTypeSpecificationProvider: getSpecification(routeType) TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(difficulty) TourSpecificationProviderManager -> DifficultySpecificationProvider: getSpecification(difficulty) TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(length) TourSpecificationProviderManager -> LengthSpecificationProvider: getSpecification(length) TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(activity) TourSpecificationProviderManager -> ActivitySpecificationProvider: getSpecification(activity) TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(date) TourSpecificationProviderManager -> DateSpecificationProvider: getSpecification(date) TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(duration) TourSpecificationProviderManager -> DurationSpecificationProvider: getSpecification(duration) TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(price) TourSpecificationProviderManager -> PriceSpecificationProvider: getSpecification(price) TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(country) TourSpecificationProviderManager -> CountrySpecificationProvider: getSpecification(country) TourController -> TourRepository: findAll(specification, pageable) TourRepository -> MySQL: SELECT * FROM tours WHERE routeType IN (?) AND difficulty IN (?) AND length IN (?) AND activity IN (?) AND date IN (?) AND duration IN (?) AND price IN (?) AND country IN (?) TourRepository -> TourController: tours TourController -> TourMapper: toDtoWithoutReviews(tours) TourController -> Frontend: tours
+- Frontend -> TourController: search(routeType, difficulty, length, activity, date, duration, price, country) 
+- TourController -> TourSpecificationBuilder: build(routeType, difficulty, length, activity, date, duration, price, country) 
+- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(routeType) 
+- TourSpecificationProviderManager -> RouteTypeSpecificationProvider: getSpecification(routeType) 
+- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(difficulty) 
+- TourSpecificationProviderManager -> DifficultySpecificationProvider: getSpecification(difficulty) 
+- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(length) 
+- TourSpecificationProviderManager -> LengthSpecificationProvider: getSpecification(length) 
+- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(activity) 
+- TourSpecificationProviderManager -> ActivitySpecificationProvider: getSpecification(activity) 
+- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(date) 
+- TourSpecificationProviderManager -> DateSpecificationProvider: getSpecification(date)
+- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(duration)
+- TourSpecificationProviderManager -> DurationSpecificationProvider: getSpecification(duration)
+- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(price) 
+- TourSpecificationProviderManager -> PriceSpecificationProvider: getSpecification(price)
+- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(country) 
+- TourSpecificationProviderManager -> CountrySpecificationProvider: getSpecification(country) 
+- TourController -> TourRepository: findAll(specification, pageable) 
+- TourRepository -> MySQL: SELECT * FROM tours WHERE routeType IN (?) AND difficulty IN (?) AND length IN (?) AND activity IN (?) AND date IN (?) AND duration IN (?) AND price IN (?) AND country IN (?) 
+- TourRepository -> TourController: tours 
+- TourController -> TourMapper: toDtoWithoutReviews(tours)
+- TourController -> Frontend: tours
 
 ### Create Review
 
-- Frontend -> TourController: createReview(tourId, content) TourController -> ReviewService: createReview(tourId, content) ReviewService -> TourRepository: findById(tourId) TourRepository -> MySQL: SELECT * FROM tours WHERE id = ? ReviewService -> ReviewMapper: toEntity(content) ReviewService -> ReviewRepository: save(review) ReviewRepository -> MySQL: INSERT INTO reviews (content, tour_id, user_id, date_created) VALUES (?, ?, ?, ?) ReviewService -> ReviewMapper: toDto(review) TourController -> Frontend: review
+- Frontend -> TourController: createReview(tourId, content) 
+- TourController -> ReviewService: createReview(tourId, content)
+- ReviewService -> TourRepository: findById(tourId) 
+- TourRepository -> MySQL: SELECT * FROM tours WHERE id = ? 
+- ReviewService -> ReviewMapper: toEntity(content) 
+- ReviewService -> ReviewRepository: save(review) 
+- ReviewRepository -> MySQL: INSERT INTO reviews (content, tour_id, user_id, date_created) VALUES (?, ?, ?, ?) 
+- ReviewService -> ReviewMapper: toDto(review) 
+- TourController -> Frontend: review
 
 
 ### Delete Review
-- Frontend -> TourController: deleteReview(tourId, reviewId) TourController -> ReviewService: deleteById(reviewId, tourId) ReviewService -> ReviewRepository: deleteById(reviewId) ReviewRepository -> MySQL: DELETE FROM reviews WHERE id = ?
+- Frontend -> TourController: deleteReview(tourId, reviewId) 
+- TourController -> ReviewService: deleteById(reviewId, tourId)
+- ReviewService -> ReviewRepository: deleteById(reviewId) 
+- ReviewRepository -> MySQL: DELETE FROM reviews WHERE id = ?
 
 ### Update Review
-- Frontend -> TourController: updateReview(tourId, reviewId, content) TourController -> ReviewService: updateReview(tourId, reviewId, content) ReviewService -> ReviewRepository: findById(reviewId) ReviewRepository -> MySQL: SELECT * FROM reviews WHERE id = ? ReviewService -> ReviewMapper: updateEntityFromDto(review, content) ReviewService -> ReviewRepository: save(review) ReviewRepository -> MySQL: UPDATE reviews SET content = ? WHERE id = ? ReviewService -> ReviewMapper: toDto(review) TourController -> Frontend: review
+- Frontend -> TourController: updateReview(tourId, reviewId, content) 
+- TourController -> ReviewService: updateReview(tourId, reviewId, content)
+- ReviewService -> ReviewRepository: findById(reviewId) 
+- ReviewRepository -> MySQL: SELECT * FROM reviews WHERE id = ? 
+- ReviewService -> ReviewMapper: updateEntityFromDto(review, content)
+- ReviewService -> ReviewRepository: save(review) 
+- ReviewRepository -> MySQL: UPDATE reviews SET content = ? WHERE id = ?
+- ReviewService -> ReviewMapper: toDto(review) 
+- TourController -> Frontend: review
 
 ### Get All Reviews by User
-- Frontend -> ReviewController: getAllReviewsByUser(userId, pageable) ReviewController -> ReviewService: getAllByUserId(userId, pageable) ReviewService -> ReviewRepository: findReviewsByUserId(userId, pageable) ReviewRepository -> MySQL: SELECT * FROM reviews WHERE user_id = ? ReviewRepository -> ReviewService: reviews ReviewService -> ReviewMapper: toDto(reviews) ReviewController -> Frontend: reviews
+- Frontend -> ReviewController: getAllReviewsByUser(userId, pageable) 
+- ReviewController -> ReviewService: getAllByUserId(userId, pageable) 
+- ReviewService -> ReviewRepository: findReviewsByUserId(userId, pageable)
+- ReviewRepository -> MySQL: SELECT * FROM reviews WHERE user_id = ?
+- ReviewRepository -> ReviewService: reviews 
+- ReviewService -> ReviewMapper: toDto(reviews)
+- ReviewController -> Frontend: reviews
 
 ### Add Tour to Bookmarks
-- Frontend -> UserProfileController: addToBookmark(tourId) UserProfileController -> BookmarkService: addToBookmarks(tourId, userId) BookmarkService -> TourRepository: findById(tourId) TourRepository -> MySQL: SELECT * FROM tours WHERE id = ? BookmarkService -> BookmarkRepository: save(bookmark) BookmarkRepository -> MySQL: INSERT INTO bookmarks (user_id, tour_id, added_at) VALUES (?, ?, ?) BookmarkService -> BookmarkMapper: toDto(bookmark) UserProfileController -> Frontend: bookmark
+- Frontend -> UserProfileController: addToBookmark(tourId) 
+- UserProfileController -> BookmarkService: addToBookmarks(tourId, userId)
+- BookmarkService -> TourRepository: findById(tourId) 
+- TourRepository -> MySQL: SELECT * FROM tours WHERE id = ?
+- BookmarkService -> BookmarkRepository: save(bookmark) 
+- BookmarkRepository -> MySQL: INSERT INTO bookmarks (user_id, tour_id, added_at) VALUES (?, ?, ?) 
+- BookmarkService -> BookmarkMapper: toDto(bookmark) 
+- UserProfileController -> Frontend: bookmark
 
 ### Update User Profile
-- Frontend -> UserProfileController: updateUserProfile(countryId, city, userPhoto) UserProfileController -> UserProfileService: updateUserProfile(countryId, city, userPhoto) UserProfileService -> UserProfileRepository: findByUserId(userId) UserProfileRepository -> MySQL: SELECT * FROM user_profiles WHERE user_id = ? UserProfileService -> UserProfileMapper: updateFromDto(userProfile, countryId, city, userPhoto) UserProfileService -> CountryRepository: findById(countryId) CountryRepository -> MySQL: SELECT * FROM countries WHERE id = ? UserProfileService -> UserProfileRepository: save(userProfile) UserProfileRepository -> MySQL: UPDATE user_profiles SET country_id = ?, city = ?, userPhoto = ? WHERE user_id = ? UserProfileService -> UserProfileMapper: toDto(userProfile) UserProfileController -> Frontend: userProfile
+- Frontend -> UserProfileController: updateUserProfile(countryId, city, userPhoto) 
+- UserProfileController -> UserProfileService: updateUserProfile(countryId, city, userPhoto) 
+- UserProfileService -> UserProfileRepository: findByUserId(userId) 
+- UserProfileRepository -> MySQL: SELECT * FROM user_profiles WHERE user_id = ?
+- UserProfileService -> UserProfileMapper: updateFromDto(userProfile, countryId, city, userPhoto)
+- UserProfileService -> CountryRepository: findById(countryId) 
+- CountryRepository -> MySQL: SELECT * FROM countries WHERE id = ? 
+- UserProfileService -> UserProfileRepository: save(userProfile) 
+- UserProfileRepository -> MySQL: UPDATE user_profiles SET country_id = ?, city = ?, userPhoto = ? WHERE user_id = ? 
+- UserProfileService -> UserProfileMapper: toDto(userProfile) 
+- UserProfileController -> Frontend: userProfile
 
 ### Get Bookmarks
-- Frontend -> UserProfileController: getBookmarksByUserId(userId) UserProfileController -> BookmarkService: getByUserId(userId) BookmarkService -> BookmarkRepository: findByUser_Id(userId) BookmarkRepository -> MySQL: SELECT * FROM bookmarks WHERE user_id = ? BookmarkRepository -> BookmarkService: bookmarks BookmarkService -> BookmarkMapper: toDto(bookmarks) UserProfileController -> Frontend: bookmarks
+- Frontend -> UserProfileController: getBookmarksByUserId(userId)
+- UserProfileController -> BookmarkService: getByUserId(userId) 
+- BookmarkService -> BookmarkRepository: findByUser_Id(userId) 
+- BookmarkRepository -> MySQL: SELECT * FROM bookmarks WHERE user_id = ? 
+- BookmarkRepository -> BookmarkService: bookmarks 
+- BookmarkService -> BookmarkMapper: toDto(bookmarks) 
+- UserProfileController -> Frontend: bookmarks
 
 ### Get User Profile
-- Frontend -> UserProfileController: getUserProfile(userId) UserProfileController -> UserProfileService: getById(userId) UserProfileService -> UserProfileRepository: findByUserId(userId) UserProfileRepository -> MySQL: SELECT * FROM user_profiles WHERE user_id = ? UserProfileRepository -> UserProfileService: userProfile UserProfileService -> UserProfileMapper: toDto(userProfile) UserProfileController -> Frontend: userProfile
+- Frontend -> UserProfileController: getUserProfile(userId) 
+- UserProfileController -> UserProfileService: getById(userId) 
+- UserProfileService -> UserProfileRepository: findByUserId(userId)
+-UserProfileRepository -> MySQL: SELECT * FROM user_profiles WHERE user_id = ? 
+- UserProfileRepository -> UserProfileService: userProfile 
+- UserProfileService -> UserProfileMapper: toDto(userProfile) 
+- UserProfileController -> Frontend: userProfile
 
 ### Delete Tour from Bookmarks
-- Frontend -> UserProfileController: deleteBookmark(tourId) UserProfileController -> BookmarkService: deleteBookmarkById(tourId, userId) BookmarkService -> BookmarkRepository: findById(bookmarkId) BookmarkRepository -> MySQL: SELECT * FROM bookmarks WHERE user_id = ? AND tour_id = ? BookmarkRepository -> BookmarkService: bookmark BookmarkService -> BookmarkRepository: delete(bookmark) BookmarkRepository -> MySQL: DELETE FROM bookmarks WHERE user_id = ? AND tour_id = ?
+- Frontend -> UserProfileController: deleteBookmark(tourId) 
+- UserProfileController -> BookmarkService: deleteBookmarkById(tourId, userId) 
+- BookmarkService -> BookmarkRepository: findById(bookmarkId)
+- BookmarkRepository -> MySQL: SELECT * FROM bookmarks WHERE user_id = ? AND tour_id = ? 
+- BookmarkRepository -> BookmarkService: bookmark 
+- BookmarkService -> BookmarkRepository: delete(bookmark) 
+- BookmarkRepository -> MySQL: DELETE FROM bookmarks WHERE user_id = ? AND tour_id = ?
 
 ![------------------------------------------------](docs/rainbow.png)
 
