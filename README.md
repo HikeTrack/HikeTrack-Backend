@@ -447,8 +447,7 @@ Build and run the application in a Docker container using Docker Compose.
 
 ### Search Countries
 
-- Frontend -> CountryController: search(continent, countryName) 
-
+- Frontend -> CountryController: search(continent, countryName)
 - CountryController -> CountrySpecificationBuilder: build(continent, countryName) 
 - CountrySpecificationBuilder -> CountrySpecificationProviderManager: getSpecificationProvider(continent) 
 - CountrySpecificationProviderManager -> ContinentSpecificationProvider: getSpecification(continent) 
