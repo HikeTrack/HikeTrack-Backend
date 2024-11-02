@@ -19,7 +19,7 @@ Whether you're an adventure enthusiast looking to book and review hiking experie
 Get ready to explore, contribute, and maybe even take HikeTrack for your own adventure! 🌄
 
 <p align="center">
-    <img src="docs/logo.png" align="center" height="625" width="1000" />
+    <img src="docs/logo.png" align="center" height="575" width="1000" />
 </p>
 
 <div style="text-align: right; font-size: 34px; font-weight: bold;">
