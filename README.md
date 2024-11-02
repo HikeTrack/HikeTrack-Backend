@@ -4,9 +4,12 @@
 
 [![GitHub last commit](https://img.shields.io/github/last-commit/Vadym-Ozi/Online-Book-store)](#)
 ![Language:Java](https://img.shields.io/static/v1?label=Language&message=Java&color=red)
+[![Website](https://img.shields.io/badge/Live-Demo-brightgreen)](https://hiketrack.github.io/hike-track-frontend/#/)
 <a href="https://github.com/HikeTrack/HikeTrack-Backend/graphs/contributors" target="_blank">
 <img src="https://img.shields.io/github/contributors-anon/HikeTrack/HikeTrack-Backend.svg" alt="GitHub contributors">
 </a>
+
+
 
 # Welcome to HikeTrack-Backend! 🎉
 Welcome to the HikeTrack-Backend repository, the backbone of the HikeTrack platform! This service powers our web application, providing seamless management of hiking tours, user profiles, reviews, and more.
