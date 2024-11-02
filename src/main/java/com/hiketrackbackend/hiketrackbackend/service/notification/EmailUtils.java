@@ -2,7 +2,12 @@ package com.hiketrackbackend.hiketrackbackend.service.notification;
 
 import com.hiketrackbackend.hiketrackbackend.exception.EmailSendingException;
 import jakarta.annotation.PostConstruct;
-import jakarta.mail.*;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.Getter;
@@ -34,6 +39,23 @@ public class EmailUtils {
     private Session session;
 
 
+    public void sendEmail(String toEmail, String subject, String messageText) {
+        if (session == null) {
+            throw new IllegalStateException("Email session is not initialized.");
+        }
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+            message.setSubject(subject);
+            message.setText(messageText);
+            Transport.send(message);
+        } catch (MessagingException e) {
+            throw new EmailSendingException("Failed to send email", e);
+        }
+    }
+
     @PostConstruct
     private void initializeSession() {
         if (mailHost == null || mailPort == null || from == null || password == null) {
@@ -55,22 +77,5 @@ public class EmailUtils {
                     }
                 }
         );
-    }
-
-    public void sendEmail(String toEmail, String subject, String messageText) {
-        if (session == null) {
-            throw new IllegalStateException("Email session is not initialized.");
-        }
-
-        try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(from));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-            message.setSubject(subject);
-            message.setText(messageText);
-            Transport.send(message);
-        } catch (MessagingException e) {
-            throw new EmailSendingException("Failed to send email", e);
-        }
     }
 }

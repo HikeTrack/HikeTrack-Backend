@@ -11,7 +11,22 @@ public class PromotionRequestEmailSenderImpl implements EmailSender {
 
     @Override
     public void send(String userEmail, String request) {
-        String message = "We have a promotion request from user with email: " + userEmail + ". Request: " + request;
+        if (userEmail == null || userEmail.isEmpty()) {
+            throw new IllegalArgumentException("Email is mandatory: " + userEmail);
+        }
+        String message = generateConfirmationEmail(userEmail, request);
         emailUtils.sendEmail(emailUtils.getFrom(), SUBJECT, message);
+    }
+
+    private String generateConfirmationEmail(String email, String request) {
+        return String.format(
+                "Dear Boss,\n\n" +
+                        "We have a promotion request from user with email %s:\n\n"
+                        + "Additional request from user:\n\n"
+                        + request + "\n"
+                        + "Best regards,\n"
+                        + "Hike Track Team",
+                email
+        );
     }
 }

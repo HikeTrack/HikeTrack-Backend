@@ -3,7 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.security;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserResponseDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.UserNotConfirmedException;
@@ -16,6 +16,7 @@ import com.hiketrackbackend.hiketrackbackend.security.token.impl.PasswordResetUs
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -64,13 +65,18 @@ public class AuthenticationService {
         return userService.updatePassword(request, user.getId());
     }
 
-    public void logout(HttpServletRequest request) {
+    public void logout(@NotNull HttpServletRequest request) {
         request.getSession().invalidate();
         logoutTokenService.save(request);
     }
 
     @Transactional
     public UserDevMsgRespondDto changeConfirmingStatus(String token) {
+        boolean exist = confirmationTokenService.isKeyExist(token);
+        if (!exist) {
+            throw new UserNotConfirmedException("Confirmation link has been expired");
+        }
+
         String email = confirmationTokenService.getValue(token);
         User user = findUserByEmail(email);
         user.setConfirmed(true);

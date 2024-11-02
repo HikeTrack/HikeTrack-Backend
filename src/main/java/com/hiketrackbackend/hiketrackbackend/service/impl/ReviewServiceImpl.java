@@ -26,9 +26,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewsRespondDto createReview(ReviewRequestDto requestDto, User user, Long tourId) {
+        Tour tour = getTourById(tourId);
         Review review = reviewMapper.toEntity(requestDto);
         review.setDateCreated(LocalDateTime.now());
-        review.setTour(getTourById(tourId));
+        review.setTour(tour);
         review.setUser(user);
         return reviewMapper.toDto(reviewRepository.save(review));
     }
@@ -45,7 +46,21 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewsRespondDto> getAllByUserId(Long userId, Pageable pageable) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User id cannot be null");
+        }
         return reviewRepository.findReviewsByUserId(userId, pageable)
+                .stream()
+                .map(reviewMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<ReviewsRespondDto> getAllByTourId(Long tourId, Pageable pageable) {
+        if (tourId == null) {
+            throw new IllegalArgumentException("Tour id cannot be null");
+        }
+        return reviewRepository.findByTourId(tourId, pageable)
                 .stream()
                 .map(reviewMapper::toDto)
                 .toList();

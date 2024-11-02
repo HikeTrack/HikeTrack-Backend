@@ -43,9 +43,19 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return e.getDefaultMessage();
     }
 
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<Object> handleJwtExceptionException(JwtException ex) {
+        return createBodyMessage(ex, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(RegistrationException.class)
     public ResponseEntity<Object> handleRegistrationException(RegistrationException ex) {
         return createBodyMessage(ex, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

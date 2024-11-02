@@ -26,7 +26,7 @@ public class Rating {
     @Min(1)
     @Max(5)
     @Column(nullable = false)
-    private Long rating;
+    private Integer rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

@@ -6,5 +6,5 @@ import lombok.Setter;
 @Setter
 @Getter
 public class RatingRespondDto {
-    private Long rating;
+    private Integer rating;
 }

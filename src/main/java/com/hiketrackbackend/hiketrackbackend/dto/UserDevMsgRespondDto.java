@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.dto.user;
+package com.hiketrackbackend.hiketrackbackend.dto;
 
 public record UserDevMsgRespondDto(String message) {
 }

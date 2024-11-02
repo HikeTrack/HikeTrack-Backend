@@ -38,14 +38,15 @@ public interface TourMapper {
     @AfterMapping
     default void setRating(Tour tour, @MappingTarget TourRespondDto respondDto) {
         List<Rating> ratings = tour.getRatings();
-        respondDto.setTotalAmountOfMarks((long) ratings.size());
         if (ratings.isEmpty()) {
+            respondDto.setTotalAmountOfMarks(0L);
             respondDto.setAverageRating(0L);
             return;
         }
+        respondDto.setTotalAmountOfMarks((long) ratings.size());
         Long ratingSum = 0L;
         for (Rating value : ratings) {
-            Long rating = value.getRating();
+            Integer rating = value.getRating();
             ratingSum += rating;
         }
         respondDto.setAverageRating(ratingSum / ratings.size());

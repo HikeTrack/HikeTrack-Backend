@@ -15,7 +15,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: rating
-                  type: BIGINT
+                  type: integer
                   constraints:
                     nullable: false
                     unique: true

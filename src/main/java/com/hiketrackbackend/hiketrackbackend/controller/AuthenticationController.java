@@ -3,7 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserResponseDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserDevMsgRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
@@ -21,49 +21,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/*
-    Do not send requests with JWT token.
-    This path is in EXCLUDE_URLS to skip token validation.
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 @Validated
-@Tag(name = "", description = "")
+@Tag(name = "Authentication", description = "Operations related to user authentication such as registration, "
+        + "login, and password management.")
 public class AuthenticationController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
-    @Operation(summary = "", description = "")
+    @Operation(summary = "User Registration",
+            description = "Register a new user with the provided details and send confirmation email.")
     @PostMapping("/registration")
     public UserRegistrationRespondDto registration(@RequestBody @Valid UserRegistrationRequestDto requestDto)
             throws RegistrationException {
         return userService.register(requestDto);
     }
 
-    @Operation(summary = "", description = "")
+    @Operation(summary = "User Login", description = "Authenticate a user and return a JWT token.")
     @PostMapping("/login")
     public UserResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {
         return authenticationService.login(request);
     }
 
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Forgot Password", description = "Initiate a password reset request for the user.")
     @PostMapping("/forgot-password")
     public UserDevMsgRespondDto forgotPassword(@RequestBody @Valid UserRequestDto request) {
         return authenticationService.createRestoreRequest(request);
     }
 
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Reset Password", description = "Reset the user's password using the provided token.")
     @PostMapping("/reset-password")
     public UserDevMsgRespondDto resetPassword(@RequestParam("token") String token,
                                               @RequestBody @Valid UserUpdatePasswordRequestDto request) {
         return authenticationService.restorePassword(token, request);
     }
 
-    @Operation(summary = "",
-            description = "")
+    @Operation(summary = "Email Confirmation", description = "Confirm the user's email using the provided token.")
     @PostMapping("/confirmation")
     public UserDevMsgRespondDto emailConfirmation(@RequestParam("token") String token) {
         return authenticationService.changeConfirmingStatus(token);

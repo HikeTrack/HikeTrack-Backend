@@ -38,3 +38,4 @@ jobs:
           AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
           MAIL_SMTP_AUTH: ${{secrets.MAIL_SMTP_AUTH}}
           MAIL_SMTP_SSL_ENABLE: ${{secrets.MAIL_SMTP_SSL_ENABLE}}
+          UNSUBSCRIBE_BASE_URL: ${{ secrets.UNSUBSCRIBE_EMAIL_BASE_URL }}
