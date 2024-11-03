@@ -34,15 +34,6 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(body, headers, status);
     }
 
-    private String getErrorMessage(ObjectError e) {
-        if (e instanceof FieldError fieldError) {
-            String fieldName = fieldError.getField();
-            String errorMessage = e.getDefaultMessage();
-            return fieldName + " " + errorMessage;
-        }
-        return e.getDefaultMessage();
-    }
-
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<Object> handleJwtExceptionException(JwtException ex) {
         return createBodyMessage(ex, HttpStatus.UNAUTHORIZED);
@@ -88,6 +79,26 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return createBodyMessage(ex, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<Object> handleFileUploadException(FileUploadException ex) {
+        return createBodyMessage(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EntityAlreadyExistException.class)
+    public ResponseEntity<Object> handleEntityAlreadyExistException(EntityAlreadyExistException ex) {
+        return createBodyMessage(ex, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(FileIsEmptyException.class)
+    public ResponseEntity<Object> handleFileIsEmptyException(FileIsEmptyException ex) {
+        return createBodyMessage(ex, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidIdException.class)
+    public ResponseEntity<Object> handleInvalidIdException(InvalidIdException ex) {
+        return createBodyMessage(ex, HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<Object> createBodyMessage(Exception ex, HttpStatus status) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
@@ -95,5 +106,14 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         body.put("error", ex.getClass().getSimpleName());
         body.put("message", ex.getMessage());
         return new ResponseEntity<>(body, status);
+    }
+
+    private String getErrorMessage(ObjectError e) {
+        if (e instanceof FieldError fieldError) {
+            String fieldName = fieldError.getField();
+            String errorMessage = e.getDefaultMessage();
+            return fieldName + " " + errorMessage;
+        }
+        return e.getDefaultMessage();
     }
 }

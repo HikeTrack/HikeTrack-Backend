@@ -2,28 +2,28 @@ package com.hiketrackbackend.hiketrackbackend.dto.details;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.Activity;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.RouteType;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class DetailsRequestDto {
-    @NotBlank
-    @Min(0)
-    private int elevationGain;
 
-    @NotBlank(message = "Rout type cannot be null")
+    @Positive(message = "Elevation gain must be positive")
+    private Integer elevationGain;
+
+    @NotNull(message = "Route type cannot be null")
     private RouteType routeType;
 
-    @NotBlank
-    @Min(value = 0, message = "Duration of trip must be positive")
-    private int duration;
+    @Positive(message = "Duration of trip must be positive")
+    private Integer duration;
 
-    @NotBlank
+    @NotBlank(message = "Map cannot be blank")
     private String map;
 
-    @NotBlank(message = "Set at lest one activity")
+    @NotNull(message = "Set at least one activity")
     private Activity activity;
 }

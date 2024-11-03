@@ -8,7 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ReviewRequestDto {
-    @NotBlank
-    @Size(min = 1, max = 600)
+
+    @NotBlank(message = "Review content cannot be blank")
+    @Size(min = 1, max = 600, message = "Review content must be between 1 and 600 characters")
     private String content;
 }

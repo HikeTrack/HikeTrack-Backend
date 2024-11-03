@@ -58,19 +58,19 @@ public class TourControllerTest {
     private static MockMvc mockMvc;
 
     @MockBean
-    private TourService tourService;
+    private static TourService tourService;
 
     @MockBean
-    private TourDetailsService tourDetailsService;
+    private static TourDetailsService tourDetailsService;
 
     @MockBean
-    private JwtUtil jwtUtil;
+    private static JwtUtil jwtUtil;
 
     @MockBean
-    private UserDetailsService userDetailsService;
+    private static UserDetailsService userDetailsService;
 
     @MockBean
-    private UserTokenService<HttpServletRequest> userTokenService;
+    private static UserTokenService<HttpServletRequest> userTokenService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -91,7 +91,7 @@ public class TourControllerTest {
         requestDto.setLength(10);
         requestDto.setPrice(BigDecimal.valueOf(100.00));
         requestDto.setDate(ZonedDateTime.now());
-        requestDto.setDifficulty(Difficulty.Medium);
+        requestDto.setDifficulty(Difficulty.MEDIUM);
         requestDto.setCountryId(1L);
         requestDto.setDetailsRequestDto(new DetailsRequestDto());
 
@@ -198,7 +198,7 @@ public class TourControllerTest {
         requestDto.setLength(10);
         requestDto.setPrice(BigDecimal.valueOf(100.0));
         requestDto.setDate(ZonedDateTime.now());
-        requestDto.setDifficulty(Difficulty.Medium);
+        requestDto.setDifficulty(Difficulty.MEDIUM);
         requestDto.setCountryId(1L);
         DetailsRequestDto detailsRequestDto = new DetailsRequestDto();
         requestDto.setDetailsRequestDto(detailsRequestDto);

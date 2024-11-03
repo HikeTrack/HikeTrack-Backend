@@ -3,6 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
+import com.hiketrackbackend.hiketrackbackend.exception.InvalidIdException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Review;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
@@ -47,7 +48,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<ReviewsRespondDto> getAllByUserId(Long userId, Pageable pageable) {
         if (userId == null) {
-            throw new IllegalArgumentException("User id cannot be null");
+            throw new InvalidIdException("User id cannot be null");
         }
         return reviewRepository.findReviewsByUserId(userId, pageable)
                 .stream()
@@ -58,7 +59,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<ReviewsRespondDto> getAllByTourId(Long tourId, Pageable pageable) {
         if (tourId == null) {
-            throw new IllegalArgumentException("Tour id cannot be null");
+            throw new InvalidIdException("Tour id cannot be null");
         }
         return reviewRepository.findByTourId(tourId, pageable)
                 .stream()

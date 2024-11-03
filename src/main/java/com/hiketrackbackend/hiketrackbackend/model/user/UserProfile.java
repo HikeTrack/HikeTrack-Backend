@@ -16,13 +16,14 @@ import java.time.LocalDate;
 @Setter
 @Table(name = "user_profiles")
 public class UserProfile {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String country;
     private String city;
     private String phoneNumber;
     private String aboutMe;
-//    private String birthday;
+    private LocalDate dateOfBirth;
 
     @Column(nullable = false, updatable = false)
     private LocalDate registrationDate;

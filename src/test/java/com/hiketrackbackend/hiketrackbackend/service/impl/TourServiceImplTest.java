@@ -9,6 +9,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsA
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
+import com.hiketrackbackend.hiketrackbackend.exception.EntityAlreadyExistException;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
@@ -102,7 +103,7 @@ public class TourServiceImplTest {
         tourRequestDto.setLength(10);
         tourRequestDto.setPrice(BigDecimal.valueOf(100));
         tourRequestDto.setDate(ZonedDateTime.now());
-        tourRequestDto.setDifficulty(Difficulty.Medium);
+        tourRequestDto.setDifficulty(Difficulty.MEDIUM);
         tourRequestDto.setCountryId(1L);
         tourRequestDto.setDetailsRequestDto(new DetailsRequestDto());
 
@@ -111,7 +112,7 @@ public class TourServiceImplTest {
         tourUpdateRequestDto.setLength(15);
         tourUpdateRequestDto.setPrice(BigDecimal.valueOf(150));
         tourUpdateRequestDto.setDate(ZonedDateTime.now().plusDays(1));
-        tourUpdateRequestDto.setDifficulty(Difficulty.Hard);
+        tourUpdateRequestDto.setDifficulty(Difficulty.HARD);
         tourUpdateRequestDto.setCountryId(2L);
         tourUpdateRequestDto.setDetailsRequestDto(new DetailsRequestDto());
 
@@ -461,7 +462,7 @@ public class TourServiceImplTest {
 
         when(tourRepository.existsByIdAndUserId(tourId, userId)).thenReturn(true);
 
-        assertThrows(EntityExistsException.class, () -> tourService.deleteTourByIdAndUserId(tourId, userId));
+        assertThrows(EntityAlreadyExistException.class, () -> tourService.deleteTourByIdAndUserId(tourId, userId));
     }
 
     @Test

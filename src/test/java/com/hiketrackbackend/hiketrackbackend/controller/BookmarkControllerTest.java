@@ -2,6 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.hiketrackbackend.hiketrackbackend.dto.bookmark.BookmarkRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.bookmark.BookmarkRespondDto;
+import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.service.BookmarkService;
 import jakarta.validation.ConstraintViolation;
@@ -32,7 +33,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class BookmarkControllerTest {
     @Mock
-    private BookmarkService bookmarkService;
+    private static BookmarkService bookmarkService;
 
     @InjectMocks
     private BookmarkController bookmarkController;
@@ -141,9 +142,9 @@ public class BookmarkControllerTest {
         Long userId = 1L;
         Long invalidTourId = -1L;
 
-        doThrow(new IllegalArgumentException("Invalid tourId")).when(bookmarkService).deleteBookmarkById(invalidTourId, userId);
+        doThrow(new EntityNotFoundException("Invalid tourId")).when(bookmarkService).deleteBookmarkById(invalidTourId, userId);
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(EntityNotFoundException.class, () -> {
             bookmarkController.deleteBookmark(userId, invalidTourId);
         });
     }

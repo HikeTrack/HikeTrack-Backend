@@ -2,6 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 
 import com.hiketrackbackend.hiketrackbackend.dto.bookmark.BookmarkRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.bookmark.BookmarkRespondDto;
+import com.hiketrackbackend.hiketrackbackend.exception.EntityAlreadyExistException;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.BookmarkMapper;
 import com.hiketrackbackend.hiketrackbackend.model.bookmark.Bookmark;
@@ -96,7 +97,7 @@ public class BookmarkServiceImplTest {
         when(bookmarkRepository.existsById(bookmarkId)).thenReturn(true);
 
         assertThatThrownBy(() -> bookmarkService.addToBookmarks(requestDto, user))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityAlreadyExistException.class)
                 .hasMessage("This tour is already saved");
     }
 

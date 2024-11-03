@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.hiketrackbackend.hiketrackbackend.exception.FileUploadException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,7 +44,8 @@ public class S3Service implements FileStorageService {
                 String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + keyName;
                 fileUrls.add(fileUrl);
             } catch (IOException e) {
-                throw new RuntimeException("BaseFile can`t be downloaded: " + multipartFile + ". " + e.getMessage(), e);
+                throw new FileUploadException("BaseFile can`t be downloaded: "
+                        + multipartFile + ". " + e.getMessage());
             } finally {
 
                 if (tempFile != null && tempFile.exists()) {

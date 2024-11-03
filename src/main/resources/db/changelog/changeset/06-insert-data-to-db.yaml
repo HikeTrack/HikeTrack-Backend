@@ -10,7 +10,7 @@ databaseChangeLog:
               - column: {name: name, value: "Tiger Leaping Gorge" }
               - column: {name: length, value: 22000 }
               - column: {name: price, value: 350 }
-              - column: { name: difficulty, value: "Medium" }
+              - column: { name: difficulty, value: "MEDIUM" }
               - column: { name: main_photo, value: "img/tours/china/tour-china-00.png" }
               - column: {name: date, value: 2025-11-22 08:00:00 }
               - column: {name: country_id, value: 8}
@@ -24,7 +24,7 @@ databaseChangeLog:
               - column: { name: name, value: "Mount Hua" }
               - column: { name: length, value: 12000 }
               - column: { name: price, value: 400 }
-              - column: { name: difficulty, value: "Hard" }
+              - column: { name: difficulty, value: "HARD" }
               - column: { name: date, value: 2025-05-17 12:00:00 }
               - column: { name: country_id, value: 8 }
               - column: {name: user_id, value: 1 }
@@ -37,7 +37,7 @@ databaseChangeLog:
               - column: { name: name, value: "Yangshuo Mountains" }
               - column: { name: length, value: 9500 }
               - column: { name: price, value: 200 }
-              - column: { name: difficulty, value: "Easy" }
+              - column: { name: difficulty, value: "EASY" }
               - column: { name: date, value: 2025-08-23 06:30:00 }
               - column: { name: country_id, value: 8 }
               - column: {name: user_id, value: 1 }
@@ -50,7 +50,7 @@ databaseChangeLog:
               - column: { name: name, value: "Roopkund Trek" }
               - column: { name: length, value: 53000 }
               - column: { name: price, value: 500 }
-              - column: { name: difficulty, value: "Hard" }
+              - column: { name: difficulty, value: "HARD" }
               - column: { name: date, value: 2025-06-14 07:20:00 }
               - column: { name: country_id, value: 3 }
               - column: {name: user_id, value: 1 }
@@ -63,7 +63,7 @@ databaseChangeLog:
               - column: { name: name, value: "Chadar Trek" }
               - column: { name: length, value: 105000 }
               - column: { name: price, value: 850 }
-              - column: { name: difficulty, value: "Hard" }
+              - column: { name: difficulty, value: "HARD" }
               - column: { name: date, value: 2025-04-29 09:30:00 }
               - column: { name: country_id, value: 3 }
               - column: {name: user_id, value: 1 }
@@ -76,7 +76,7 @@ databaseChangeLog:
               - column: { name: name, value: "Triund Trek" }
               - column: { name: length, value: 9000 }
               - column: { name: price, value: 150 }
-              - column: { name: difficulty, value: "Easy" }
+              - column: { name: difficulty, value: "EASY" }
               - column: { name: date, value: 2025-08-07 10:00:00 }
               - column: { name: country_id, value: 3 }
               - column: {name: user_id, value: 1 }
@@ -89,7 +89,7 @@ databaseChangeLog:
               - column: { name: name, value: "Mount Rinjani" }
               - column: { name: length, value: 50000 }
               - column: { name: price, value: 600 }
-              - column: { name: difficulty, value: "Hard" }
+              - column: { name: difficulty, value: "HARD" }
               - column: { name: date, value: 2025-10-03 05:30:00 }
               - column: { name: country_id, value: 2 }
               - column: {name: user_id, value: 1 }
@@ -102,7 +102,7 @@ databaseChangeLog:
               - column: { name: name, value: "Mount Bromo" }
               - column: { name: length, value: 16000 }
               - column: { name: price, value: 300 }
-              - column: { name: difficulty, value: "Medium" }
+              - column: { name: difficulty, value: "MEDIUM" }
               - column: { name: date, value: 2025-09-11 09:45:00 }
               - column: { name: country_id, value: 2 }
               - column: {name: user_id, value: 1 }
@@ -115,7 +115,7 @@ databaseChangeLog:
               - column: { name: name, value: "Mount Batur" }
               - column: { name: length, value: 11000 }
               - column: { name: price, value: 150 }
-              - column: { name: difficulty, value: "Medium" }
+              - column: { name: difficulty, value: "MEDIUM" }
               - column: { name: date, value: 2025-09-27 15:00:00 }
               - column: { name: country_id, value: 2 }
               - column: {name: user_id, value: 1 }
@@ -128,7 +128,7 @@ databaseChangeLog:
               - column: { name: name, value: "Path of the Gods / Sentiero degli Dei" }
               - column: { name: length, value: 8000 }
               - column: { name: price, value: 300 }
-              - column: { name: difficulty, value: "Medium" }
+              - column: { name: difficulty, value: "MEDIUM" }
               - column: { name: date, value: 2025-10-07 10:00:00 }
               - column: { name: country_id, value: 4 }
               - column: {name: user_id, value: 1 }
@@ -141,7 +141,7 @@ databaseChangeLog:
               - column: { name: name, value: "Tre Cime di Lavaredo" }
               - column: { name: length, value: 10000 }
               - column: { name: price, value: 250 }
-              - column: { name: difficulty, value: "Easy" }
+              - column: { name: difficulty, value: "EASY" }
               - column: { name: date, value: 2025-07-15 09:00:00 }
               - column: { name: country_id, value: 4 }
               - column: {name: user_id, value: 1 }
@@ -154,7 +154,7 @@ databaseChangeLog:
               - column: { name: name, value: "Gran Paradiso" }
               - column: { name: length, value: 45000 }
               - column: { name: price, value: 950 }
-              - column: { name: difficulty, value: "Hard" }
+              - column: { name: difficulty, value: "HARD" }
               - column: { name: date, value: 2025-07-06 08:45:00 }
               - column: { name: country_id, value: 4 }
               - column: {name: user_id, value: 1 }
@@ -167,7 +167,7 @@ databaseChangeLog:
               - column: { name: name, value: "Everest Base Camp Trek" }
               - column: { name: length, value: 130000 }
               - column: { name: price, value: 1500 }
-              - column: { name: difficulty, value: "Hard" }
+              - column: { name: difficulty, value: "HARD" }
               - column: { name: date, value: 2025-06-01 09:50:00 }
               - column: { name: country_id, value: 7 }
               - column: {name: user_id, value: 1 }
@@ -180,7 +180,7 @@ databaseChangeLog:
               - column: { name: name, value: "Annapurna Circuit Trek" }
               - column: { name: length, value: 230000 }
               - column: { name: price, value: 1800 }
-              - column: { name: difficulty, value: "Medium" }
+              - column: { name: difficulty, value: "MEDIUM" }
               - column: { name: date, value: 2025-02-26 05:30:00 }
               - column: { name: country_id, value: 7 }
               - column: {name: user_id, value: 1 }
@@ -193,7 +193,7 @@ databaseChangeLog:
               - column: { name: name, value: "Gokyo Lakes Trek" }
               - column: { name: length, value: 92000 }
               - column: { name: price, value: 1800 }
-              - column: { name: difficulty, value: "Medium" }
+              - column: { name: difficulty, value: "MEDIUM" }
               - column: { name: date, value: 2025-09-09 08:15:00 }
               - column: { name: country_id, value: 7 }
               - column: {name: user_id, value: 1 }
@@ -206,7 +206,7 @@ databaseChangeLog:
               - column: { name: name, value: "Lycian Way" }
               - column: { name: length, value: 540000 }
               - column: { name: price, value: 2500 }
-              - column: { name: difficulty, value: "Medium" }
+              - column: { name: difficulty, value: "MEDIUM" }
               - column: { name: date, value: 2025-08-14 08:30:00 }
               - column: { name: country_id, value: 5 }
               - column: {name: user_id, value: 1 }
@@ -219,7 +219,7 @@ databaseChangeLog:
               - column: { name: name, value: "Mount Ararat" }
               - column: { name: length, value: 35000 }
               - column: { name: price, value: 850 }
-              - column: { name: difficulty, value: "Hard" }
+              - column: { name: difficulty, value: "HARD" }
               - column: { name: date, value: 2025-09-25 10:30:00 }
               - column: { name: country_id, value: 5 }
               - column: {name: user_id, value: 1 }
@@ -232,7 +232,7 @@ databaseChangeLog:
               - column: { name: name, value: "St. Paul Trail" }
               - column: { name: length, value: 500000 }
               - column: { name: price, value: 1500 }
-              - column: { name: difficulty, value: "Medium" }
+              - column: { name: difficulty, value: "MEDIUM" }
               - column: { name: date, value: 2025-06-18 10:15:00 }
               - column: { name: country_id, value: 5 }
               - column: {name: user_id, value: 1 }
@@ -245,7 +245,7 @@ databaseChangeLog:
               - column: { name: name, value: "Hoverla" }
               - column: { name: length, value: 8000 }
               - column: { name: price, value: 300 }
-              - column: { name: difficulty, value: "Medium" }
+              - column: { name: difficulty, value: "MEDIUM" }
               - column: { name: date, value: 2025-07-18 10:15:00 }
               - column: { name: country_id, value: 1 }
               - column: {name: user_id, value: 1}
@@ -258,7 +258,7 @@ databaseChangeLog:
               - column: { name: name, value: "Synevyr Lake" }
               - column: { name: length, value: 15000 }
               - column: { name: price, value: 250 }
-              - column: { name: difficulty, value: "Medium" }
+              - column: { name: difficulty, value: "MEDIUM" }
               - column: { name: date, value: 2025-05-20 08:00:00 }
               - column: { name: country_id, value: 1 }
               - column: {name: user_id, value: 1}
@@ -271,7 +271,7 @@ databaseChangeLog:
               - column: { name: name, value: "Chornohora Ridge" }
               - column: { name: length, value: 35000 }
               - column: { name: price, value: 320 }
-              - column: { name: difficulty, value: "Medium" }
+              - column: { name: difficulty, value: "MEDIUM" }
               - column: { name: date, value: 2025-05-20 06:45:00 }
               - column: { name: country_id, value: 1 }
               - column: {name: user_id, value: 1}
@@ -284,7 +284,7 @@ databaseChangeLog:
               - column: { name: name, value: "West Coast Trail" }
               - column: { name: length, value: 75000 }
               - column: { name: price, value: 350 }
-              - column: { name: difficulty, value: "Hard" }
+              - column: { name: difficulty, value: "HARD" }
               - column: { name: date, value: 2025-07-08 09:05:00 }
               - column: { name: country_id, value: 6 }
               - column: {name: user_id, value: 1}
@@ -297,7 +297,7 @@ databaseChangeLog:
               - column: { name: name, value: "Plain of Six Glaciers Trail" }
               - column: { name: length, value: 14000 }
               - column: { name: price, value: 250 }
-              - column: { name: difficulty, value: "Medium" }
+              - column: { name: difficulty, value: "MEDIUM" }
               - column: { name: date, value: 2025-08-04 08:35:00 }
               - column: { name: country_id, value: 6 }
               - column: {name: user_id, value: 1}
@@ -310,7 +310,7 @@ databaseChangeLog:
               - column: { name: name, value: "Gros Morne Mountain Trail" }
               - column: { name: length, value: 16000 }
               - column: { name: price, value: 300 }
-              - column: { name: difficulty, value: "Hard" }
+              - column: { name: difficulty, value: "HARD" }
               - column: { name: date, value: 2025-09-05 06:50:00 }
               - column: { name: country_id, value: 6 }
               - column: {name: user_id, value: 1}
@@ -321,7 +321,7 @@ databaseChangeLog:
               - column: { name: id, value: 1 }
               - column: { name: duration, value: 320 }
               - column: { name: elevation_gain, value: 500 }
-              - column: { name: route_type, value: "Point_to_Point" }
+              - column: { name: route_type, value: "POINT_TO_POINT" }
               - column: { name: map, value: "link for map" }
               - column: { name: activity, value: "HIKING" }
               - column: { name: tour_id, value: 1 }
@@ -332,7 +332,7 @@ databaseChangeLog:
               - column: { name: id, value: 2 }
               - column: { name: duration, value: 210 }
               - column: { name: elevation_gain, value: 300 }
-              - column: { name: route_type, value: "Point_to_Point" }
+              - column: { name: route_type, value: "POINT_TO_POINT" }
               - column: { name: map, value: "link for map2" }
               - column: { name: activity, value: "HIKING" }
               - column: { name: tour_id, value: 2 }

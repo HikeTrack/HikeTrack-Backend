@@ -6,6 +6,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhotoDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountrySearchParameters;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
+import com.hiketrackbackend.hiketrackbackend.exception.FileIsEmptyException;
 import com.hiketrackbackend.hiketrackbackend.mapper.CountryMapper;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
@@ -37,7 +38,7 @@ public class CountryServiceImpl implements CountryService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public CountryRespondDto createCountry(CountryRequestDto requestDto, MultipartFile file) {
         if (file.isEmpty()) {
-            throw new RuntimeException("Country photo is mandatory. Please upload a file.");
+            throw new FileIsEmptyException("Country photo is mandatory. Please upload a file.");
         }
         Country country = countryMapper.toEntity(requestDto);
             String photoUrl = saveFile(file);
@@ -48,7 +49,7 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public CountryRespondDto updateCountry(CountryRequestDto requestDto, MultipartFile file, Long id) {
         if (file.isEmpty()) {
-            throw new RuntimeException("Country photo is mandatory. Please upload a file.");
+            throw new FileIsEmptyException("Country photo is mandatory. Please upload a file.");
         }
         Country country = findCountryById(id);
         if (country.getPhoto() != null) {

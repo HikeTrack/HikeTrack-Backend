@@ -33,16 +33,16 @@ public class SocialSubscriptionControllerTest {
     private static MockMvc mockMvc;
 
     @MockBean
-    private SocialSubscriptionService socialSubscriptionService;
+    private static SocialSubscriptionService socialSubscriptionService;
 
     @MockBean
-    private JwtUtil jwtUtil;
+    private static JwtUtil jwtUtil;
 
     @MockBean
-    private UserDetailsService userDetailsService;
+    private static UserDetailsService userDetailsService;
 
     @MockBean
-    private UserTokenService<HttpServletRequest> userTokenService;
+    private static UserTokenService<HttpServletRequest> userTokenService;
 
     @BeforeAll
     static void beforeAll(@Autowired WebApplicationContext applicationContext) {

@@ -53,22 +53,25 @@ public class CountryControllerTest {
     private CountryService countryService;
 
     @MockBean
-    private JwtUtil jwtUtil;
+    private static JwtUtil jwtUtil;
 
     @MockBean
-    private UserDetailsService userDetailsService;
+    private static UserDetailsService userDetailsService;
 
     @MockBean
-    private UserTokenService<HttpServletRequest> userTokenService;
+    private static UserTokenService<HttpServletRequest> userTokenService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
+    private static List<CountryRespondWithPhotoDto> expectedCountries;
+
     @BeforeAll
-    static void beforeAll(@Autowired WebApplicationContext applicationContext){
+    static void beforeAll(@Autowired WebApplicationContext applicationContext) {
         mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
+        expectedCountries = setExpectedCountries();
     }
 
     @DisplayName("Successfully create a country with valid data and image file")
@@ -363,18 +366,6 @@ public class CountryControllerTest {
     @Test
     @DisplayName("Handle successfully receiving ten random countries")
     public void testGetTenRandomCountriesSuccess() {
-        List<CountryRespondWithPhotoDto> expectedCountries = new ArrayList<>();
-        expectedCountries.add(new CountryRespondWithPhotoDto(1L, "Country1", Continent.ASIA, "photo1.jpg"));
-        expectedCountries.add(new CountryRespondWithPhotoDto(2L, "Country2", Continent.EUROPE, "photo2.jpg"));
-        expectedCountries.add(new CountryRespondWithPhotoDto(3L, "Country3", Continent.AFRICA, "photo3.jpg"));
-        expectedCountries.add(new CountryRespondWithPhotoDto(4L, "Country4", Continent.NORTH_AMERICA, "photo4.jpg"));
-        expectedCountries.add(new CountryRespondWithPhotoDto(5L, "Country5", Continent.SOUTH_AMERICA, "photo5.jpg"));
-        expectedCountries.add(new CountryRespondWithPhotoDto(6L, "Country6", Continent.ASIA, "photo6.jpg"));
-        expectedCountries.add(new CountryRespondWithPhotoDto(7L, "Country7", Continent.ASIA, "photo7.jpg"));
-        expectedCountries.add(new CountryRespondWithPhotoDto(8L, "Country8", Continent.EUROPE, "photo8.jpg"));
-        expectedCountries.add(new CountryRespondWithPhotoDto(9L, "Country9", Continent.AFRICA, "photo9.jpg"));
-        expectedCountries.add(new CountryRespondWithPhotoDto(10L, "Country10", Continent.NORTH_AMERICA, "photo10.jpg"));
-
         when(countryService.getTenRandomCountries()).thenReturn(expectedCountries);
 
         CountryController countryController = new CountryController(countryService, objectMapper);
@@ -413,5 +404,71 @@ public class CountryControllerTest {
         assertThrows(EntityNotFoundException.class, () -> {
             countryController.deleteByCountryName(requestDto);
         });
+    }
+
+    private static List<CountryRespondWithPhotoDto> setExpectedCountries() {
+        List<CountryRespondWithPhotoDto> expectedCountries = new ArrayList<>();
+
+        CountryRespondWithPhotoDto countryRespondWithPhotoDto = new CountryRespondWithPhotoDto();
+        countryRespondWithPhotoDto.setId(1L);
+        countryRespondWithPhotoDto.setPhotoUrl("photo1.jpg");
+        countryRespondWithPhotoDto.setContinent(Continent.ASIA);
+        expectedCountries.add(countryRespondWithPhotoDto);
+
+        CountryRespondWithPhotoDto countryRespondWithPhotoDto2 = new CountryRespondWithPhotoDto();
+        countryRespondWithPhotoDto.setId(2L);
+        countryRespondWithPhotoDto.setPhotoUrl("photo2.jpg");
+        countryRespondWithPhotoDto.setContinent(Continent.EUROPE);
+        expectedCountries.add(countryRespondWithPhotoDto2);
+
+        CountryRespondWithPhotoDto countryRespondWithPhotoDto3 = new CountryRespondWithPhotoDto();
+        countryRespondWithPhotoDto.setId(3L);
+        countryRespondWithPhotoDto.setPhotoUrl("photo3.jpg");
+        countryRespondWithPhotoDto.setContinent(Continent.AFRICA);
+        expectedCountries.add(countryRespondWithPhotoDto3);
+
+        CountryRespondWithPhotoDto countryRespondWithPhotoDto4 = new CountryRespondWithPhotoDto();
+        countryRespondWithPhotoDto.setId(4L);
+        countryRespondWithPhotoDto.setPhotoUrl("photo4.jpg");
+        countryRespondWithPhotoDto.setContinent(Continent.AUSTRALIA);
+        expectedCountries.add(countryRespondWithPhotoDto4);
+
+        CountryRespondWithPhotoDto countryRespondWithPhotoDto5 = new CountryRespondWithPhotoDto();
+        countryRespondWithPhotoDto.setId(5L);
+        countryRespondWithPhotoDto.setPhotoUrl("photo5.jpg");
+        countryRespondWithPhotoDto.setContinent(Continent.ASIA);
+        expectedCountries.add(countryRespondWithPhotoDto5);
+
+        CountryRespondWithPhotoDto countryRespondWithPhotoDto6 = new CountryRespondWithPhotoDto();
+        countryRespondWithPhotoDto.setId(6L);
+        countryRespondWithPhotoDto.setPhotoUrl("photo6.jpg");
+        countryRespondWithPhotoDto.setContinent(Continent.NORTH_AMERICA);
+        expectedCountries.add(countryRespondWithPhotoDto6);
+
+        CountryRespondWithPhotoDto countryRespondWithPhotoDto7 = new CountryRespondWithPhotoDto();
+        countryRespondWithPhotoDto.setId(7L);
+        countryRespondWithPhotoDto.setPhotoUrl("photo7.jpg");
+        countryRespondWithPhotoDto.setContinent(Continent.ASIA);
+        expectedCountries.add(countryRespondWithPhotoDto7);
+
+        CountryRespondWithPhotoDto countryRespondWithPhotoDto8 = new CountryRespondWithPhotoDto();
+        countryRespondWithPhotoDto.setId(8L);
+        countryRespondWithPhotoDto.setPhotoUrl("photo8.jpg");
+        countryRespondWithPhotoDto.setContinent(Continent.SOUTH_AMERICA);
+        expectedCountries.add(countryRespondWithPhotoDto8);
+
+        CountryRespondWithPhotoDto countryRespondWithPhotoDto9 = new CountryRespondWithPhotoDto();
+        countryRespondWithPhotoDto.setId(9L);
+        countryRespondWithPhotoDto.setPhotoUrl("photo9.jpg");
+        countryRespondWithPhotoDto.setContinent(Continent.SOUTH_AMERICA);
+        expectedCountries.add(countryRespondWithPhotoDto9);
+
+        CountryRespondWithPhotoDto countryRespondWithPhotoDto10 = new CountryRespondWithPhotoDto();
+        countryRespondWithPhotoDto.setId(10L);
+        countryRespondWithPhotoDto.setPhotoUrl("photo10.jpg");
+        countryRespondWithPhotoDto.setContinent(Continent.EUROPE);
+        expectedCountries.add(countryRespondWithPhotoDto10);
+
+        return  expectedCountries;
     }
 }
