@@ -35,7 +35,7 @@ public class TourDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tourDetails")
+    @OneToMany(mappedBy = "tourDetails")
     private List<TourDetailsFile> additionalPhotos = new ArrayList<>();
 
     @Column(nullable = false)

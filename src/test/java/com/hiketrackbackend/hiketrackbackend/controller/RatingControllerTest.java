@@ -33,18 +33,18 @@ public class RatingControllerTest {
     protected static MockMvc mockMvc;
 
     @MockBean
-    private JwtUtil jwtUtil;
+    private static JwtUtil jwtUtil;
 
     @MockBean
-    private UserDetailsService userDetailsService;
+    private static UserDetailsService userDetailsService;
 
     @MockBean
-    private UserTokenService<HttpServletRequest> userTokenService;
+    private static UserTokenService<HttpServletRequest> userTokenService;
 
     @MockBean
-    private RatingService ratingService;
-    private RatingRequestDto validRatingRequestDto;
-    private RatingRespondDto validRatingRespondDto;
+    private static RatingService ratingService;
+    private static RatingRequestDto validRatingRequestDto;
+    private static RatingRespondDto validRatingRespondDto;
 
     @BeforeAll
     static void beforeAll(@Autowired WebApplicationContext applicationContext) {

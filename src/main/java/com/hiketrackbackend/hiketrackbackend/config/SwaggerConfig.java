@@ -16,10 +16,10 @@ public class SwaggerConfig {
                         .title("HikeTrack API")
                         .version("1.0")
                         .description("API documentation for HikeTrack application")
-                        .termsOfService("http://linkedin")
+                        .termsOfService("https://github.com/HikeTrack/HikeTrack-Backend/blob/main/LICENSE")
                         .contact(new Contact()
-                                .name("Developer")
+                                .name("Vadym Pantielieienko")
                                 .email("vadympantielieienko@gmail.com")
-                                .url("http://linkedin")));
+                                .url("https://www.linkedin.com/in/vadympantielieienko/")));
     }
 }

@@ -5,7 +5,7 @@ import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.bookmark.Bookmark;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
@@ -32,9 +32,8 @@ public class Tour {
     @Column(nullable = false, unique = true)
     private String name;
 
-    // meters
     @Column(nullable = false)
-    @Min(0)
+    @Positive
     private int length;
 
     @Column(nullable = false)

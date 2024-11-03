@@ -46,6 +46,7 @@ public class TourRepositoryTest {
         user = new User();
         user.setEmail("test@example.com");
         user.setFirstName("Test");
+        user.setLastName("TestLastName");
         user.setPassword("password");
         user = userRepository.save(user);
 
@@ -64,7 +65,7 @@ public class TourRepositoryTest {
         tour1.setLength(10);
         tour1.setPrice(BigDecimal.valueOf(100));
         tour1.setDate(ZonedDateTime.now());
-        tour1.setDifficulty(Difficulty.Easy);
+        tour1.setDifficulty(Difficulty.EASY);
         tour1.setMainPhoto("photo1.jpg");
         tour1.setCountry(country);
         tour1.setUser(user);
@@ -75,7 +76,7 @@ public class TourRepositoryTest {
         tour2.setLength(20);
         tour2.setPrice(BigDecimal.valueOf(200));
         tour2.setDate(ZonedDateTime.now());
-        tour2.setDifficulty(Difficulty.Medium);
+        tour2.setDifficulty(Difficulty.MEDIUM);
         tour2.setMainPhoto("photo2.jpg");
         tour2.setCountry(country);
         tour2.setUser(user);
@@ -114,7 +115,7 @@ public class TourRepositoryTest {
         tour.setLength(10);
         tour.setPrice(BigDecimal.valueOf(100));
         tour.setDate(ZonedDateTime.now());
-        tour.setDifficulty(Difficulty.Easy);
+        tour.setDifficulty(Difficulty.EASY);
         tour.setMainPhoto("photo1.jpg");
         tour.setCountry(country);
         tour.setUser(user);
@@ -136,7 +137,7 @@ public class TourRepositoryTest {
         tour.setLength(10);
         tour.setPrice(BigDecimal.valueOf(100));
         tour.setDate(ZonedDateTime.now());
-        tour.setDifficulty(Difficulty.Easy);
+        tour.setDifficulty(Difficulty.EASY);
         tour.setMainPhoto("photo1.jpg");
         tour.setCountry(country);
         tour.setUser(user);
@@ -157,7 +158,7 @@ public class TourRepositoryTest {
         tour.setLength(10);
         tour.setPrice(BigDecimal.valueOf(100));
         tour.setDate(ZonedDateTime.now());
-        tour.setDifficulty(Difficulty.Easy);
+        tour.setDifficulty(Difficulty.EASY);
         tour.setMainPhoto("photo1.jpg");
         tour.setCountry(country);
         tour.setUser(user);
@@ -186,7 +187,7 @@ public class TourRepositoryTest {
         tour.setLength(10);
         tour.setPrice(BigDecimal.valueOf(100));
         tour.setDate(ZonedDateTime.now());
-        tour.setDifficulty(Difficulty.Easy);
+        tour.setDifficulty(Difficulty.EASY);
         tour.setMainPhoto("photo1.jpg");
         tour.setCountry(country);
         tour.setUser(user);
@@ -208,7 +209,7 @@ public class TourRepositoryTest {
         tour.setLength(10);
         tour.setPrice(BigDecimal.valueOf(100));
         tour.setDate(ZonedDateTime.now());
-        tour.setDifficulty(Difficulty.Easy);
+        tour.setDifficulty(Difficulty.EASY);
         tour.setMainPhoto("photo1.jpg");
         tour.setCountry(country);
         tour.setUser(user);
@@ -229,7 +230,7 @@ public class TourRepositoryTest {
         tour1.setLength(10);
         tour1.setPrice(BigDecimal.valueOf(100));
         tour1.setDate(ZonedDateTime.now());
-        tour1.setDifficulty(Difficulty.Easy);
+        tour1.setDifficulty(Difficulty.EASY);
         tour1.setMainPhoto("photo1.jpg");
         tour1.setCountry(country);
         tour1.setUser(user);
@@ -240,7 +241,7 @@ public class TourRepositoryTest {
         tour2.setLength(20);
         tour2.setPrice(BigDecimal.valueOf(200));
         tour2.setDate(ZonedDateTime.now());
-        tour2.setDifficulty(Difficulty.Medium);
+        tour2.setDifficulty(Difficulty.MEDIUM);
         tour2.setMainPhoto("photo2.jpg");
         tour2.setCountry(country);
         tour2.setUser(user);

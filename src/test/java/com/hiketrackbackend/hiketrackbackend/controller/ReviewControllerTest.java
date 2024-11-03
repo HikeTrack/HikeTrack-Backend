@@ -43,16 +43,16 @@ public class ReviewControllerTest {
     private static MockMvc mockMvc;
 
     @MockBean
-    private ReviewService reviewService;
+    private static ReviewService reviewService;
 
     @MockBean
-    private JwtUtil jwtUtil;
+    private static JwtUtil jwtUtil;
 
     @MockBean
-    private UserDetailsService userDetailsService;
+    private static UserDetailsService userDetailsService;
 
     @MockBean
-    private UserTokenService<HttpServletRequest> userTokenService;
+    private static UserTokenService<HttpServletRequest> userTokenService;
 
     @BeforeAll
     static void beforeAll(@Autowired WebApplicationContext applicationContext) {

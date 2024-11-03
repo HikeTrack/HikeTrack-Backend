@@ -22,6 +22,8 @@ databaseChangeLog:
               - column:
                   name: password
                   type: VARCHAR(255)
+                  constraints:
+                    nullable: false
               - column:
                   name: first_name
                   type: VARCHAR(255)
@@ -30,6 +32,8 @@ databaseChangeLog:
               - column:
                   name: last_name
                   type: VARCHAR(255)
+                  constraints:
+                    nullable: false
               - column:
                   name: user_profile_id
                   type: BIGINT

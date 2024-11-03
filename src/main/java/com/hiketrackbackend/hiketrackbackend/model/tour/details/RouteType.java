@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum RouteType {
-    Point_to_Point("Point to Point"),
-    Round_Trip("Round Trip"),
-    Multi_Destination("Multi Destination"),
-    Open_Jaw("Open Jaw");
+    POINT_TO_POINT("Point to Point"),
+    ROUND_TRIP("Round Trip"),
+    MULTI_DESTINATION("Multi Destination"),
+    OPEN_JAW("Open Jaw");
 
     private final String displayName;
 

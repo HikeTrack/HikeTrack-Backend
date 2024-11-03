@@ -7,7 +7,9 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsA
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
+import com.hiketrackbackend.hiketrackbackend.exception.EntityAlreadyExistException;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
+import com.hiketrackbackend.hiketrackbackend.exception.FileIsEmptyException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Review;
@@ -26,7 +28,6 @@ import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -65,7 +66,7 @@ public class TourServiceImpl implements TourService {
             List<MultipartFile> additionalPhotos
     ) {
         if (mainPhoto.isEmpty()) {
-            throw new RuntimeException("Tour main photo is mandatory. Please upload a file.");
+            throw new FileIsEmptyException("Tour main photo is mandatory. Please upload a file.");
         }
         isExistTourByName(requestDto.getName(), user.getId());
         Country country = findCountry(requestDto.getCountryId());
@@ -168,7 +169,7 @@ public class TourServiceImpl implements TourService {
     public void deleteTourByIdAndUserId(Long tourId, Long userId) {
         boolean exist = isExistTourById(tourId, userId);
         if (exist) {
-            throw new EntityExistsException("Tour with id " + tourId + " already exists");
+            throw new EntityAlreadyExistException("Tour with id " + tourId + " already exists");
         }
         tourRepository.deleteById(tourId);
     }

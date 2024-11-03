@@ -40,22 +40,22 @@ public class UserControllerTest {
     private static MockMvc mockMvc;
 
     @MockBean
-    private UserService userService;
+    private static UserService userService;
 
     @MockBean
-    private AuthenticationService authenticationService;
+    private static AuthenticationService authenticationService;
 
     @MockBean
-    private JwtUtil jwtUtil;
+    private static JwtUtil jwtUtil;
 
     @MockBean
-    private UserDetailsService userDetailsService;
+    private static UserDetailsService userDetailsService;
 
     @MockBean
-    private UserTokenService<HttpServletRequest> userTokenService;
+    private static UserTokenService<HttpServletRequest> userTokenService;
 
     @MockBean
-    private RoleService roleService;
+    private static RoleService roleService;
 
     @Autowired
     private ObjectMapper objectMapper;
