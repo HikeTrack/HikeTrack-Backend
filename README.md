@@ -2,7 +2,7 @@
 
 # Hike Track
 
-[![GitHub last commit](https://img.shields.io/github/last-commit/Vadym-Ozi/Online-Book-store)](#)
+[![GitHub last commit](https://img.shields.io/github/last-commit/HikeTrack/HikeTrack-Backend)](https://github.com/HikeTrack/HikeTrack-Backend/commits/main)
 ![Language:Java](https://img.shields.io/static/v1?label=Language&message=Java&color=red)
 [![Website](https://img.shields.io/badge/Live-Demo-brightgreen)](https://hiketrack.github.io/hike-track-frontend/#/)
 [![APACHE License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
@@ -60,8 +60,8 @@ The API allows users to search for hiking tours based on various criteria like d
 Review Management: Users can leave reviews on specific tours, update or delete their reviews, 
 and view all reviews they’ve written. This feature encourages feedback and enhances the user experience.
 
-User Profile Management: Users can manage their profiles, including personal information and photos,
-as well as bookmark favorite tours for easy access.
+User Profile Management: Users can edit their profiles, including personal information and photos, rate tours, 
+and bookmark favorite tours for quick access.
 
 Token Management: Redis is used to manage temporary tokens for password reset, confirmation links and
 session handling.
@@ -194,7 +194,7 @@ This makes it ideal for applications where users want to find, explore, and shar
    </a>
 </p>
 
-<p><em>Note: The live website is still in progress by another frontend developer.</em></p>
+<p><em>Note: The live website is still in progress by other frontend developer.</em></p>
 
 ### Authentication
 
@@ -364,7 +364,7 @@ Build and run the application in a Docker container using Docker Compose.
 
 ## :bulb: Contributors
 
-There is no contributor yet. Want to be the first ?
+Contributions are always welcome!
 
 If you want to contribute to this project, please read the [**contribution guide**](https://github.com/Vadym-Ozi/Online-Book-store/blob/master/docs/CONTRIBUTING.md).
 
