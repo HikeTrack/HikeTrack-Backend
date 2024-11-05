@@ -12,3 +12,6 @@ databaseChangeLog:
               - column:
                   name: about_me
                   type: VARCHAR(255)
+              - column:
+                  name: date_of_birth
+                  type: DATE

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
@@ -58,7 +58,9 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #id == authentication.principal.id")
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Update user", description = "Update the details of the user with the given ID.")
+    @Operation(
+            summary = "Update user",
+            description = "Update the details of the user with the given ID.")
     public UserUpdateRespondDto updateUser(
             @RequestPart("data") String dataString,
             @PathVariable @Positive Long id,
@@ -81,7 +83,10 @@ public class UserController {
     }
 
     @PostMapping("/request")
-    @Operation(summary = "Promote request from user", description = "Submit a request to promote user to the guide.")
+    @Operation(
+            summary = "Promote request from user",
+            description = "Submit a request to promote user to the guide."
+    )
     public UserDevMsgRespondDto promoteRequestFromUser(@RequestBody @Valid UserRequestDto request) {
         return userService.promoteRequest(request);
     }

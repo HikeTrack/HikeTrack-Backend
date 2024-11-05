@@ -65,7 +65,7 @@ public class RatingRepositoryTest {
         tour.setLength(10);
         tour.setPrice(BigDecimal.valueOf(100.00));
         tour.setDate(ZonedDateTime.now());
-        tour.setDifficulty(Difficulty.Easy);
+        tour.setDifficulty(Difficulty.EASY);
         tour.setMainPhoto("photo.jpg");
         tour.setCountry(country);
         tour.setUser(user);

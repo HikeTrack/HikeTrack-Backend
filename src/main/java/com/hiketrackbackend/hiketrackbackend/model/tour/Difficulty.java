@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Difficulty {
-    Easy("Easy"),
-    Medium("Medium"),
-    Hard("Hard");
+    EASY("Easy"),
+    MEDIUM("Medium"),
+    HARD("Hard");
 
     private final String displayName;
 

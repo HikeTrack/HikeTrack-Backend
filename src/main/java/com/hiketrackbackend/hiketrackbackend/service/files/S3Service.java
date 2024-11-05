@@ -1,5 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.service.files;
 
+import com.hiketrackbackend.hiketrackbackend.exception.FileUploadException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,7 +43,8 @@ public class S3Service implements FileStorageService {
                 String fileUrl = "https://" + bucketName + ".s3.amazonaws.com/" + keyName;
                 fileUrls.add(fileUrl);
             } catch (IOException e) {
-                throw new RuntimeException("BaseFile can`t be downloaded: " + multipartFile + ". " + e.getMessage(), e);
+                throw new FileUploadException("BaseFile can`t be downloaded: "
+                        + multipartFile + ". " + e.getMessage());
             } finally {
 
                 if (tempFile != null && tempFile.exists()) {
@@ -63,11 +65,8 @@ public class S3Service implements FileStorageService {
                     .bucket(bucketName)
                     .key(keyName)
                     .build();
-
             s3Client.deleteObject(deleteObjectRequest);
-            System.out.println("File deleted successfully from S3 bucket: " + bucketName + ", key: " + keyName);
         } catch (S3Exception e) {
-            System.err.println("Failed to delete file from S3: " + e.awsErrorDetails().errorMessage());
             throw new RuntimeException("Failed to delete file from S3", e);
         }
     }

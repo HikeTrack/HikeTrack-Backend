@@ -2,12 +2,12 @@ package com.hiketrackbackend.hiketrackbackend.security.token.impl;
 
 import com.hiketrackbackend.hiketrackbackend.security.token.UserTokenService;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor

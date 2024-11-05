@@ -1,7 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.socialSubscription.SubscriptionRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.subscription.SubscriptionRequestDto;
 import com.hiketrackbackend.hiketrackbackend.service.SocialSubscriptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/social")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "Social Subscriptions",
-        description = "Operations related to managing social subscriptions and newsletters distribution.")
+@Tag(
+        name = "Social Subscriptions",
+        description = "Operations related to managing "
+                + "social subscriptions and newsletters distribution.")
 public class SocialSubscriptionController {
     private final SocialSubscriptionService socialSubscriptionService;
 
@@ -36,13 +38,18 @@ public class SocialSubscriptionController {
     @PostMapping("/unsubscribe")
     @Operation(summary = "Unsubscribe from Newsletter",
             description = "Unsubscribe from the email newsletter using the provided email address.")
-    public UserDevMsgRespondDto deleteEmailNewsletterSubscription(@RequestParam("email") String email) {
+    public UserDevMsgRespondDto deleteEmailNewsletterSubscription(
+            @RequestParam("email") String email
+    ) {
         return socialSubscriptionService.delete(email);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/newsletter")
-    @Operation(summary = "Send Newsletter", description = "Allows an admin to send a newsletter to all subscribers.")
+    @Operation(
+            summary = "Send Newsletter",
+            description = "Allows an admin to send a newsletter to all subscribers."
+    )
     public UserDevMsgRespondDto sendNewsletterToAllSubs(@RequestBody String text) {
         return socialSubscriptionService.createNewsletter(text);
     }

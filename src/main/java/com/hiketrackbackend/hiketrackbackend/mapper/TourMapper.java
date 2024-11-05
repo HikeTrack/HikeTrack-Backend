@@ -8,12 +8,11 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Rating;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
+import java.util.List;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.List;
 
 @Mapper(config = MapperConfig.class, uses = {TourDetailsMapper.class})
 public interface TourMapper {

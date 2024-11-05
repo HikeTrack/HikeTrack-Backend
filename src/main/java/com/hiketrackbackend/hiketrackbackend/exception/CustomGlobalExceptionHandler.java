@@ -1,5 +1,9 @@
 package com.hiketrackbackend.hiketrackbackend.exception;
 
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -11,10 +15,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -32,15 +32,6 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 .toList();
         body.put("errors", errors);
         return new ResponseEntity<>(body, headers, status);
-    }
-
-    private String getErrorMessage(ObjectError e) {
-        if (e instanceof FieldError fieldError) {
-            String fieldName = fieldError.getField();
-            String errorMessage = e.getDefaultMessage();
-            return fieldName + " " + errorMessage;
-        }
-        return e.getDefaultMessage();
     }
 
     @ExceptionHandler(JwtException.class)
@@ -64,7 +55,9 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(SpecificationNotFoundException.class)
-    public ResponseEntity<Object> handleSpecificationNotFoundException(SpecificationNotFoundException ex) {
+    public ResponseEntity<Object> handleSpecificationNotFoundException(
+            SpecificationNotFoundException ex
+    ) {
         return createBodyMessage(ex, HttpStatus.NOT_FOUND);
     }
 
@@ -88,6 +81,28 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return createBodyMessage(ex, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<Object> handleFileUploadException(FileUploadException ex) {
+        return createBodyMessage(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EntityAlreadyExistException.class)
+    public ResponseEntity<Object> handleEntityAlreadyExistException(
+            EntityAlreadyExistException ex
+    ) {
+        return createBodyMessage(ex, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(FileIsEmptyException.class)
+    public ResponseEntity<Object> handleFileIsEmptyException(FileIsEmptyException ex) {
+        return createBodyMessage(ex, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidIdException.class)
+    public ResponseEntity<Object> handleInvalidIdException(InvalidIdException ex) {
+        return createBodyMessage(ex, HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<Object> createBodyMessage(Exception ex, HttpStatus status) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
@@ -95,5 +110,14 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         body.put("error", ex.getClass().getSimpleName());
         body.put("message", ex.getMessage());
         return new ResponseEntity<>(body, status);
+    }
+
+    private String getErrorMessage(ObjectError e) {
+        if (e instanceof FieldError fieldError) {
+            String fieldName = fieldError.getField();
+            String errorMessage = e.getDefaultMessage();
+            return fieldName + " " + errorMessage;
+        }
+        return e.getDefaultMessage();
     }
 }

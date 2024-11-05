@@ -3,6 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
+import com.hiketrackbackend.hiketrackbackend.exception.InvalidIdException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Review;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
@@ -317,7 +318,7 @@ public class ReviewServiceImplTest {
         Pageable pageable = Pageable.unpaged();
 
         assertThatThrownBy(() -> reviewService.getAllByTourId(null, pageable))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidIdException.class);
 
         verify(reviewRepository, never()).findByTourId(anyLong(), any(Pageable.class));
         verify(reviewMapper, never()).toDto(any(Review.class));

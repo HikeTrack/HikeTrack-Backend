@@ -14,12 +14,12 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
     used meters and minutes to calculate variables
@@ -35,7 +35,7 @@ public class TourDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tourDetails")
+    @OneToMany(mappedBy = "tourDetails")
     private List<TourDetailsFile> additionalPhotos = new ArrayList<>();
 
     @Column(nullable = false)

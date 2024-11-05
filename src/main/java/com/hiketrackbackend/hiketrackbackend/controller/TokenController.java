@@ -22,8 +22,11 @@ public class TokenController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
-    @Operation(summary = "Refresh JWT Token", description = "Refresh the JWT token for the authenticated user.")
-    public UserResponseDto refreshJWTToken(HttpServletRequest request) {
+    @Operation(
+            summary = "Refresh JWT Token",
+            description = "Refresh the JWT token for the authenticated user."
+    )
+    public UserResponseDto refreshJwtToken(HttpServletRequest request) {
         return jwtUtil.refreshToken(request);
     }
 }

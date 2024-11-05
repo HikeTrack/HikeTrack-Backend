@@ -7,22 +7,23 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDate;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "user_profiles")
 public class UserProfile {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String country;
     private String city;
     private String phoneNumber;
     private String aboutMe;
-//    private String birthday;
+    private LocalDate dateOfBirth;
 
     @Column(nullable = false, updatable = false)
     private LocalDate registrationDate;

@@ -40,7 +40,8 @@ public class RoleServiceImplTest {
     @DisplayName("Set user default role for new user")
     public void testSetUserDefaultRoleWhenNewUserRegisterThenSetRoleToUser() {
         User user = new User();
-        Role roleUser = new Role(Role.RoleName.ROLE_USER);
+        Role roleUser = new Role();
+        roleUser.setName(Role.RoleName.ROLE_USER);
 
         when(roleRepository.findByName(Role.RoleName.ROLE_USER)).thenReturn(roleUser);
 
@@ -59,7 +60,8 @@ public class RoleServiceImplTest {
 
         User user = new User();
         user.setEmail("test@example.com");
-        Role roleGuide = new Role(Role.RoleName.ROLE_GUIDE);
+        Role roleGuide = new Role();
+        roleGuide.setName(Role.RoleName.ROLE_GUIDE);
 
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
         when(roleRepository.findByName(Role.RoleName.ROLE_GUIDE)).thenReturn(roleGuide);

@@ -10,11 +10,10 @@ import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import java.util.Properties;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.Properties;
 
 @Component
 public class EmailUtils {
@@ -24,7 +23,7 @@ public class EmailUtils {
     @Value("${mail.port}")
     private String mailPort;
 
-    @Getter                 // made to have access out of this class
+    @Getter // made to have access out of this class
     @Value("${from.email}")
     private String from;
 
@@ -37,7 +36,6 @@ public class EmailUtils {
     @Value("${mail.smtp.auth}")
     private String smtpAuth;
     private Session session;
-
 
     public void sendEmail(String toEmail, String subject, String messageText) {
         if (session == null) {
@@ -59,7 +57,9 @@ public class EmailUtils {
     @PostConstruct
     private void initializeSession() {
         if (mailHost == null || mailPort == null || from == null || password == null) {
-            throw new IllegalStateException("Email configuration properties are not properly initialized.");
+            throw new IllegalStateException(
+                    "Email configuration properties are not properly initialized."
+            );
         }
 
         Properties props = new Properties();

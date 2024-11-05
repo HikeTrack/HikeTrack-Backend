@@ -1,11 +1,15 @@
 package com.hiketrackbackend.hiketrackbackend.service;
 
-import com.hiketrackbackend.hiketrackbackend.dto.tour.*;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 public interface TourService {
     TourRespondWithoutReviews createTour(
@@ -25,11 +29,16 @@ public interface TourService {
 
     List<TourRespondWithoutDetailsAndReviews> getByRating();
 
-    List<TourRespondWithoutDetailsAndReviews> search(TourSearchParameters params, Pageable pageable);
+    List<TourRespondWithoutDetailsAndReviews> search(
+            TourSearchParameters params,
+            Pageable pageable
+    );
 
     void deleteTourByIdAndUserId(Long tourId, Long userId);
 
     void deleteTourDetailsPhotoById(Long id);
 
-    List<TourRespondWithoutDetailsAndReviews> getAllToursMadeByGuide(Long userId, Pageable pageable);
+    List<TourRespondWithoutDetailsAndReviews> getAllToursMadeByGuide(
+            Long userId, Pageable pageable
+    );
 }

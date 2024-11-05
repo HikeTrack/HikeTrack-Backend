@@ -1,8 +1,8 @@
-package com.hiketrackbackend.hiketrackbackend.dto.userProfile;
+package com.hiketrackbackend.hiketrackbackend.dto.user.profile;
 
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDate;
 
 @Getter
 @Setter

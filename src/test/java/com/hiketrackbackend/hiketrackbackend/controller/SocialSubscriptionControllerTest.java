@@ -2,7 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.socialSubscription.SubscriptionRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.subscription.SubscriptionRequestDto;
 import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
 import com.hiketrackbackend.hiketrackbackend.security.token.UserTokenService;
 import com.hiketrackbackend.hiketrackbackend.service.SocialSubscriptionService;
@@ -33,16 +33,16 @@ public class SocialSubscriptionControllerTest {
     private static MockMvc mockMvc;
 
     @MockBean
-    private SocialSubscriptionService socialSubscriptionService;
+    private static SocialSubscriptionService socialSubscriptionService;
 
     @MockBean
-    private JwtUtil jwtUtil;
+    private static JwtUtil jwtUtil;
 
     @MockBean
-    private UserDetailsService userDetailsService;
+    private static UserDetailsService userDetailsService;
 
     @MockBean
-    private UserTokenService<HttpServletRequest> userTokenService;
+    private static UserTokenService<HttpServletRequest> userTokenService;
 
     @BeforeAll
     static void beforeAll(@Autowired WebApplicationContext applicationContext) {

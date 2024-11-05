@@ -2,9 +2,9 @@ package com.hiketrackbackend.hiketrackbackend.model.bookmark;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
-import java.io.Serializable;
 
 @Embeddable
 @Getter
@@ -16,7 +16,8 @@ public class BookmarkId implements Serializable {
     @Column(name = "tour_id")
     private Long tourId;
 
-    public BookmarkId() { }
+    public BookmarkId() {
+    }
 
     public BookmarkId(Long userId, Long tourId) {
         this.userId = userId;
@@ -25,12 +26,18 @@ public class BookmarkId implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         BookmarkId that = (BookmarkId) o;
 
-        if (!userId.equals(that.userId)) return false;
+        if (!userId.equals(that.userId)) {
+            return false;
+        }
         return tourId.equals(that.tourId);
     }
 
@@ -43,9 +50,9 @@ public class BookmarkId implements Serializable {
 
     @Override
     public String toString() {
-        return "BookmarkId{" +
-                "userId=" + userId +
-                ", tourId=" + tourId +
-                '}';
+        return "BookmarkId{"
+                + "userId=" + userId
+                + ", tourId=" + tourId
+                + '}';
     }
 }

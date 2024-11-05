@@ -20,7 +20,8 @@ import lombok.Setter;
 @Setter
 @Table(name = "ratings")
 public class Rating {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Min(1)

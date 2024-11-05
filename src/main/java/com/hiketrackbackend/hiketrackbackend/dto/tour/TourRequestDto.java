@@ -2,37 +2,38 @@ package com.hiketrackbackend.hiketrackbackend.dto.tour;
 
 import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRequestDto;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 public class TourRequestDto {
+
     @NotBlank(message = "Tour name is mandatory and cannot be empty")
     private String name;
 
-    @NotBlank
-    @Min(value = 0, message = "Length cannot be negative")
-    private int length;
+    @Positive(message = "Length cannot be negative")
+    private Integer length;
 
-    @NotBlank
-    @Min(value = 0, message = "Price has to be positive")
+    @NotNull(message = "Price cannot be null")
+    @Positive(message = "Price has to be positive")
     private BigDecimal price;
 
-    @NotBlank(message = "Enter departure date")
+    @NotNull(message = "Enter departure date")
     private ZonedDateTime date;
 
-    @NotBlank(message = "Difficulty cannot be empty")
+    @NotNull(message = "Difficulty cannot be empty")
     private Difficulty difficulty;
 
-    @NotBlank
-    @Min(value = 0, message = "Country id has to be positive")
+    @NotNull(message = "Country id has to be specified")
+    @Positive(message = "Country id has to be positive")
     private Long countryId;
 
-    @NotBlank
+    @NotNull(message = "Details must be provided")
     private DetailsRequestDto detailsRequestDto;
 }

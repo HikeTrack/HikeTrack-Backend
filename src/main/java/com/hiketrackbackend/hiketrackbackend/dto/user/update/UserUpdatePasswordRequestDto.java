@@ -8,13 +8,18 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@FieldMatch(password = "password", repeatPassword = "repeatPassword")
+@FieldMatch(
+        password = "password",
+        repeatPassword = "repeatPassword",
+        message = "Passwords do not match"
+)
 public class UserUpdatePasswordRequestDto {
-    @NotBlank
-    @Password
+
+    @NotBlank(message = "Password is mandatory")
+    @Password(message = "Password must meet complexity requirements")
     private String password;
 
     @NotBlank(message = "Confirm Password is mandatory")
-    @Password
+    @Password(message = "Confirm Password must meet complexity requirements")
     private String repeatPassword;
 }

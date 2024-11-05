@@ -1,11 +1,11 @@
 package com.hiketrackbackend.hiketrackbackend.security.token.impl;
 
 import com.hiketrackbackend.hiketrackbackend.security.token.UserTokenService;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor

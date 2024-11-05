@@ -5,11 +5,10 @@ import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.country.CountryRespondWithPhotoDto;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
 import org.mapstruct.MappingTarget;
-import java.util.List;
 
 @Mapper(config = MapperConfig.class)
 public interface CountryMapper {

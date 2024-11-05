@@ -5,13 +5,12 @@ import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetailsFile;
+import java.util.ArrayList;
+import java.util.List;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Mapper(config = MapperConfig.class)
 public interface TourDetailsMapper {

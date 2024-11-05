@@ -1,10 +1,9 @@
 package com.hiketrackbackend.hiketrackbackend.dto.user.update;
 
-import com.hiketrackbackend.hiketrackbackend.dto.userProfile.UserProfileRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRespondDto;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter

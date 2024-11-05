@@ -3,19 +3,20 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
+import com.hiketrackbackend.hiketrackbackend.exception.InvalidIdException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Review;
-import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
+import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.repository.ReviewRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import com.hiketrackbackend.hiketrackbackend.service.ReviewService;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +48,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<ReviewsRespondDto> getAllByUserId(Long userId, Pageable pageable) {
         if (userId == null) {
-            throw new IllegalArgumentException("User id cannot be null");
+            throw new InvalidIdException("User id cannot be null");
         }
         return reviewRepository.findReviewsByUserId(userId, pageable)
                 .stream()
@@ -58,7 +59,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<ReviewsRespondDto> getAllByTourId(Long tourId, Pageable pageable) {
         if (tourId == null) {
-            throw new IllegalArgumentException("Tour id cannot be null");
+            throw new InvalidIdException("Tour id cannot be null");
         }
         return reviewRepository.findByTourId(tourId, pageable)
                 .stream()
@@ -81,6 +82,7 @@ public class ReviewServiceImpl implements ReviewService {
                     + " and tour id " + tourId);
         }
     }
+
     private Review getReviewById(Long reviewId) {
         return reviewRepository.findById(reviewId).orElseThrow(
                 () -> new EntityNotFoundException("Review not found with id " + reviewId)

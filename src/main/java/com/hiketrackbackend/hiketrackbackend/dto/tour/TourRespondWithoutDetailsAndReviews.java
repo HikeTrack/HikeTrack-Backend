@@ -1,10 +1,10 @@
 package com.hiketrackbackend.hiketrackbackend.dto.tour;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
-import lombok.Getter;
-import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

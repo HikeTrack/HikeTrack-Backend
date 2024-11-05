@@ -14,7 +14,8 @@ import lombok.Setter;
 @Setter
 @Table(name = "social_subscriptions")
 public class SocialSubscription {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)

@@ -13,7 +13,6 @@ import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import com.hiketrackbackend.hiketrackbackend.service.RatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
