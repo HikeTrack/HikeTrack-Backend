@@ -1,7 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.service;
 
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.socialSubscription.SubscriptionRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.subscription.SubscriptionRequestDto;
 
 public interface SocialSubscriptionService {
     UserDevMsgRespondDto create(SubscriptionRequestDto requestDto);

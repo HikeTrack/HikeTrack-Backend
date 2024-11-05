@@ -1,16 +1,16 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.socialSubscription.SubscriptionRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.subscription.SubscriptionRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.SocialSubscriptionMapper;
 import com.hiketrackbackend.hiketrackbackend.model.SocialSubscription;
 import com.hiketrackbackend.hiketrackbackend.repository.SocialSubscriptionRepository;
 import com.hiketrackbackend.hiketrackbackend.service.SocialSubscriptionService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +28,8 @@ public class SocialSubscriptionServiceImpl implements SocialSubscriptionService 
         SocialSubscription socialSubscription = socialSubscriptionMapper.toEntity(requestDto);
         socialSubscriptionRepository.save(socialSubscription);
 
-        subscriptionEmailSenderImpl.send(socialSubscription.getEmail(), socialSubscription.getEmail());
+        subscriptionEmailSenderImpl.send(
+                socialSubscription.getEmail(), socialSubscription.getEmail());
         return new UserDevMsgRespondDto("Thank you for subscribe");
     }
 

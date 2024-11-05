@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.dto.user.update;
 
-import com.hiketrackbackend.hiketrackbackend.dto.userProfile.UserProfileRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRequestDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

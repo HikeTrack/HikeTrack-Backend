@@ -4,9 +4,9 @@ import com.hiketrackbackend.hiketrackbackend.exception.SpecificationNotFoundExce
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.repository.SpecificationProvider;
 import com.hiketrackbackend.hiketrackbackend.repository.SpecificationProviderManager;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -17,8 +17,8 @@ public class CountrySpecificationProviderManager implements SpecificationProvide
     public SpecificationProvider<Country> getSpecificationProvider(String key) {
         return bookSpecificationProviders.stream()
                 .filter(b -> b.getKey().equals(key))
-                .findFirst()
-                .orElseThrow(() -> new SpecificationNotFoundException
-                        ("Can`t find correct specification provider for key: " + key));
+                .findFirst().orElseThrow(
+                        () -> new SpecificationNotFoundException(
+                                "Can`t find correct specification provider for key: " + key));
     }
 }

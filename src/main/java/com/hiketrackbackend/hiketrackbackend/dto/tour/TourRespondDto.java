@@ -3,11 +3,11 @@ package com.hiketrackbackend.hiketrackbackend.dto.tour;
 import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
-import lombok.Getter;
-import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

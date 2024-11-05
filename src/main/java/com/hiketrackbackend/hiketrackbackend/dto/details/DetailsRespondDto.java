@@ -2,9 +2,9 @@ package com.hiketrackbackend.hiketrackbackend.dto.details;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.Activity;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.RouteType;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.List;
 
 @Getter
 @Setter

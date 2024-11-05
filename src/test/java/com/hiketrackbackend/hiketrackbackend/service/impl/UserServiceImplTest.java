@@ -6,7 +6,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrat
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.userProfile.UserProfileRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.RegistrationException;
 import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;

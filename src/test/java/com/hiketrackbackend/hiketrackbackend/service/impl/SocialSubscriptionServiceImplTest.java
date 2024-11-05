@@ -1,7 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.socialSubscription.SubscriptionRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.subscription.SubscriptionRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.SocialSubscriptionMapper;
 import com.hiketrackbackend.hiketrackbackend.model.SocialSubscription;

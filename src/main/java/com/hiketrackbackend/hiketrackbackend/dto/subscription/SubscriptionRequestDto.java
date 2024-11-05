@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.dto.socialSubscription;
+package com.hiketrackbackend.hiketrackbackend.dto.subscription;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

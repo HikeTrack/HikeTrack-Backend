@@ -1,8 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.service.files;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface FileStorageService {
     List<String> uploadFileToS3(String folderName, List<MultipartFile> multipartFiles);

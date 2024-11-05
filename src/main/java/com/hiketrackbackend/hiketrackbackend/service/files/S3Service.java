@@ -1,11 +1,10 @@
 package com.hiketrackbackend.hiketrackbackend.service.files;
 
+import com.hiketrackbackend.hiketrackbackend.exception.FileUploadException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.hiketrackbackend.hiketrackbackend.exception.FileUploadException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -66,11 +65,8 @@ public class S3Service implements FileStorageService {
                     .bucket(bucketName)
                     .key(keyName)
                     .build();
-
             s3Client.deleteObject(deleteObjectRequest);
-            System.out.println("File deleted successfully from S3 bucket: " + bucketName + ", key: " + keyName);
         } catch (S3Exception e) {
-            System.err.println("Failed to delete file from S3: " + e.awsErrorDetails().errorMessage());
             throw new RuntimeException("Failed to delete file from S3", e);
         }
     }

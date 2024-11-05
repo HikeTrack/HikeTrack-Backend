@@ -1,10 +1,9 @@
 package com.hiketrackbackend.hiketrackbackend.service.notification;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,17 +32,20 @@ public class SubscriptionEmailSenderImpl implements EmailSender {
 
     private String generateConfirmationMessage(String email) {
         return String.format(
-                "Dear customer,\n\n" +
-                        "Thank you for subscribing to our newsletter! We are thrilled to welcome " +
-                        "you to our community.\n\n" +
-                        "From now on, you will receive the latest news, updates, and exclusive offers " +
-                        "directly to your inbox. We promise to share only the most valuable and interesting " +
-                        "information with you.\n\n" +
-                        "If you have any questions or suggestions, please do not hesitate to reach out to us. " +
-                        "We are always here to help!\n\n" +
-                        "Best regards,\n" +
-                        "The Hike Track Team\n\n" +
-                        "If you wish to unsubscribe from our newsletter, please click here: %s",
+                "Dear customer,\n\n"
+                        + "Thank you for subscribing to our newsletter! We are thrilled to welcome "
+                        + "you to our community.\n\n"
+                        + "From now on, you will receive the latest news, "
+                        + "updates, and exclusive offers "
+                        + "directly to your inbox. "
+                        + "We promise to share only the most valuable and interesting "
+                        + "information with you.\n\n"
+                        + "If you have any questions or suggestions, "
+                        + "please do not hesitate to reach out to us. "
+                        + "We are always here to help!\n\n"
+                        + "Best regards,\n"
+                        + "The Hike Track Team\n\n"
+                        + "If you wish to unsubscribe from our newsletter, please click here: %s",
                 unsubscribeBaseUrl + email
         );
     }

@@ -13,6 +13,8 @@ import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepositor
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountrySpecificationBuilder;
 import com.hiketrackbackend.hiketrackbackend.service.CountryService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,9 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,13 +40,16 @@ public class CountryServiceImpl implements CountryService {
             throw new FileIsEmptyException("Country photo is mandatory. Please upload a file.");
         }
         Country country = countryMapper.toEntity(requestDto);
-            String photoUrl = saveFile(file);
-            country.setPhoto(photoUrl);
-            return countryMapper.toDto(countryRepository.save(country));
+        String photoUrl = saveFile(file);
+        country.setPhoto(photoUrl);
+        return countryMapper.toDto(countryRepository.save(country));
     }
 
     @Override
-    public CountryRespondDto updateCountry(CountryRequestDto requestDto, MultipartFile file, Long id) {
+    public CountryRespondDto updateCountry(
+            CountryRequestDto requestDto,
+            MultipartFile file, Long id
+    ) {
         if (file.isEmpty()) {
             throw new FileIsEmptyException("Country photo is mandatory. Please upload a file.");
         }

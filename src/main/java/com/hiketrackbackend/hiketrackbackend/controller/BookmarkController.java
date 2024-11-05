@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/bookmarks")
@@ -31,7 +31,9 @@ public class BookmarkController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
-    @Operation(summary = "Add Bookmark", description = "Add a new bookmark for the authenticated user.")
+    @Operation(
+            summary = "Add Bookmark",
+            description = "Add a new bookmark for the authenticated user.")
     public BookmarkRespondDto addToBookmark(@RequestBody @Valid BookmarkRequestDto requestDto,
                                             @AuthenticationPrincipal User user) {
         return bookmarkService.addToBookmarks(requestDto, user);
@@ -39,7 +41,10 @@ public class BookmarkController {
 
     @GetMapping("/{userId}")
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")
-    @Operation(summary = "Get Bookmarks", description = "Retrieve all bookmarks for the specified user.")
+    @Operation(
+            summary = "Get Bookmarks",
+            description = "Retrieve all bookmarks for the specified user."
+    )
     public Set<BookmarkRespondDto> getBookmarksByUserId(@PathVariable @Positive Long userId) {
         return bookmarkService.getByUserId(userId);
     }

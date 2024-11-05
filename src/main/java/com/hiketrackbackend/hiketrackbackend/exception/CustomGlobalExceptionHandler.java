@@ -1,5 +1,9 @@
 package com.hiketrackbackend.hiketrackbackend.exception;
 
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -11,10 +15,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -55,7 +55,9 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(SpecificationNotFoundException.class)
-    public ResponseEntity<Object> handleSpecificationNotFoundException(SpecificationNotFoundException ex) {
+    public ResponseEntity<Object> handleSpecificationNotFoundException(
+            SpecificationNotFoundException ex
+    ) {
         return createBodyMessage(ex, HttpStatus.NOT_FOUND);
     }
 
@@ -85,7 +87,9 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ExceptionHandler(EntityAlreadyExistException.class)
-    public ResponseEntity<Object> handleEntityAlreadyExistException(EntityAlreadyExistException ex) {
+    public ResponseEntity<Object> handleEntityAlreadyExistException(
+            EntityAlreadyExistException ex
+    ) {
         return createBodyMessage(ex, HttpStatus.CONFLICT);
     }
 

@@ -2,19 +2,20 @@
 
 # Hike Track
 
-[![GitHub last commit](https://img.shields.io/github/last-commit/Vadym-Ozi/Online-Book-store)](#)
+[![GitHub last commit](https://img.shields.io/github/last-commit/HikeTrack/HikeTrack-Backend)](https://github.com/HikeTrack/HikeTrack-Backend/commits/main)
 ![Language:Java](https://img.shields.io/static/v1?label=Language&message=Java&color=red)
 [![Website](https://img.shields.io/badge/Live-Demo-brightgreen)](https://hiketrack.github.io/hike-track-frontend/#/)
+[![APACHE License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 <a href="https://github.com/HikeTrack/HikeTrack-Backend/graphs/contributors" target="_blank">
 <img src="https://img.shields.io/github/contributors-anon/HikeTrack/HikeTrack-Backend.svg" alt="GitHub contributors">
 </a>
 
-
-
 # Welcome to HikeTrack-Backend! 🎉
-Welcome to the HikeTrack-Backend repository, the backbone of the HikeTrack platform! This service powers our web application, providing seamless management of hiking tours, user profiles, reviews, and more.
+Welcome to the HikeTrack-Backend repository, the backbone of the HikeTrack platform! This service powers 
+our web application, providing seamless management of hiking tours, user profiles, reviews, and more.
 
-Whether you're an adventure enthusiast looking to book and review hiking experiences or a developer diving into our project, HikeTrack-Backend is designed to ensure a secure, efficient, and enjoyable journey.
+Whether you're an adventure enthusiast looking to book and review hiking experiences or a developer 
+diving into our project, Hike Track is designed to ensure a secure, efficient, and enjoyable journey.
 
 Get ready to explore, contribute, and maybe even take HikeTrack for your own adventure! 🌄
 
@@ -28,35 +29,46 @@ Get ready to explore, contribute, and maybe even take HikeTrack for your own adv
 
 ![------------------------------------------------](docs/rainbow.png)
 
+
+<p align="center">
+   <a href="#bulb-what-is-this-API-about">About</a> &nbsp;&bull;&nbsp;
+   <a href="#bulb-technologies">Technologies</a> &nbsp;&bull;&nbsp;
+   <a href="#bulb-business-logic">Business Logic</a> &nbsp;&bull;&nbsp;
+   <a href="#bulb-notes">Notes</a> &nbsp;&bull;&nbsp;
+   <a href="#-api-documentation">API Documentation</a> &nbsp;&bull;&nbsp;
+   <a href="#bulb-downstream-services">Downstream Services</a> &nbsp;&bull;&nbsp;
+   <a href="#bulb-upstream-services">Upstream Services</a> &nbsp;&bull;&nbsp;
+   <a href="#bulb-testing">Testing</a> &nbsp;&bull;&nbsp;
+   <a href="#bulb-deployment">Deployment</a> &nbsp;&bull;&nbsp;
+   <a href="#bulb-contributors">Contributors</a> &nbsp;&bull;&nbsp;
+   <a href="#bulb-contacts-and-authors">Contacts and Authors</a> &nbsp;&bull;&nbsp;
+   <a href="#bulb-license">License</a>
+</p>
+
 ## :bulb: What is this API about?
 
-The HikeTrack-Backend API is a RESTful service designed to support a hiking tour management application. It provides various endpoints that allow users to interact with the platform, offering functionalities for:
+The HikeTrack-Backend API is a RESTful service designed to support a hiking tour management application.
+It provides various endpoints that allow users to interact with the platform, offering functionalities 
+for:
 
-User Authentication and Authorization: Manage user registration, login, password resets, and logout. The API uses JWT (JSON Web Tokens) and OAuth2 (e.g., Google) for secure user sessions.
+User Authentication and Authorization: Manage user registration, login, password resets, and logout. 
+The API uses JWT (JSON Web Tokens) and OAuth2 (e.g., Google) for secure user sessions.
 
-Country and Tour Management: Admins or authorized users can add, update, and delete countries and tours. The API allows users to search for hiking tours based on various criteria like difficulty, route type, activity, country, and price.
+Country and Tour Management: Admins or authorized users can add, update, and delete countries and tours. 
+The API allows users to search for hiking tours based on various criteria like difficulty, route type, activity, country, and price.
 
-Review Management: Users can leave reviews on specific tours, update or delete their reviews, and view all reviews they’ve written. This feature encourages feedback and enhances the user experience.
+Review Management: Users can leave reviews on specific tours, update or delete their reviews, 
+and view all reviews they’ve written. This feature encourages feedback and enhances the user experience.
 
-User Profile Management: Users can manage their profiles, including personal information and photos, as well as bookmark favorite tours for easy access.
+User Profile Management: Users can edit their profiles, including personal information and photos, rate tours, 
+and bookmark favorite tours for quick access.
 
-Caching and Token Management: Redis is used to cache JWT tokens and manage temporary tokens for password reset and session handling.
+Token Management: Redis is used to manage temporary tokens for password reset, confirmation links and
+session handling.
 
-Essentially, this API serves as the backend for a hiking platform, facilitating the complete flow from user authentication and profile management to tour discovery, booking, review submission, and bookmarking. This makes it ideal for applications where users want to find, explore, and share hiking experiences.
-
-![------------------------------------------------](docs/rainbow.png)
-
-## :bulb: Requirements
-
-### 1. Operating System
-- Windows 10/11, macOS, or Linux (Ubuntu, Debian)
-
-### 2. Software Requirements
-- Java Development Kit (JDK): Version 17 or higher
-- Maven: Version 3.6+ for dependency management and project build
-- Docker: Latest version (for containerization and deployment)
-- Redis: Version 7.4 or compatible (for caching and session management)
-- MySQL: Version 8.0.33 or compatible (for data storage)
+Essentially, this API serves as the backend for a hiking platform, facilitating the complete flow from user 
+authentication and profile management to tour discovery, booking, review submission, and bookmarking. 
+This makes it ideal for applications where users want to find, explore, and share hiking experiences.
 
 ![------------------------------------------------](docs/rainbow.png)
 
@@ -96,69 +108,14 @@ Essentially, this API serves as the backend for a hiking platform, facilitating 
 
 ## Project Structure
 
-<pre> HikeTrack-Backend/
-├── .github/
-│   └── workflows/
-│       ├── aws-publish.yml
-│       ├── ci.yml
-│       └── docker-publish.yml
-├── .mvn/
-│   └── wrapper/
-│       ├── maven-wrapper.jar
-│       └── maven-wrapper.properties
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/
-│   │   │       └── hiketrackbackend/
-│   │   │           ├── config/
-│   │   │           ├── controller/
-│   │   │           ├── exception/
-│   │   │           ├── mapper/
-│   │   │           ├── model/
-│   │   │           ├── repository/
-│   │   │           ├── security/
-│   │   │           ├── service/
-│   │   │           ├── validation/
-│   │   │           └── dto/
-│   │   └── resources/
-│   │       └── db/
-│   │           └── changelog/
-│   │               └── changeset/
-│   │                   ├── 01-create-countries-table.yaml
-│   │                   ├── 02-insert-data-to-countries-table.yaml
-│   │                   ├── 03-create-tours-table.yaml
-│   │                   ├── 04-create-tourDetails-table.yaml
-│   │                   ├── 05-create-review-table.yaml
-│   │                   ├── 07-create-user-table.yaml
-│   │                   ├── 08-create-role-table.yaml
-│   │                   ├── 09-create-users-roles-table.yaml
-│   │                   ├── 10-insert-data-to-user-table.yaml
-│   │                   ├── 11-create-user-profile-table.yaml
-│   │                   ├── 12-create-bookmarks-table.yaml
-│   │                   ├── 13-create-activity-table.yaml
-│   │                   ├── 14-create-tour-activity-table.yaml
-│   │                   ├── 15-insert-data-to-activity-table.yaml
-│   │                   └── 16-insert-data-to-tour-activity-table.yaml
-│   ├── test/
-│   │   ├── java/
-│   │   │   └── com/
-│   │   │       └── hiketrackbackend/
-│   │   │           └── HikeTrackBackendApplicationTests.java
-│   │   └── resources/
-├── .env.example
-├── .gitignore
-├── Dockerfile
-├── README.md
-├── checkstyle.xml
-├── docker-compose.yml
-├── mvnw
-├── mvnw.cmd
-└── pom.xml </pre>
+<p align="center">
+    <img src="docs/structure.png" align="center" height="500" width="1000" />
+</p>
+
 
 ![------------------------------------------------](docs/rainbow.png)
 
-## Business Logic
+## :bulb: Business Logic
 
 ### Authentication
 
@@ -202,20 +159,20 @@ Essentially, this API serves as the backend for a hiking platform, facilitating 
 
 ![------------------------------------------------](docs/rainbow.png)
 
-## Dependency Management
+## :bulb: Dependency Management
 
 - **Maven**: Used for dependency management and project build.
 - **Maven Wrapper**: Ensures consistent Maven versions across development environments.
 
 ![------------------------------------------------](docs/rainbow.png)
 
-## Notes
+## :bulb: Notes
 
 - **Liquibase**: Used for database migrations.
 - **Spring Security**: Used for authentication and authorization.
 - **JWT**: Used for authentication tokens.
 - **OAuth2**: Used for Google authentication.
-- **Redis**: Used for caching and storing JWT tokens.
+- **Redis**: Used for storing temporary tokens.
 - **Springdoc OpenAPI**: Used for API documentation.
 - **Testcontainers**: Used for testing with Docker containers.
 - **MapStruct**: Used for object mapping.
@@ -224,7 +181,20 @@ Essentially, this API serves as the backend for a hiking platform, facilitating 
 
 ![------------------------------------------------](docs/rainbow.png)
 
-## Endpoints
+## 📄 API Documentation
+
+<p>The HikeTrack API documentation is available through Swagger or the live website. You can explore all available endpoints, view request/response formats, and test the API directly from your browser.</p>
+
+<p align="center">
+   <a href="https://your-domain.com/swagger-ui/index.html" style="text-decoration: none;">
+      <img src="https://img.shields.io/badge/Swagger-UI-blue?style=for-the-badge" alt="Swagger UI Documentation">
+   </a>
+   <a href="https://your-domain.com" style="text-decoration: none;">
+      <img src="https://img.shields.io/badge/Live-Website-green?style=for-the-badge" alt="Live Website">
+   </a>
+</p>
+
+<p><em>Note: The live website is still in progress by other frontend developer.</em></p>
 
 ### Authentication
 
@@ -268,7 +238,7 @@ Essentially, this API serves as the backend for a hiking platform, facilitating 
 
 ![------------------------------------------------](docs/rainbow.png)
 
-## Downstream Services
+## :bulb: Downstream Services
 
 - **MySQL**: Database for storing application data
 - **Redis**: Cache for JWT tokens and password reset requests
@@ -277,13 +247,13 @@ Essentially, this API serves as the backend for a hiking platform, facilitating 
 
 ![------------------------------------------------](docs/rainbow.png)
 
-## Upstream Services
+## :bulb: Upstream Services
 
 - **Frontend**: Client application that interacts with the backend API
 
 ![------------------------------------------------](docs/rainbow.png)
 
-## Testing
+## :bulb: Testing
 
 ### Dependencies
 
@@ -303,7 +273,7 @@ Essentially, this API serves as the backend for a hiking platform, facilitating 
 
 ![------------------------------------------------](docs/rainbow.png)
 
-## Deployment
+## :bulb: Deployment
 
 ### Summary
 
@@ -374,291 +344,27 @@ Here is an example of .env file [**.env.example**](https://github.com/HikeTrack/
 
 #### Local
 
-mvn spring-boot:run
+```mvn spring-boot:run```
 
 Run the application using Maven.
 
 #### Debug
 
-mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$DEBUG_PORT"
+```mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$DEBUG_PORT"```
 
 Run the application in debug mode with the specified debug port.
 
 #### Docker
 
-docker-compose up -d
+```docker-compose up -d```
 
 Build and run the application in a Docker container using Docker Compose.
 
 ![------------------------------------------------](docs/rainbow.png)
 
-## Sequence Diagrams
-
-### User Registration
-
-- Frontend -> AuthenticationController: registration(email, password, firstName, lastName) 
-- AuthenticationController -> UserRepository: save(user) 
-- UserRepository -> MySQL: INSERT INTO users (email, password, firstName, lastName) VALUES (?, ?, ?, ?)
-
-### User Login
-
-- Frontend -> AuthenticationController: login(email, password) 
-- AuthenticationController -> AuthenticationManager: authenticate(email, password) 
-- AuthenticationManager -> UserRepository: findByEmail(email) 
-- UserRepository -> MySQL: SELECT * FROM users WHERE email = ? 
-- AuthenticationManager -> JwtUtil: generateToken(email) 
-- AuthenticationController -> Frontend: token
-
-### Forgot Password
-
-- Frontend -> AuthenticationController: forgotPassword(email) 
-- AuthenticationController -> UserService: createRestoreRequest(email) 
-- UserService -> UserRepository: findByEmail(email) 
-- UserRepository -> MySQL: SELECT * FROM users WHERE email = ? 
-- UserService -> UUIDTokenServiceImpl: saveTokenToDB(token, email) 
-- UUIDTokenServiceImpl -> Redis: SET token email 1 hour 
-- UserService -> MailSender: sendResetPasswordMailToGMail(email, token) 
-- MailSender -> SMTP Server: SEND EMAIL
-
-### Update Password
-
-- Frontend -> AuthenticationController: updatePassword(password, repeatPassword, email) 
-- AuthenticationController -> UserService: updatePassword(password, repeatPassword, email) 
-- UserService -> UserRepository: findByEmail(email) 
-- UserRepository -> MySQL: SELECT * FROM users WHERE email = ? 
-- UserService -> UserRepository: save(user) 
-- UserRepository -> MySQL: UPDATE users SET password = ? WHERE email = ?
-
-### Logout
-
-- Frontend -> AuthenticationController: logout(token) 
-- AuthenticationController -> JwtTokenServiceImpl: saveTokenToDB(token, email) 
-- JwtTokenServiceImpl -> Redis: SET token email 20 minutes
-
-### Create Country
-
-- Frontend -> CountryController: createCountry(name, continent, photo) 
-- CountryController -> CountryService: createCountry(name, continent, photo) 
-- CountryService -> CountryMapper: toEntity(name, continent, photo) 
-- CountryService -> CountryRepository: save(country) 
-- CountryRepository -> MySQL: INSERT INTO countries (name, continent, photo) VALUES (?, ?, ?) 
-- CountryService -> CountryMapper: toDto(country) 
-- CountryController -> Frontend: country
-
-### Search Countries
-
-- Frontend -> CountryController: search(continent, countryName)
-- CountryController -> CountrySpecificationBuilder: build(continent, countryName) 
-- CountrySpecificationBuilder -> CountrySpecificationProviderManager: getSpecificationProvider(continent) 
-- CountrySpecificationProviderManager -> ContinentSpecificationProvider: getSpecification(continent) 
-- CountrySpecificationBuilder -> CountrySpecificationProviderManager: getSpecificationProvider(countryName) 
-- CountrySpecificationProviderManager -> NameSpecificationProvider: getSpecification(countryName) 
-- CountryController -> CountryRepository: findAll(specification, pageable) 
-- CountryRepository -> MySQL: SELECT * FROM countries WHERE continent IN (?) AND name IN (?) 
-- CountryRepository -> CountryController: countries CountryController -> CountryMapper: toDto(countries) 
-- CountryController -> Frontend: countries
-
-### Get Country by ID
-
-- Frontend -> CountryController: getById(id) 
-- CountryController -> CountryService: getById(id) 
-- CountryService -> CountryRepository: findById(id) 
-- CountryRepository -> MySQL: SELECT * FROM countries WHERE id = ? 
-- CountryRepository -> CountryService: country 
-- CountryService -> CountryMapper: toDto(country) 
-- CountryController -> Frontend: country
-
-### Get All Countries
-
-- Frontend -> CountryController: getAll(pageable) 
-- CountryController -> CountryRepository: findAll(pageable) 
-- CountryRepository -> MySQL: SELECT * FROM countries 
-- CountryRepository -> CountryController: countries 
-- CountryController -> CountryMapper: toDto(countries) 
-- CountryController -> Frontend: countries
-
-### Create Tour
-
-- Frontend -> TourController: createTour(name, length, price, date, difficulty, countryId, mainPhoto, tourDetails) 
-- TourController -> TourService: createTour(name, length, price, date, difficulty, countryId, mainPhoto, tourDetails) 
-- TourService -> TourMapper: toEntity(name, length, price, date, difficulty, countryId, mainPhoto, tourDetails) 
-- TourService -> CountryRepository: findById(countryId) 
-- CountryRepository -> MySQL: SELECT * FROM countries WHERE id = ? TourService -> TourRepository: save(tour) 
-- TourRepository -> MySQL: INSERT INTO tours (name, length, price, date, difficulty, country_id, mainPhoto) VALUES (?, ?, ?, ?, ?, ?, ?) 
-- TourService -> TourMapper: toDtoWithoutReviews(tour) 
-- TourController -> Frontend: tour
-
-### Update Tour
-
-- Frontend -> TourController: updateTour(tourId, name, length, price, date, difficulty, countryId, mainPhoto, tourDetails)
-- TourController -> TourService: updateTour(tourId, name, length, price, date, difficulty, countryId, mainPhoto, tourDetails) 
-- TourService -> TourRepository: findById(tourId) 
-- TourRepository -> MySQL: SELECT * FROM tours WHERE id = ? 
-- TourService -> TourMapper: updateEntityFromDto(tour, name, length, price, date, difficulty, countryId, mainPhoto, tourDetails) 
-- TourService -> TourRepository: save(tour) 
-- TourRepository -> MySQL: UPDATE tours SET name = ?, length = ?, price = ?, date = ?, difficulty = ?, country_id = ?, mainPhoto = ? WHERE id = ? 
-- TourService -> TourMapper: toDtoWithoutReviews(tour) 
-- TourController -> Frontend: tour
-
-### Delete Tour
-
-- Frontend -> TourController: deleteTour(id) 
-- TourController -> TourService: deleteById(id) 
-- TourService -> TourRepository: deleteById(id) 
-- TourRepository -> MySQL: UPDATE tours SET is_deleted = true WHERE id = ?
-
-### Get All Tours
-
-- Frontend -> TourController: getAll(pageable) 
-- TourController -> TourRepository: findAll(pageable) 
-- TourRepository -> MySQL: SELECT * FROM tours WHERE is_deleted = false 
-- TourRepository -> TourController: tours 
-- TourController -> TourMapper: toDtoWithoutDetailsAndReviews(tours) 
-- TourController -> Frontend: tours
-
-### Get Tour by ID
-
-- Frontend -> TourController: getById(id, page, size) 
-- TourController -> TourService: getById(id, page, size) 
-- TourService -> TourRepository: findById(id) 
-- TourRepository -> MySQL: SELECT * FROM tours WHERE id = ? 
-- TourRepository -> TourService: tour 
-- TourService -> TourMapper: toDto(tour) 
-- TourService -> ReviewRepository: findByTourId(id, pageable) 
-- ReviewRepository -> MySQL: SELECT * FROM reviews WHERE tour_id = ? 
-- ReviewRepository -> TourService: reviews 
-- TourService -> ReviewMapper: toDto(reviews) TourController -> Frontend: tour
-
-### Get Most Rated Tours
-
-- Frontend -> TourController: getMostRatedTour() 
-- TourController -> TourService: getByRating() 
-- TourService -> TourRepository: findTop7ByRatingGreaterThanOrderByRatingDesc(0) 
-- TourRepository -> MySQL: SELECT * FROM tours WHERE rating > 0 ORDER BY rating DESC LIMIT 7 
-- TourRepository -> TourService: tours 
-- TourService -> TourMapper: toDtoWithoutReviews(tours) 
-- TourController -> Frontend: tours
-
-### Search Tours
-
-- Frontend -> TourController: search(routeType, difficulty, length, activity, date, duration, price, country) 
-- TourController -> TourSpecificationBuilder: build(routeType, difficulty, length, activity, date, duration, price, country) 
-- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(routeType) 
-- TourSpecificationProviderManager -> RouteTypeSpecificationProvider: getSpecification(routeType) 
-- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(difficulty) 
-- TourSpecificationProviderManager -> DifficultySpecificationProvider: getSpecification(difficulty) 
-- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(length) 
-- TourSpecificationProviderManager -> LengthSpecificationProvider: getSpecification(length) 
-- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(activity) 
-- TourSpecificationProviderManager -> ActivitySpecificationProvider: getSpecification(activity) 
-- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(date) 
-- TourSpecificationProviderManager -> DateSpecificationProvider: getSpecification(date)
-- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(duration)
-- TourSpecificationProviderManager -> DurationSpecificationProvider: getSpecification(duration)
-- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(price) 
-- TourSpecificationProviderManager -> PriceSpecificationProvider: getSpecification(price)
-- TourSpecificationBuilder -> TourSpecificationProviderManager: getSpecificationProvider(country) 
-- TourSpecificationProviderManager -> CountrySpecificationProvider: getSpecification(country) 
-- TourController -> TourRepository: findAll(specification, pageable) 
-- TourRepository -> MySQL: SELECT * FROM tours WHERE routeType IN (?) AND difficulty IN (?) AND length IN (?) AND activity IN (?) AND date IN (?) AND duration IN (?) AND price IN (?) AND country IN (?) 
-- TourRepository -> TourController: tours 
-- TourController -> TourMapper: toDtoWithoutReviews(tours)
-- TourController -> Frontend: tours
-
-### Create Review
-
-- Frontend -> TourController: createReview(tourId, content) 
-- TourController -> ReviewService: createReview(tourId, content)
-- ReviewService -> TourRepository: findById(tourId) 
-- TourRepository -> MySQL: SELECT * FROM tours WHERE id = ? 
-- ReviewService -> ReviewMapper: toEntity(content) 
-- ReviewService -> ReviewRepository: save(review) 
-- ReviewRepository -> MySQL: INSERT INTO reviews (content, tour_id, user_id, date_created) VALUES (?, ?, ?, ?) 
-- ReviewService -> ReviewMapper: toDto(review) 
-- TourController -> Frontend: review
-
-
-### Delete Review
-- Frontend -> TourController: deleteReview(tourId, reviewId) 
-- TourController -> ReviewService: deleteById(reviewId, tourId)
-- ReviewService -> ReviewRepository: deleteById(reviewId) 
-- ReviewRepository -> MySQL: DELETE FROM reviews WHERE id = ?
-
-### Update Review
-- Frontend -> TourController: updateReview(tourId, reviewId, content) 
-- TourController -> ReviewService: updateReview(tourId, reviewId, content)
-- ReviewService -> ReviewRepository: findById(reviewId) 
-- ReviewRepository -> MySQL: SELECT * FROM reviews WHERE id = ? 
-- ReviewService -> ReviewMapper: updateEntityFromDto(review, content)
-- ReviewService -> ReviewRepository: save(review) 
-- ReviewRepository -> MySQL: UPDATE reviews SET content = ? WHERE id = ?
-- ReviewService -> ReviewMapper: toDto(review) 
-- TourController -> Frontend: review
-
-### Get All Reviews by User
-- Frontend -> ReviewController: getAllReviewsByUser(userId, pageable) 
-- ReviewController -> ReviewService: getAllByUserId(userId, pageable) 
-- ReviewService -> ReviewRepository: findReviewsByUserId(userId, pageable)
-- ReviewRepository -> MySQL: SELECT * FROM reviews WHERE user_id = ?
-- ReviewRepository -> ReviewService: reviews 
-- ReviewService -> ReviewMapper: toDto(reviews)
-- ReviewController -> Frontend: reviews
-
-### Add Tour to Bookmarks
-- Frontend -> UserProfileController: addToBookmark(tourId) 
-- UserProfileController -> BookmarkService: addToBookmarks(tourId, userId)
-- BookmarkService -> TourRepository: findById(tourId) 
-- TourRepository -> MySQL: SELECT * FROM tours WHERE id = ?
-- BookmarkService -> BookmarkRepository: save(bookmark) 
-- BookmarkRepository -> MySQL: INSERT INTO bookmarks (user_id, tour_id, added_at) VALUES (?, ?, ?) 
-- BookmarkService -> BookmarkMapper: toDto(bookmark) 
-- UserProfileController -> Frontend: bookmark
-
-### Update User Profile
-- Frontend -> UserProfileController: updateUserProfile(countryId, city, userPhoto) 
-- UserProfileController -> UserProfileService: updateUserProfile(countryId, city, userPhoto) 
-- UserProfileService -> UserProfileRepository: findByUserId(userId) 
-- UserProfileRepository -> MySQL: SELECT * FROM user_profiles WHERE user_id = ?
-- UserProfileService -> UserProfileMapper: updateFromDto(userProfile, countryId, city, userPhoto)
-- UserProfileService -> CountryRepository: findById(countryId) 
-- CountryRepository -> MySQL: SELECT * FROM countries WHERE id = ? 
-- UserProfileService -> UserProfileRepository: save(userProfile) 
-- UserProfileRepository -> MySQL: UPDATE user_profiles SET country_id = ?, city = ?, userPhoto = ? WHERE user_id = ? 
-- UserProfileService -> UserProfileMapper: toDto(userProfile) 
-- UserProfileController -> Frontend: userProfile
-
-### Get Bookmarks
-- Frontend -> UserProfileController: getBookmarksByUserId(userId)
-- UserProfileController -> BookmarkService: getByUserId(userId) 
-- BookmarkService -> BookmarkRepository: findByUser_Id(userId) 
-- BookmarkRepository -> MySQL: SELECT * FROM bookmarks WHERE user_id = ? 
-- BookmarkRepository -> BookmarkService: bookmarks 
-- BookmarkService -> BookmarkMapper: toDto(bookmarks) 
-- UserProfileController -> Frontend: bookmarks
-
-### Get User Profile
-- Frontend -> UserProfileController: getUserProfile(userId) 
-- UserProfileController -> UserProfileService: getById(userId) 
-- UserProfileService -> UserProfileRepository: findByUserId(userId)
--UserProfileRepository -> MySQL: SELECT * FROM user_profiles WHERE user_id = ? 
-- UserProfileRepository -> UserProfileService: userProfile 
-- UserProfileService -> UserProfileMapper: toDto(userProfile) 
-- UserProfileController -> Frontend: userProfile
-
-### Delete Tour from Bookmarks
-- Frontend -> UserProfileController: deleteBookmark(tourId) 
-- UserProfileController -> BookmarkService: deleteBookmarkById(tourId, userId) 
-- BookmarkService -> BookmarkRepository: findById(bookmarkId)
-- BookmarkRepository -> MySQL: SELECT * FROM bookmarks WHERE user_id = ? AND tour_id = ? 
-- BookmarkRepository -> BookmarkService: bookmark 
-- BookmarkService -> BookmarkRepository: delete(bookmark) 
-- BookmarkRepository -> MySQL: DELETE FROM bookmarks WHERE user_id = ? AND tour_id = ?
-
-![------------------------------------------------](docs/rainbow.png)
-
 ## :bulb: Contributors
 
-There is no contributor yet. Want to be the first ?
+Contributions are always welcome!
 
 If you want to contribute to this project, please read the [**contribution guide**](https://github.com/Vadym-Ozi/Online-Book-store/blob/master/docs/CONTRIBUTING.md).
 
@@ -676,6 +382,6 @@ If you have any questions, suggestions, or feedback, feel free to reach out:
 
 ![------------------------------------------------](docs/rainbow.png)
 
-## License
+## :bulb: License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.

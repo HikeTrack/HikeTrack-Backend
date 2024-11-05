@@ -8,11 +8,10 @@ import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.repository.RoleRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +34,8 @@ public class RoleServiceImpl implements RoleService {
         roles.add(roleGuide);
         user.setRoles(roles);
         userRepository.save(user);
-        return new UserDevMsgRespondDto("You have successfully changed the role: " + Role.RoleName.ROLE_GUIDE);
+        return new UserDevMsgRespondDto(
+                "You have successfully changed the role: " + Role.RoleName.ROLE_GUIDE);
     }
 
     private User findUserByEmail(String email) {
