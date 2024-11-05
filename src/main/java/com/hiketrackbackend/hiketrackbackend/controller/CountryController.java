@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.List;
 
 @RestController
 @RequestMapping("/countries")
@@ -43,8 +43,10 @@ public class CountryController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Create a new country",
-            description = "Allows administrators to create a new country entry, including related file upload.")
+    @Operation(
+            summary = "Create a new country",
+            description = "Allows administrators to create a new country entry, "
+                    + "including related file upload.")
     public CountryRespondDto createCountry(
             @RequestPart("data") String dataString,
             @RequestPart("file") @ValidImageFile MultipartFile file
@@ -60,8 +62,10 @@ public class CountryController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Update country",
-            description = "Allows administrators to update country entry, including related file upload.")
+    @Operation(
+            summary = "Update country",
+            description = "Allows administrators to update country entry, "
+                    + "including related file upload.")
     public CountryRespondDto updateCountry(
             @PathVariable @Positive Long id,
             @RequestPart("data") String dataString,
@@ -77,26 +81,38 @@ public class CountryController {
     }
 
     @GetMapping("/search")
-    @Operation(summary = "Search countries", description = "Search for countries based on various parameters.")
+    @Operation(
+            summary = "Search countries",
+            description = "Search for countries based on various parameters."
+    )
     public List<CountryRespondDto> search(@Valid CountrySearchParameters params,
                                           @ParameterObject @PageableDefault Pageable pageable) {
         return countryService.search(params, pageable);
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get country by ID", description = "Retrieve the details of a country by its ID.")
+    @Operation(
+            summary = "Get country by ID",
+            description = "Retrieve the details of a country by its ID."
+    )
     public CountryRespondDto getById(@PathVariable @Positive Long id) {
         return countryService.getById(id);
     }
 
     @GetMapping
-    @Operation(summary = "Get all countries", description = "Retrieve a paginated list of all countries.")
+    @Operation(
+            summary = "Get all countries",
+            description = "Retrieve a paginated list of all countries."
+    )
     public List<CountryRespondDto> getAll(@ParameterObject @PageableDefault Pageable pageable) {
         return countryService.getAll(pageable);
     }
 
     @GetMapping("/random_ten")
-    @Operation(summary = "Get ten random countries", description = "Retrieve a list of ten random countries.")
+    @Operation(
+            summary = "Get ten random countries",
+            description = "Retrieve a list of ten random countries."
+    )
     public List<CountryRespondWithPhotoDto> getTenRandomCountries() {
         return countryService.getTenRandomCountries();
     }

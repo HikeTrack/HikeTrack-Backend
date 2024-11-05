@@ -9,7 +9,10 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@FieldMatch(password = "password", repeatPassword = "repeatPassword", message = "Passwords do not match")
+@FieldMatch(
+        password = "password",
+        repeatPassword = "repeatPassword",
+        message = "Passwords do not match")
 public class UserRegistrationRequestDto {
 
     @Email(message = "Email should be valid")

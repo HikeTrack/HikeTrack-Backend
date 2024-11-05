@@ -1,9 +1,9 @@
 package com.hiketrackbackend.hiketrackbackend.security;
 
+import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserResponseDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.UserNotConfirmedException;
@@ -58,7 +58,10 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public UserDevMsgRespondDto restorePassword(String token, UserUpdatePasswordRequestDto request) {
+    public UserDevMsgRespondDto restorePassword(
+            String token,
+            UserUpdatePasswordRequestDto request
+    ) {
         String email = passwordResetTokenService.getValue(token);
         User user = findUserByEmail(email);
         passwordResetTokenService.delete(token);

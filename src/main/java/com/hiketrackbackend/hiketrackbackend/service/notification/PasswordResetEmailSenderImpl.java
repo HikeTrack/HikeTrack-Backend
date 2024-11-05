@@ -34,8 +34,8 @@ public class PasswordResetEmailSenderImpl implements EmailSender {
 
     private String generateConfirmationEmail(String url) {
         return String.format(
-                "Dear user,\n\n" +
-                        "To reset your password please use this link below:\n\n"
+                "Dear user,\n\n"
+                        + "To reset your password please use this link below:\n\n"
                         + url + "\n\n"
                         + ". If it was not you who sent this request, please visit "
                         + "our website and change the password please.\n\n"

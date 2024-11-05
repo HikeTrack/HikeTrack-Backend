@@ -1,12 +1,12 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.RegistrationException;
@@ -23,6 +23,9 @@ import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,9 +35,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -61,8 +61,10 @@ public class UserServiceImpl implements UserService {
             RoleService roleService,
             FileStorageService s3Service,
             ConfirmationTokenService confirmationTokenService,
-            @Qualifier("confirmationRequestEmailSenderImpl") EmailSender confirmationEmailSenderImpl,
-            @Qualifier("promotionRequestEmailSenderImpl") EmailSender promotionRequestEmailSenderImpl,
+            @Qualifier("confirmationRequestEmailSenderImpl")
+            EmailSender confirmationEmailSenderImpl,
+            @Qualifier("promotionRequestEmailSenderImpl")
+            EmailSender promotionRequestEmailSenderImpl,
             CustomUserDetailsService userDetailsService,
             EmailUtils emailUtils
     ) {
@@ -82,7 +84,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserRegistrationRespondDto register(UserRegistrationRequestDto request) throws RegistrationException {
+    public UserRegistrationRespondDto register(
+            UserRegistrationRequestDto request
+    ) throws RegistrationException {
         if (userRepository.existsUserByEmail(request.getEmail())) {
             throw new RegistrationException("This email is already used: " + request.getEmail());
         }
@@ -108,13 +112,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserUpdateRespondDto updateUser(UserUpdateRequestDto requestDto, Long id, MultipartFile file) {
+    public UserUpdateRespondDto updateUser(
+            UserUpdateRequestDto requestDto,
+            Long id,
+            MultipartFile file
+    ) {
         User user = findUserById(id);
-        String oldEmail = user.getEmail();
+        final String oldEmail = user.getEmail();
         userMapper.updateUserFromDto(requestDto, user);
 
         UserProfile userProfile = user.getUserProfile();
-        userMapper.updateUserProfileFromDto(requestDto.getUserProfileRequestDto(), user.getUserProfile());
+        userMapper.updateUserProfileFromDto(
+                requestDto.getUserProfileRequestDto(), user.getUserProfile());
         if (file != null) {
             updateUserProfilePhoto(userProfile, file);
         }
@@ -184,17 +193,19 @@ public class UserServiceImpl implements UserService {
 
     private void updateUserProfilePhoto(UserProfile userProfile, MultipartFile newPhoto) {
         s3Service.deleteFileFromS3(userProfile.getPhoto());
-        List<String> urls = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(newPhoto));
+        List<String> urls = s3Service.uploadFileToS3(
+                FOLDER_NAME, Collections.singletonList(newPhoto));
         userProfile.setPhoto(urls.get(FIRST_ELEMENT));
     }
 
     private void generateEmailChangeNotification(String oldEmail, String newEmail) {
         String notification = String.format(
-                "Dear user,\n\n" +
-                        "Your email has been successfully changed from %s to %s.\n\n" +
-                        "If you did not initiate this change, please contact our support team immediately.\n\n" +
-                        "Best regards,\n" +
-                        "Hike Track Team",
+                "Dear user,\n\n"
+                        + "Your email has been successfully changed from %s to %s.\n\n"
+                        + "If you did not initiate this change, "
+                        + "please contact our support team immediately.\n\n"
+                        + "Best regards,\n"
+                        + "Hike Track Team",
                 oldEmail, newEmail
         );
         emailUtils.sendEmail(oldEmail, SUBJECT, notification);

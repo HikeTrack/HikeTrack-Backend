@@ -12,12 +12,12 @@ import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.FileIsEmptyException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
+import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Review;
+import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetailsFile;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
-import com.hiketrackbackend.hiketrackbackend.model.country.Country;
-import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.repository.ReviewRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.TourDetailsFileRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
@@ -27,6 +27,9 @@ import com.hiketrackbackend.hiketrackbackend.service.TourDetailsService;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import jakarta.persistence.EntityExistsException;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,10 +39,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -72,7 +71,8 @@ public class TourServiceImpl implements TourService {
         Country country = findCountry(requestDto.getCountryId());
         Tour tour = tourMapper.toEntity(requestDto);
         tour.setUser(user);
-        List<String> mainPhotoUrl = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(mainPhoto));
+        List<String> mainPhotoUrl = s3Service.uploadFileToS3(
+                FOLDER_NAME, Collections.singletonList(mainPhoto));
         tour.setMainPhoto(mainPhotoUrl.get(FIRST_ELEMENT));
 
         tour.setCountry(country);
@@ -87,7 +87,11 @@ public class TourServiceImpl implements TourService {
 
     @Override
     @Transactional
-    public TourRespondWithoutReviews updateTour(TourUpdateRequestDto requestDto, Long userId, Long tourId) {
+    public TourRespondWithoutReviews updateTour(
+            TourUpdateRequestDto requestDto,
+            Long userId,
+            Long tourId
+    ) {
         Tour tour = findTourByIdAndUserId(tourId, userId);
         tourMapper.updateEntityFromDto(requestDto, tour);
         Country country = findCountry(requestDto.getCountryId());
@@ -97,13 +101,18 @@ public class TourServiceImpl implements TourService {
 
     @Override
     @Transactional
-    public TourRespondWithoutReviews updateTourPhoto(MultipartFile mainPhoto, Long userId, Long tourId) {
+    public TourRespondWithoutReviews updateTourPhoto(
+            MultipartFile mainPhoto,
+            Long userId,
+            Long tourId
+    ) {
         Tour tour = findTourByIdAndUserId(tourId, userId);
         if (mainPhoto != null) {
             s3Service.deleteFileFromS3(tour.getMainPhoto());
         }
 
-        List<String> newMainPhotoUrl = s3Service.uploadFileToS3(FOLDER_NAME, Collections.singletonList(mainPhoto));
+        List<String> newMainPhotoUrl = s3Service.uploadFileToS3(
+                FOLDER_NAME, Collections.singletonList(mainPhoto));
         tour.setMainPhoto(newMainPhotoUrl.get(FIRST_ELEMENT));
 
         return tourMapper.toDtoWithoutReviews(tourRepository.save(tour));
@@ -118,7 +127,10 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourRespondWithoutDetailsAndReviews> getAllToursMadeByGuide(Long userId, Pageable pageable) {
+    public List<TourRespondWithoutDetailsAndReviews> getAllToursMadeByGuide(
+            Long userId,
+            Pageable pageable
+    ) {
         return tourRepository.findAllTourByUserId(userId, pageable)
                 .stream()
                 .map(tourMapper::toDtoWithoutDetailsAndReviews)
@@ -148,7 +160,10 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourRespondWithoutDetailsAndReviews> search(TourSearchParameters params, Pageable pageable) {
+    public List<TourRespondWithoutDetailsAndReviews> search(
+            TourSearchParameters params,
+            Pageable pageable
+    ) {
         Specification<Tour> tourSpecification = tourSpecificationBuilder.build(params);
         return tourRepository.findAll(tourSpecification, pageable)
                 .stream()
@@ -202,14 +217,15 @@ public class TourServiceImpl implements TourService {
     private void isExistTourByName(String tourName, Long guideId) {
         boolean exist = tourRepository.existsTourByUserIdAndName(guideId, tourName);
         if (exist) {
-            throw new EntityExistsException("Tour already exists fot this guide with id: " +
-                    guideId + " and with tour name: " + tourName);
+            throw new EntityExistsException("Tour already exists fot this guide with id: "
+                    + guideId + " and with tour name: " + tourName);
         }
     }
 
     private Tour findTourByIdAndUserId(Long id, Long userId) {
         return tourRepository.findTourByIdAndUserId(id, userId).orElseThrow(
-                () -> new EntityNotFoundException("Tour not found with id: " + id + " and user id: " + userId)
+                () -> new EntityNotFoundException(
+                        "Tour not found with id: " + id + " and user id: " + userId)
         );
     }
 }

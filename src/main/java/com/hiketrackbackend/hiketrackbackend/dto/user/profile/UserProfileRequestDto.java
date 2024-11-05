@@ -1,12 +1,11 @@
-package com.hiketrackbackend.hiketrackbackend.dto.userProfile;
+package com.hiketrackbackend.hiketrackbackend.dto.user.profile;
 
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -19,7 +18,8 @@ public class UserProfileRequestDto {
     private String city;
 
     @Size(max = 15, message = "Phone number must be at most 15 characters")
-    @Pattern(regexp = "^[+]?[0-9]{1,15}$", message = "Phone number must contain only digits and can start with a '+'")
+    @Pattern(regexp = "^[+]?[0-9]{1,15}$",
+            message = "Phone number must contain only digits and can start with a '+'")
     private String phoneNumber;
 
     @Past(message = "Date of birth must be in the past")

@@ -34,15 +34,16 @@ public class ConfirmationRequestEmailSenderImpl implements EmailSender {
 
     private String generateConfirmationEmail(String url) {
         return String.format(
-                "<html>" +
-                        "<body>" +
-                        "<p>Hello mate,</p>" +
-                        "<p>Thank you for signing up! To complete your registration, please confirm your email address by clicking the link below:</p>" +
-                        "<p><a href=\"%s\">Confirm your email</a></p>" +
-                        "<p>If you did not create an account, you can ignore this email.</p>" +
-                        "<p>Thank you,<br>The Hike Track Team</p>" +
-                        "</body>" +
-                        "</html>",
+                "<html>"
+                        + "<body>"
+                        + "<p>Hello mate,</p>"
+                        + "<p>Thank you for signing up! To complete your registration, "
+                        + "please confirm your email address by clicking the link below:</p>"
+                        + "<p><a href=\"%s\">Confirm your email</a></p>"
+                        + "<p>If you did not create an account, you can ignore this email.</p>"
+                        + "<p>Thank you,<br>The Hike Track Team</p>"
+                        + "</body>"
+                        + "</html>",
                 url
         );
     }

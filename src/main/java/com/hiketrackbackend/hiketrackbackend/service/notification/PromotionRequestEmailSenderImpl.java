@@ -20,8 +20,8 @@ public class PromotionRequestEmailSenderImpl implements EmailSender {
 
     private String generateConfirmationEmail(String email, String request) {
         return String.format(
-                "Dear Boss,\n\n" +
-                        "We have a promotion request from user with email %s:\n\n"
+                "Dear Boss,\n\n"
+                        + "We have a promotion request from user with email %s:\n\n"
                         + "Additional request from user:\n\n"
                         + request + "\n"
                         + "Best regards,\n"
