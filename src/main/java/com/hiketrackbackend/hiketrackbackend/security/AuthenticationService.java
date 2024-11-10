@@ -38,13 +38,13 @@ public class AuthenticationService {
     private final ConfirmationTokenService confirmationTokenService;
 
     public UserResponseDto login(UserLoginRequestDto requestDto) {
+        final Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(requestDto.email(), requestDto.password())
+        );
         User user = findUserByEmail(requestDto.email());
         if (!user.isConfirmed()) {
             throw new UserNotConfirmedException("User email is not confirmed");
         }
-        final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(requestDto.email(), requestDto.password())
-        );
         String token = jwtUtil.generateToken(authentication.getName());
         return new UserResponseDto(token);
     }

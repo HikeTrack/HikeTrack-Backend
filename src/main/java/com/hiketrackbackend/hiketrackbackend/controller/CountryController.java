@@ -51,6 +51,9 @@ public class CountryController {
             @RequestPart("data") String dataString,
             @RequestPart("file") @ValidImageFile MultipartFile file
     ) {
+        if (dataString == null || dataString.isEmpty()) {
+            throw new IllegalArgumentException("Data string cannot be null or empty");
+        }
         CountryRequestDto data;
         try {
             data = objectMapper.readValue(dataString, CountryRequestDto.class);

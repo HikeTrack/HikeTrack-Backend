@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/token")
+@RequestMapping("/tokens")
 @RequiredArgsConstructor
 @Validated
 @Tag(name = "Token", description = "Operations related to JWT token management.")

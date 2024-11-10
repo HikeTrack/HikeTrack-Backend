@@ -141,6 +141,7 @@ public class TourServiceImpl implements TourService {
         Transactional annotation is used to skip lazy init exception,
         so we can get reviews the way we needed
      */
+    // TODO
     @Override
     @Transactional
     public TourRespondDto getById(Long id, int page, int size) {

@@ -1,15 +1,8 @@
 package com.hiketrackbackend.hiketrackbackend.model.country;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
@@ -34,6 +27,6 @@ public class Country {
     @Enumerated(EnumType.STRING)
     private Continent continent;
 
-    @OneToMany(mappedBy = "country")
+    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
     private Set<Tour> tours = new HashSet<>();
 }

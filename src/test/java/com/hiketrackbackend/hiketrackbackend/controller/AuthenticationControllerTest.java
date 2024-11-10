@@ -1,311 +1,333 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserResponseDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
-import com.hiketrackbackend.hiketrackbackend.exception.RegistrationException;
-import com.hiketrackbackend.hiketrackbackend.exception.UserNotConfirmedException;
-import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
-import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
-import com.hiketrackbackend.hiketrackbackend.security.token.UserTokenService;
-import com.hiketrackbackend.hiketrackbackend.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.hiketrackbackend.hiketrackbackend.security.token.impl.ConfirmationTokenService;
+import com.hiketrackbackend.hiketrackbackend.security.token.impl.PasswordResetUserTokenService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
-@WebMvcTest(AuthenticationController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AuthenticationControllerTest {
-    private static MockMvc mockMvc;
-
-    @MockBean
-    private static UserService userService;
-
-    @MockBean
-    private static AuthenticationService authenticationService;
-
-    @MockBean
-    private static JwtUtil jwtUtil;
-
-    @MockBean
-    private static UserDetailsService userDetailsService;
-
-    @MockBean
-    private static UserTokenService<HttpServletRequest> userTokenService;
+    protected static MockMvc mockMvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
-    private UserRegistrationRequestDto validRequestDto;
-    private UserRegistrationRespondDto validResponseDto;
+    protected TestRestTemplate restTemplate;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
+
+    @MockBean
+    protected PasswordResetUserTokenService passwordResetUserTokenService;
+
+    @MockBean
+    protected ConfirmationTokenService confirmationTokenService;
 
     @BeforeAll
-    static void beforeAll(@Autowired WebApplicationContext applicationContext) {
+    static void beforeAll(
+            @Autowired WebApplicationContext applicationContext,
+            @Autowired DataSource dataSource) throws SQLException {
         mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(true);
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/role/delete-user-role-table.sql")
+            );
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(true);
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/user/delete-all-user-table.sql")
+            );
+        }
     }
 
-    @BeforeEach
-    public void setUp() {
-        validRequestDto = new UserRegistrationRequestDto();
-        validRequestDto.setEmail("test@example.com");
-        validRequestDto.setPassword("Password123!");
-        validRequestDto.setRepeatPassword("Password123!");
-        validRequestDto.setFirstName("John");
-        validRequestDto.setLastName("Doe");
-
-        validResponseDto = new UserRegistrationRespondDto();
-        validResponseDto.setId(1L);
-        validResponseDto.setEmail("test@example.com");
-        validResponseDto.setFirstName("John");
-        validResponseDto.setLastName("Doe");
+    @AfterEach
+    void afterEach(@Autowired DataSource dataSource) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(true);
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/role/delete-user-role-table.sql")
+            );
+        }
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(true);
+            ScriptUtils.executeSqlScript(
+                    connection,
+                    new ClassPathResource("database/user/delete-all-user-table.sql")
+            );
+        }
     }
 
     @Test
     @DisplayName("Successfully registers a new user with valid input")
-    public void testSuccessfulRegistration() throws RegistrationException {
-        UserService userService = mock(UserService.class);
-        AuthenticationController controller = new AuthenticationController(userService, authenticationService);
-
+    public void testSuccessfulRegistration() throws Exception {
         UserRegistrationRequestDto requestDto = new UserRegistrationRequestDto();
         requestDto.setEmail("test@example.com");
-        requestDto.setPassword("Password123");
-        requestDto.setRepeatPassword("Password123");
+        requestDto.setPassword("Password123@");
+        requestDto.setRepeatPassword("Password123@");
         requestDto.setFirstName("John");
         requestDto.setLastName("Doe");
 
-        UserRegistrationRespondDto responseDto = new UserRegistrationRespondDto();
-        responseDto.setId(1L);
-        responseDto.setEmail("test@example.com");
-        responseDto.setFirstName("John");
-        responseDto.setLastName("Doe");
+        String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
-        when(userService.register(requestDto)).thenReturn(responseDto);
+        MvcResult result = mockMvc.perform(
+                        post("/auth/registration")
+                                .content(jsonRequest)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andReturn();
 
-        UserRegistrationRespondDto result = controller.registration(requestDto);
+        int actualStatusCode = result.getResponse().getStatus();
+        String jsonResponse = result.getResponse().getContentAsString();
+        UserRegistrationRespondDto respondDto = objectMapper
+                .readValue(jsonResponse, new TypeReference<>() {});
 
+        assertEquals(200, actualStatusCode);
         assertNotNull(result);
-        assertEquals("test@example.com", result.getEmail());
-        assertEquals("John", result.getFirstName());
-        assertEquals("Doe", result.getLastName());
+        assertEquals(requestDto.getEmail(), respondDto.getEmail());
+        assertEquals(requestDto.getFirstName(), respondDto.getFirstName());
+        assertEquals(requestDto.getLastName(), respondDto.getLastName());
     }
 
-    @Test
-    @DisplayName("Successfully registers a user with valid input data")
-    public void testSuccessfulRegistrationWithValidData() throws RegistrationException {
-        UserService userService = mock(UserService.class);
-        AuthenticationController controller = new AuthenticationController(userService, authenticationService);
-
-        UserRegistrationRequestDto requestDto = new UserRegistrationRequestDto();
-        requestDto.setEmail("test@example.com");
-        requestDto.setPassword("Password123");
-        requestDto.setRepeatPassword("Password123");
-        requestDto.setFirstName("John");
-        requestDto.setLastName("Doe");
-
-        UserRegistrationRespondDto expectedResponse = new UserRegistrationRespondDto();
-        expectedResponse.setId(1L);
-        expectedResponse.setEmail("test@example.com");
-        expectedResponse.setFirstName("John");
-        expectedResponse.setLastName("Doe");
-
-        when(userService.register(requestDto)).thenReturn(expectedResponse);
-
-        UserRegistrationRespondDto response = controller.registration(requestDto);
-
-        assertNotNull(response);
-        assertEquals(expectedResponse.getId(), response.getId());
-        assertEquals(expectedResponse.getEmail(), response.getEmail());
-        assertEquals(expectedResponse.getFirstName(), response.getFirstName());
-        assertEquals(expectedResponse.getLastName(), response.getLastName());
-    }
 
     @Test
-    @DisplayName("Handles RegistrationException when registration fails")
-    public void testRegistrationExceptionHandling() throws RegistrationException {
-        UserService userService = mock(UserService.class);
-        AuthenticationController controller = new AuthenticationController(userService, authenticationService);
-
+    @DisplayName("Handles registration with incorrect email")
+    public void testRegistrationNotValidEmailReturn400() throws Exception {
         UserRegistrationRequestDto requestDto = new UserRegistrationRequestDto();
         requestDto.setEmail("invalid-email");
-        requestDto.setPassword("Password123");
-        requestDto.setRepeatPassword("Password123");
+        requestDto.setPassword("Password123@");
+        requestDto.setRepeatPassword("Password123@");
         requestDto.setFirstName("John");
         requestDto.setLastName("Doe");
 
-        when(userService.register(requestDto)).thenThrow(new RegistrationException("Registration failed"));
+        String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
-        assertThrows(RegistrationException.class, () -> {
-            controller.registration(requestDto);
-        });
+        mockMvc.perform(
+                        post("/auth/registration")
+                                .content(jsonRequest)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("Handles RegistrationException when registration fails due to duplicate email")
-    public void testRegistrationExceptionOnDuplicateEmail() throws RegistrationException {
-        UserService userService = mock(UserService.class);
-        AuthenticationController controller = new AuthenticationController(userService, authenticationService);
-
+    @DisplayName("Handles registration with duplicate email fails result")
+    @Sql(scripts = "classpath:database/user/add-users.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void testRegistrationDuplicateEmailReturnConflict() throws Exception {
         UserRegistrationRequestDto requestDto = new UserRegistrationRequestDto();
-        requestDto.setEmail("duplicate@example.com");
-        requestDto.setPassword("Password123");
-        requestDto.setRepeatPassword("Password123");
+        requestDto.setEmail("test@test.com");
+        requestDto.setPassword("Password123@");
+        requestDto.setRepeatPassword("Password123@");
         requestDto.setFirstName("Jane");
         requestDto.setLastName("Doe");
 
-        when(userService.register(requestDto)).thenThrow(new RegistrationException("Email already exists"));
+        String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
-        assertThrows(RegistrationException.class, () -> {
-            controller.registration(requestDto);
-        });
+        mockMvc.perform(
+                        post("/auth/registration")
+                                .content(jsonRequest)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isConflict());
     }
 
     @Test
-    @DisplayName("Successfully authenticates a user with valid credentials")
-    public void testSuccessfulAuthenticationWithValidCredentials() {
-        AuthenticationService authenticationService = mock(AuthenticationService.class);
-        UserLoginRequestDto requestDto = new UserLoginRequestDto("valid@example.com", "validPassword");
-        UserResponseDto expectedResponse = new UserResponseDto("validToken");
-        when(authenticationService.login(requestDto)).thenReturn(expectedResponse);
+    @DisplayName("Should return 200 OK when authenticating with valid credentials")
+    @Sql(scripts = "classpath:database/user/add-users.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void testSuccessfulAuthenticationWithValidCredentials() throws Exception {
+        UserLoginRequestDto loginRequestDto = new UserLoginRequestDto("test@test.com", "Random147@");
 
-        UserResponseDto actualResponse = authenticationService.login(requestDto);
-
-        assertEquals(expectedResponse, actualResponse);
+        String jsonLoginRequest = objectMapper.writeValueAsString(loginRequestDto);
+        mockMvc.perform(
+                        post("/auth/login")
+                                .content(jsonLoginRequest)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("Handles authentication failure for unconfirmed users")
-    public void testAuthenticationFailureForUnconfirmedUsers() {
-        AuthenticationService authenticationService = mock(AuthenticationService.class);
-        UserLoginRequestDto requestDto = new UserLoginRequestDto("unconfirmed@example.com", "password");
-        when(authenticationService.login(requestDto)).thenThrow(new UserNotConfirmedException("User email is not confirmed"));
+    @Sql(scripts = "classpath:database/user/add-users-notconfirmed.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void testAuthenticationFailureForUnconfirmedUsers() throws Exception {
+        UserLoginRequestDto requestDto = new UserLoginRequestDto("test@test.com", "Random147@");
+        String jsonLoginRequest = objectMapper.writeValueAsString(requestDto);
+        mockMvc.perform(
+                        post("/auth/login")
+                                .content(jsonLoginRequest)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isForbidden());
 
-        assertThrows(UserNotConfirmedException.class, () -> {
-            authenticationService.login(requestDto);
-        });
     }
 
     @Test
-    @DisplayName("Manages login attempts with incorrect email or password")
-    public void testLoginWithIncorrectCredentials() {
-        AuthenticationService authenticationService = mock(AuthenticationService.class);
-        UserLoginRequestDto requestDto = new UserLoginRequestDto("incorrect@example.com", "incorrectPassword");
-        when(authenticationService.login(requestDto)).thenThrow(new UserNotConfirmedException("User email is not confirmed"));
+    @DisplayName("Test login with invalid password")
+    @Sql(scripts = "classpath:database/user/add-users.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void login_shouldFailWithInvalidPassword() {
+        UserLoginRequestDto loginRequestDto
+                = new UserLoginRequestDto("test@test.com", "IncorectPass147@");
 
-        assertThrows(UserNotConfirmedException.class, () -> authenticationService.login(requestDto));
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                "/auth/login",
+                new HttpEntity<>(loginRequestDto),
+                String.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    @DisplayName("Successfully initiates password reset for a valid email")
-    public void testForgotPasswordValidEmail() {
-        AuthenticationService authenticationService = mock(AuthenticationService.class);
-        UserRequestDto requestDto = new UserRequestDto();
-        requestDto.setEmail("valid@example.com");
-        UserDevMsgRespondDto expectedResponse = new UserDevMsgRespondDto("Password reset link sent to email.");
+    @DisplayName("Test forgot password with valid data")
+    @Sql(scripts = "classpath:database/user/add-users.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void forgotPassword_shouldInitiateResetRequest() {
+        UserRequestDto request = new UserRequestDto();
+        request.setEmail("test@test.com");
 
-        when(authenticationService.createRestoreRequest(requestDto)).thenReturn(expectedResponse);
+        ResponseEntity<UserDevMsgRespondDto> response = restTemplate.postForEntity(
+                "/auth/forgot-password",
+                new HttpEntity<>(request),
+                UserDevMsgRespondDto.class
+        );
 
-        UserDevMsgRespondDto actualResponse = authenticationService.createRestoreRequest(requestDto);
-
-        assertEquals(expectedResponse.message(), actualResponse.message());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    @DisplayName("Handles non-existent email gracefully without exposing sensitive information")
-    public void testForgotPasswordNonExistentEmail() {
-        AuthenticationService authenticationService = mock(AuthenticationService.class);
-        UserRequestDto requestDto = new UserRequestDto();
-        requestDto.setEmail("nonexistent@example.com");
-        UserDevMsgRespondDto expectedResponse = new UserDevMsgRespondDto("Password reset link sent to email.");
+    @DisplayName("Test forgot password for incorrect email")
+    public void forgotPassword_shouldFailForUnknownEmail() {
+        UserRequestDto request = new UserRequestDto();
+        request.setEmail("unknownuser@example.com");
 
-        when(authenticationService.createRestoreRequest(requestDto)).thenReturn(expectedResponse);
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                "/auth/forgot-password",
+                new HttpEntity<>(request),
+                String.class
+        );
 
-        UserDevMsgRespondDto actualResponse = authenticationService.createRestoreRequest(requestDto);
-
-        assertEquals(expectedResponse.message(), actualResponse.message());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
-    @DisplayName("Successfully resets password with valid token and matching passwords")
-    public void testResetPasswordSuccess() {
-        String validToken = "validToken123";
-        UserUpdatePasswordRequestDto requestDto = new UserUpdatePasswordRequestDto();
-        requestDto.setPassword("newPassword123");
-        requestDto.setRepeatPassword("newPassword123");
+    @DisplayName("Test reset password with valid data")
+    @Sql(scripts = "classpath:database/user/add-users.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void resetPassword_shouldUpdatePassword() {
+        String token = "validToken";
 
-        AuthenticationService authenticationService = mock(AuthenticationService.class);
-        when(authenticationService.restorePassword(validToken, requestDto))
-                .thenReturn(new UserDevMsgRespondDto("Password reset successful."));
+        when(passwordResetUserTokenService.getValue(token)).thenReturn("test@test.com");
+        doNothing().when(passwordResetUserTokenService).delete(token);
 
-        AuthenticationController controller = new AuthenticationController(userService, authenticationService);
+        UserUpdatePasswordRequestDto request = new UserUpdatePasswordRequestDto();
+        request.setPassword("Newpassword123@");
+        request.setRepeatPassword("Newpassword123@");
 
-        UserDevMsgRespondDto response = controller.resetPassword(validToken, requestDto);
+        ResponseEntity<UserDevMsgRespondDto> response = restTemplate.postForEntity(
+                "/auth/reset-password?token=" + token,
+                new HttpEntity<>(request),
+                UserDevMsgRespondDto.class
+        );
 
-        assertEquals("Password reset successful.", response.message());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    @DisplayName("Handles invalid or expired token gracefully")
-    public void testResetPasswordInvalidToken() {
-        String invalidToken = "invalidToken123";
-        UserUpdatePasswordRequestDto requestDto = new UserUpdatePasswordRequestDto();
-        requestDto.setPassword("newPassword123");
-        requestDto.setRepeatPassword("newPassword123");
+    @DisplayName("Test reset password with invalid token")
+    public void resetPassword_shouldFailWithInvalidToken() {
+        String token = "invalid-reset-token";
+        UserUpdatePasswordRequestDto request = new UserUpdatePasswordRequestDto();
+        request.setPassword("newpassword123@");
+        request.setRepeatPassword("newpassword123@");
 
-        AuthenticationService authenticationService = mock(AuthenticationService.class);
-        when(authenticationService.restorePassword(invalidToken, requestDto))
-                .thenThrow(new UserNotConfirmedException("Confirmation link has been expired"));
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                "/auth/reset-password?token=" + token,
+                new HttpEntity<>(request),
+                String.class
+        );
 
-        AuthenticationController controller = new AuthenticationController(userService, authenticationService);
-
-        assertThrows(UserNotConfirmedException.class, () -> {
-            controller.resetPassword(invalidToken, requestDto);
-        });
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    @DisplayName("Successfully confirms a user's email with a valid token")
-    public void testEmailConfirmationWithValidToken() {
-        String validToken = "validToken123";
-        AuthenticationService authenticationService = mock(AuthenticationService.class);
-        when(authenticationService.changeConfirmingStatus(validToken))
-                .thenReturn(new UserDevMsgRespondDto("User has been confirmed."));
+    @DisplayName("Test confirm email with valid email")
+    @Sql(scripts = "classpath:database/user/add-users.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void emailConfirmation_shouldConfirmEmail() {
+        String token = "valid-confirmation-token";
 
-        UserDevMsgRespondDto response = authenticationService.changeConfirmingStatus(validToken);
+        when(confirmationTokenService.isKeyExist(token)).thenReturn(true);
+        when(confirmationTokenService.getValue(token)).thenReturn("test@test.com");
+        doNothing().when(confirmationTokenService).delete(token);
 
-        assertEquals("User has been confirmed.", response.message());
+        ResponseEntity<UserDevMsgRespondDto> response = restTemplate.postForEntity(
+                "/auth/confirmation?token=" + token,
+                null,
+                UserDevMsgRespondDto.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
-    @DisplayName("Handles expired confirmation tokens gracefully")
-    public void testEmailConfirmationWithExpiredToken() {
-        String expiredToken = "expiredToken123";
-        AuthenticationService authenticationService = mock(AuthenticationService.class);
-        when(authenticationService.changeConfirmingStatus(expiredToken))
-                .thenThrow(new UserNotConfirmedException("Confirmation link has been expired"));
+    @DisplayName("Test email confirm with invalid token")
+    public void emailConfirmation_shouldFailWithInvalidToken() {
+        String token = "invalid-confirmation-token";
 
-        assertThrows(UserNotConfirmedException.class, () -> {
-            authenticationService.changeConfirmingStatus(expiredToken);
-        });
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                "/auth/confirmation?token=" + token,
+                null,
+                String.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 }
