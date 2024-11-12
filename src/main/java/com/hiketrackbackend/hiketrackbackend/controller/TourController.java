@@ -2,7 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
@@ -172,7 +172,7 @@ public class TourController {
     }
 
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
-    @DeleteMapping("/photo/{additionalPhotoId}")
+    @DeleteMapping("/additional_photo/{additionalPhotoId}")
     @Operation(summary = "Delete additional photo",
             description = "Delete a specific additional photo from a tour by its ID.")
     public void deleteSingleTourDetailsPhoto(@PathVariable @Positive Long additionalPhotoId) {

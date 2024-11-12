@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.dto.details;
+package com.hiketrackbackend.hiketrackbackend.dto.tour.details;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.Activity;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.RouteType;

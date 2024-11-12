@@ -49,7 +49,12 @@ public class SecurityConfig {
                                         antMatcher("/oauth2/**"),
                                         antMatcher("/swagger-ui/**"),
                                         antMatcher("/v3/api-docs/**"),
-                                        antMatcher("/user/request"))
+                                        antMatcher("/user/request"),
+                                        antMatcher("/socials/subscribe"),
+                                        antMatcher("/reviews/tour/{tourId}"),
+                                        antMatcher("/socials/unsubscribe"),
+                                        antMatcher("/tokens/access_token/**")
+                                )
                                 .permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.GET, "/countries/**"),
                                         antMatcher(HttpMethod.GET, "/tours/**"))
@@ -62,7 +67,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(new AccessDeniedHandlerImpl())
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("https://hiketrack.github.io") //http://localhost:3000/#
+//                        .defaultSuccessUrl("https://hiketrack.github.io/hike-track-frontend/#/") //http://localhost:3000/#
                         .failureUrl("/login?error=true")
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)

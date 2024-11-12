@@ -2,7 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRespondDto getLoggedInUser(HttpServletRequest request) {
+    public UserRespondWithProfileDto getLoggedInUser(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Authorization header is missing or incorrect");

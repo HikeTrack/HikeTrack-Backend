@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BookmarkRequestDto {
-    @NotNull(message = "tourId shouldn`t be null")
+    @NotNull(message = "tourId should`t be null")
     @Positive(message = "tourId should be positive number")
     private Long tourId;
 }

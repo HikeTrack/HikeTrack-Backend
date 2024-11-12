@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
@@ -45,7 +45,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
     @GetMapping("/me")
     @Tag(name = "User Management", description = "Endpoints for managing users")
-    public UserRespondDto getLoggedInUser(HttpServletRequest request) {
+    public UserRespondWithProfileDto getLoggedInUser(HttpServletRequest request) {
         return userService.getLoggedInUser(request);
     }
 

@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
@@ -13,14 +13,12 @@ import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.user.UserProfile;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
-import com.hiketrackbackend.hiketrackbackend.security.CustomUserDetailsService;
 import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
 import com.hiketrackbackend.hiketrackbackend.security.token.impl.ConfirmationTokenService;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.ConfirmationRequestEmailSenderImpl;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailUtils;
-import com.hiketrackbackend.hiketrackbackend.service.notification.PromotionRequestEmailSenderImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +54,7 @@ public class UserServiceImplTest {
     private UserRepository userRepository;
 
     @Mock
-    private UserMapper userMapper;
+    private static UserMapper userMapper;
 
     @Mock
     private PasswordEncoder encoder;
@@ -71,13 +69,7 @@ public class UserServiceImplTest {
     private ConfirmationTokenService confirmationTokenService;
 
     @Mock
-    private CustomUserDetailsService userDetailsService;
-
-    @Mock
     private ConfirmationRequestEmailSenderImpl confirmationEmailSenderImpl;
-
-    @Mock
-    private PromotionRequestEmailSenderImpl promotionRequestEmailSenderImpl;
 
     @Mock
     private EmailUtils emailUtils;
@@ -279,11 +271,11 @@ public class UserServiceImplTest {
         when(request.getHeader("Authorization")).thenReturn("Bearer ValidToken");
         when(jwtUtil.getUsername("ValidToken")).thenReturn("test@example.com");
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
-        UserRespondDto userRespondDto = new UserRespondDto();
-        userRespondDto.setEmail("test@example.com");
-        when(userMapper.toRespondDto(user)).thenReturn(userRespondDto);
+        UserRespondWithProfileDto userRespondWithProfileDto = new UserRespondWithProfileDto();
+        userRespondWithProfileDto.setEmail("test@example.com");
+        when(userMapper.toRespondDto(user)).thenReturn(userRespondWithProfileDto);
 
-        UserRespondDto result = userService.getLoggedInUser(request);
+        UserRespondWithProfileDto result = userService.getLoggedInUser(request);
 
         assertThat(result).isNotNull();
         assertThat(result.getEmail()).isEqualTo("test@example.com");

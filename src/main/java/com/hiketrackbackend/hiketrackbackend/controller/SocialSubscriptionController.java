@@ -6,14 +6,11 @@ import com.hiketrackbackend.hiketrackbackend.service.SocialSubscriptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/socials")
@@ -35,11 +32,11 @@ public class SocialSubscriptionController {
         return socialSubscriptionService.create(requestDto);
     }
 
-    @PostMapping("/unsubscribe")
+    @DeleteMapping("/unsubscribe")
     @Operation(summary = "Unsubscribe from Newsletter",
             description = "Unsubscribe from the email newsletter using the provided email address.")
     public UserDevMsgRespondDto deleteEmailNewsletterSubscription(
-            @RequestParam("email") String email
+            @RequestParam("email") @Email String email
     ) {
         return socialSubscriptionService.delete(email);
     }

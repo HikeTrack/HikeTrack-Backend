@@ -37,9 +37,12 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewsRespondDto updateReview(ReviewRequestDto requestDto, Long reviewId) {
-        Tour tour = getTourByReviewId(reviewId);
-        isExistReviewByIdAndTourId(tour.getId(), reviewId);
+    public ReviewsRespondDto updateReview(
+            ReviewRequestDto requestDto,
+            Long reviewId,
+            Long tourId,
+            Long userId) {
+        isExistReviewByIdAndTourIdAndUserId(tourId, reviewId, userId);
         Review review = getReviewById(reviewId);
         reviewMapper.updateEntityFromDto(review, requestDto);
         return reviewMapper.toDto(reviewRepository.save(review));
@@ -69,14 +72,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void deleteById(Long reviewId) {
-        Tour tour = getTourByReviewId(reviewId);
-        isExistReviewByIdAndTourId(tour.getId(), reviewId);
+    public void deleteById(Long reviewId, Long userId, Long tourId) {
+        isExistReviewByIdAndTourIdAndUserId(tourId, reviewId, userId);
         reviewRepository.deleteById(reviewId);
     }
 
-    private void isExistReviewByIdAndTourId(Long tourId, Long reviewId) {
-        boolean isExist = reviewRepository.existsByIdAndTourId(reviewId, tourId);
+    private void isExistReviewByIdAndTourIdAndUserId(Long tourId, Long reviewId, Long userId) {
+        boolean isExist = reviewRepository.existsByIdAndTourIdAndUserId(reviewId, tourId, userId);
         if (!isExist) {
             throw new EntityNotFoundException("Review not found with id " + reviewId
                     + " and tour id " + tourId);
@@ -92,12 +94,6 @@ public class ReviewServiceImpl implements ReviewService {
     private Tour getTourById(Long tourId) {
         return tourRepository.findById(tourId).orElseThrow(
                 () -> new EntityNotFoundException("Tour not found with id " + tourId)
-        );
-    }
-
-    private Tour getTourByReviewId(Long reviewId) {
-        return tourRepository.findTourByReviewsId(reviewId).orElseThrow(
-                () -> new EntityNotFoundException("Tour not found with review id: " + reviewId)
         );
     }
 }

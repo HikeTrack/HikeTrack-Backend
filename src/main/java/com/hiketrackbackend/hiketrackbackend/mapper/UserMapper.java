@@ -2,7 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.mapper;
 
 import com.hiketrackbackend.hiketrackbackend.config.MapperConfig;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
@@ -27,7 +27,7 @@ public interface UserMapper {
     UserDevMsgRespondDto toDto(String message);
 
     @Mapping(target = "userProfileRespondDto", source = "userProfile")
-    UserRespondDto toRespondDto(User user);
+    UserRespondWithProfileDto toRespondDto(User user);
 
     @Mapping(target = "userProfileRespondDto", source = "userProfile")
     @Mapping(target = "token", ignore = true)
@@ -41,7 +41,7 @@ public interface UserMapper {
     );
 
     @AfterMapping
-    default void setUserRoles(User user, @MappingTarget UserRespondDto respondDto) {
+    default void setUserRoles(User user, @MappingTarget UserRespondWithProfileDto respondDto) {
         Set<Role> roles = user.getRoles();
         List<String> roleNames = roles.stream()
                 .map(Role::getName)

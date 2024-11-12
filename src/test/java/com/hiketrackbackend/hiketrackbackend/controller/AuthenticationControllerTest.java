@@ -156,7 +156,7 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("Handles registration with duplicate email fails result")
-    @Sql(scripts = "classpath:database/user/add-users.sql",
+    @Sql(scripts = "classpath:database/user/add-user.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void testRegistrationDuplicateEmailReturnConflict() throws Exception {
         UserRegistrationRequestDto requestDto = new UserRegistrationRequestDto();
@@ -178,7 +178,7 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("Should return 200 OK when authenticating with valid credentials")
-    @Sql(scripts = "classpath:database/user/add-users.sql",
+    @Sql(scripts = "classpath:database/user/add-user.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void testSuccessfulAuthenticationWithValidCredentials() throws Exception {
         UserLoginRequestDto loginRequestDto = new UserLoginRequestDto("test@test.com", "Random147@");
@@ -210,7 +210,7 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("Test login with invalid password")
-    @Sql(scripts = "classpath:database/user/add-users.sql",
+    @Sql(scripts = "classpath:database/user/add-user.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void login_shouldFailWithInvalidPassword() {
         UserLoginRequestDto loginRequestDto
@@ -227,7 +227,7 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("Test forgot password with valid data")
-    @Sql(scripts = "classpath:database/user/add-users.sql",
+    @Sql(scripts = "classpath:database/user/add-user.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void forgotPassword_shouldInitiateResetRequest() {
         UserRequestDto request = new UserRequestDto();
@@ -259,7 +259,7 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("Test reset password with valid data")
-    @Sql(scripts = "classpath:database/user/add-users.sql",
+    @Sql(scripts = "classpath:database/user/add-user.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void resetPassword_shouldUpdatePassword() {
         String token = "validToken";
@@ -299,7 +299,7 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("Test confirm email with valid email")
-    @Sql(scripts = "classpath:database/user/add-users.sql",
+    @Sql(scripts = "classpath:database/user/add-user.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void emailConfirmation_shouldConfirmEmail() {
         String token = "valid-confirmation-token";

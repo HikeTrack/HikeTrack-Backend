@@ -1,6 +1,6 @@
 package com.hiketrackbackend.hiketrackbackend.dto.tour;
 
-import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;

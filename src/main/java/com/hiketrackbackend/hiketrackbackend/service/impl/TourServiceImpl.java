@@ -182,10 +182,11 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
+    @Transactional
     public void deleteTourByIdAndUserId(Long tourId, Long userId) {
         boolean exist = isExistTourById(tourId, userId);
-        if (exist) {
-            throw new EntityAlreadyExistException("Tour with id " + tourId + " already exists");
+        if (!exist) {
+            throw new EntityNotFoundException("Tour with id " + tourId + " not found");
         }
         tourRepository.deleteById(tourId);
     }
