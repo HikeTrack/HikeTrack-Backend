@@ -21,6 +21,8 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrat
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.security.token.impl.ConfirmationTokenService;
 import com.hiketrackbackend.hiketrackbackend.security.token.impl.PasswordResetUserTokenService;
+import com.hiketrackbackend.hiketrackbackend.service.notification.ConfirmationRequestEmailSenderImpl;
+import com.hiketrackbackend.hiketrackbackend.service.notification.PasswordResetEmailSenderImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -61,6 +63,12 @@ public class AuthenticationControllerTest {
 
     @MockBean
     protected ConfirmationTokenService confirmationTokenService;
+
+    @MockBean
+    protected ConfirmationRequestEmailSenderImpl confirmationEmailSenderImpl;
+
+    @MockBean
+    protected PasswordResetEmailSenderImpl passwordResetEmailSenderImpl;
 
     @BeforeAll
     static void beforeAll(
@@ -113,8 +121,11 @@ public class AuthenticationControllerTest {
         requestDto.setFirstName("John");
         requestDto.setLastName("Doe");
 
+        String token = "validToken";
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
-        when(confirmationTokenService.save(requestDto.getEmail())).thenReturn(UUID.randomUUID().toString());
+
+        when(confirmationTokenService.save(requestDto.getEmail())).thenReturn(token);
+        doNothing().when(confirmationEmailSenderImpl).send(requestDto.getEmail(), token);
 
         MvcResult result = mockMvc.perform(
                         post("/auth/registration")
@@ -231,28 +242,22 @@ public class AuthenticationControllerTest {
     @DisplayName("Test forgot password with valid data")
     @Sql(scripts = "classpath:database/user/add-user.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void forgotPassword_shouldInitiateResetRequest() throws Exception {
+    public void forgotPassword_shouldInitiateResetRequest() {
         UserRequestDto request = new UserRequestDto();
         request.setEmail("test@test.com");
 
-        when(passwordResetUserTokenService.save(request.getEmail())).thenReturn(UUID.randomUUID().toString());
+        String token = "validToken";
+        when(passwordResetUserTokenService.save(request.getEmail())).thenReturn(token);
+        doNothing().when(passwordResetEmailSenderImpl).send(request.getEmail(), token);
 
-        String jsonLoginRequest = objectMapper.writeValueAsString(request);
-        mockMvc.perform(
-                        post("/auth/forgot-password")
-                                .content(jsonLoginRequest)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(content().string(notNullValue()));
-//        ResponseEntity<String> response = restTemplate.postForEntity(
-//                "/auth/forgot-password",
-//                new HttpEntity<>(request),
-//                String.class
-//        );
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                "/auth/forgot-password",
+                new HttpEntity<>(request),
+                String.class
+        );
 
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test

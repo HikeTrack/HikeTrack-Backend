@@ -3,6 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.subscription.SubscriptionRequestDto;
+import com.hiketrackbackend.hiketrackbackend.service.notification.SubscriptionEmailSenderImpl;
 import io.jsonwebtoken.io.IOException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -23,6 +25,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -33,6 +39,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SocialSubscriptionControllerTest {
     private static MockMvc mockMvc;
+
+    @MockBean
+    protected SubscriptionEmailSenderImpl subscriptionEmailSenderImpl;
 
     @BeforeAll
     static void beforeAll(@Autowired WebApplicationContext applicationContext,
@@ -62,6 +71,9 @@ public class SocialSubscriptionControllerTest {
         SubscriptionRequestDto requestDto = new SubscriptionRequestDto();
         requestDto.setEmail("test@test.com");
         UserDevMsgRespondDto responseDto = new UserDevMsgRespondDto("Thank you for subscribe");
+
+        doNothing().when(subscriptionEmailSenderImpl).send(
+                requestDto.getEmail(), requestDto.getEmail());
 
         mockMvc.perform(post("/socials/subscribe")
                         .content(new ObjectMapper().writeValueAsString(requestDto))
@@ -117,7 +129,7 @@ public class SocialSubscriptionControllerTest {
         String message = "This is a newsletter";
         UserDevMsgRespondDto responseDto = new UserDevMsgRespondDto("Newsletters has been send successfully");
 
-
+        doNothing().when(subscriptionEmailSenderImpl).newsletterDistribution(anyString(), anyList());
         mockMvc.perform(post("/socials/newsletter")
                         .content(message)
                         .contentType("application/json")
