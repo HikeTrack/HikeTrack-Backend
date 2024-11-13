@@ -1,12 +1,14 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -229,20 +231,28 @@ public class AuthenticationControllerTest {
     @DisplayName("Test forgot password with valid data")
     @Sql(scripts = "classpath:database/user/add-user.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void forgotPassword_shouldInitiateResetRequest() {
+    public void forgotPassword_shouldInitiateResetRequest() throws Exception {
         UserRequestDto request = new UserRequestDto();
         request.setEmail("test@test.com");
 
         when(passwordResetUserTokenService.save(request.getEmail())).thenReturn(UUID.randomUUID().toString());
 
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                "/auth/forgot-password",
-                new HttpEntity<>(request),
-                String.class
-        );
+        String jsonLoginRequest = objectMapper.writeValueAsString(request);
+        mockMvc.perform(
+                        post("/auth/forgot-password")
+                                .content(jsonLoginRequest)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().string(notNullValue()));
+//        ResponseEntity<String> response = restTemplate.postForEntity(
+//                "/auth/forgot-password",
+//                new HttpEntity<>(request),
+//                String.class
+//        );
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
+//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        assertThat(response.getBody()).isNotNull();
     }
 
     @Test
