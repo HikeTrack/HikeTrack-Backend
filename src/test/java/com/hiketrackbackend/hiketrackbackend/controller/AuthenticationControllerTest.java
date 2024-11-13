@@ -3,11 +3,10 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -43,6 +42,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AuthenticationControllerTest {
@@ -105,13 +105,14 @@ public class AuthenticationControllerTest {
     @DisplayName("Successfully registers a new user with valid input")
     public void testSuccessfulRegistration() throws Exception {
         UserRegistrationRequestDto requestDto = new UserRegistrationRequestDto();
-        requestDto.setEmail("test@example.com");
+        requestDto.setEmail("test@test.com");
         requestDto.setPassword("Password123@");
         requestDto.setRepeatPassword("Password123@");
         requestDto.setFirstName("John");
         requestDto.setLastName("Doe");
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
+        when(confirmationTokenService.save(requestDto.getEmail())).thenReturn(UUID.randomUUID().toString());
 
         MvcResult result = mockMvc.perform(
                         post("/auth/registration")
@@ -132,7 +133,6 @@ public class AuthenticationControllerTest {
         assertEquals(requestDto.getFirstName(), respondDto.getFirstName());
         assertEquals(requestDto.getLastName(), respondDto.getLastName());
     }
-
 
     @Test
     @DisplayName("Handles registration with incorrect email")
@@ -233,13 +233,16 @@ public class AuthenticationControllerTest {
         UserRequestDto request = new UserRequestDto();
         request.setEmail("test@test.com");
 
-        ResponseEntity<UserDevMsgRespondDto> response = restTemplate.postForEntity(
+        when(passwordResetUserTokenService.save(request.getEmail())).thenReturn(UUID.randomUUID().toString());
+
+        ResponseEntity<String> response = restTemplate.postForEntity(
                 "/auth/forgot-password",
                 new HttpEntity<>(request),
-                UserDevMsgRespondDto.class
+                String.class
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
     }
 
     @Test

@@ -57,7 +57,7 @@ public class ReviewControllerTest {
         );
 
         executeSqlScripts(dataSource, scripts);
-
+        SecurityContextHolder.clearContext();
     }
 
     @AfterEach
@@ -68,6 +68,7 @@ public class ReviewControllerTest {
         );
 
         executeSqlScripts(dataSource, scripts);
+        SecurityContextHolder.clearContext();
     }
 
     @Test
@@ -80,7 +81,6 @@ public class ReviewControllerTest {
         requestDto.setContent("Great tour!");
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
-
         setUserToContext();
 
         mockMvc.perform(post("/reviews/1")

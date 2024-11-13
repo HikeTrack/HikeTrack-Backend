@@ -66,6 +66,7 @@ public class TourControllerTest {
                 "database/tour/delete-all-tour-details-files-table.sql"
         );
         executeSqlScripts(dataSource, scripts);
+        SecurityContextHolder.clearContext();
     }
 
     @AfterEach
@@ -76,6 +77,7 @@ public class TourControllerTest {
                 "database/tour/delete-all-tour-details-files-table.sql"
         );
         executeSqlScripts(dataSource, scripts);
+        SecurityContextHolder.clearContext();
     }
 
     @Test

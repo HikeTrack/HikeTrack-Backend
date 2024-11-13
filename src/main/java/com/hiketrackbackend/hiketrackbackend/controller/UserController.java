@@ -35,7 +35,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "", description = "")
+@Tag(
+        name = "User management",
+        description = "Operations related to change user state such as role changing "
+                + "or updating his profile"
+)
 public class UserController {
     private final UserService userService;
     private final AuthenticationService authenticationService;

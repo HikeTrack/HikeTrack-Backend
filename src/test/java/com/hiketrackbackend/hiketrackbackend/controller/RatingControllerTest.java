@@ -5,20 +5,29 @@ import com.hiketrackbackend.hiketrackbackend.dto.rating.RatingRequestDto;
 import com.hiketrackbackend.hiketrackbackend.model.user.Role;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.user.UserProfile;
+import io.jsonwebtoken.io.IOException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -35,15 +44,41 @@ public class RatingControllerTest {
     protected ObjectMapper objectMapper;
 
     @BeforeAll
-    static void beforeAll(@Autowired WebApplicationContext applicationContext) {
+    static void beforeAll(@Autowired WebApplicationContext applicationContext,
+                          @Autowired DataSource dataSource) {
         mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
+
+        List<String> scripts = List.of(
+                "database/role/delete-user-role-table.sql",
+                "database/tour/delete-all-tour-table.sql",
+                "database/user/delete-all-user-table.sql"
+        );
+
+        executeSqlScripts(dataSource, scripts);
+        SecurityContextHolder.clearContext();
+    }
+
+    @AfterEach
+    void afterEach(@Autowired DataSource dataSource) {
+        List<String> scripts = List.of(
+                "database/role/delete-user-role-table.sql",
+                "database/tour/delete-all-tour-table.sql",
+                "database/user/delete-all-user-table.sql"
+        );
+
+        executeSqlScripts(dataSource, scripts);
+        SecurityContextHolder.clearContext();
     }
 
     @Test
     @WithMockUser(roles = "USER")
     @DisplayName("Test successful rating update returns 200")
+    @Sql(scripts = "classpath:database/user/add-user.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:database/tour/add-tour.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void testUpdateRatingWhenRequestIsSuccessfulThenReturn200() throws Exception {
         RatingRequestDto requestDto = new RatingRequestDto();
         requestDto.setRating(4);
@@ -64,7 +99,7 @@ public class RatingControllerTest {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
-        mockMvc.perform(patch("/ratings/1/1")
+        mockMvc.perform(patch("/ratings/{userId}/{tourId}", 1, 1)
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
@@ -110,5 +145,19 @@ public class RatingControllerTest {
                         .content(new ObjectMapper().writeValueAsString(requestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+    }
+
+    private static void executeSqlScripts(DataSource dataSource, List<String> scriptPaths) {
+        for (String scriptPath : scriptPaths) {
+            try (Connection connection = dataSource.getConnection()) {
+                connection.setAutoCommit(true);
+                ScriptUtils.executeSqlScript(
+                        connection,
+                        new ClassPathResource(scriptPath)
+                );
+            } catch (SQLException | IOException e) {
+                throw new RuntimeException("Failed to execute script: " + scriptPath, e);
+            }
+        }
     }
 }

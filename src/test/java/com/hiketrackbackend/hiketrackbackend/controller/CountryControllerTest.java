@@ -82,7 +82,6 @@ public class CountryControllerTest {
         ), eq(file));
     }
 
-
     @Test
     @DisplayName("Handle invalid JSON format in dataString gracefully")
     public void testCreateCountryWithInvalidJsonFormat() throws JsonProcessingException {
@@ -231,6 +230,7 @@ public class CountryControllerTest {
 
         assertEquals(expectedCountries, result);
     }
+
     @Test
     @DisplayName("Search with invalid parameters returns an empty list")
     public void testSearchWithInvalidParameters() {
