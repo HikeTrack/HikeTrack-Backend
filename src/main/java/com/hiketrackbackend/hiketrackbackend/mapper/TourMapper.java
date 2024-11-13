@@ -21,6 +21,7 @@ public interface TourMapper {
     @Mapping(source = "tourDetails", target = "details")
     @Mapping(target = "countryId", source = "country.id")
     @Mapping(target = "guideId", source = "user.id")
+    @Mapping(target = "reviews", ignore = true)
     TourRespondDto toDto(Tour tour);
 
     @Mapping(target = "countryId", source = "country.id")
@@ -36,18 +37,27 @@ public interface TourMapper {
 
     @AfterMapping
     default void setRating(Tour tour, @MappingTarget TourRespondDto respondDto) {
+        applyRating(tour, respondDto);
+    }
+
+    @AfterMapping
+    default void setRating(Tour tour,
+                           @MappingTarget TourRespondWithoutDetailsAndReviews respondDto) {
+        applyRating(tour, respondDto);
+    }
+
+    private void applyRating(Tour tour, Object respondDto) {
         List<Rating> ratings = tour.getRatings();
-        if (ratings.isEmpty()) {
-            respondDto.setTotalAmountOfMarks(0L);
-            respondDto.setAverageRating(0L);
-            return;
+        Long totalAmountOfMarks = ratings.isEmpty() ? 0L : (long) ratings.size();
+        Long averageRating = ratings.isEmpty() ? 0L :
+                ratings.stream().mapToLong(Rating::getRating).sum() / ratings.size();
+
+        if (respondDto instanceof TourRespondDto dto) {
+            dto.setTotalAmountOfMarks(totalAmountOfMarks);
+            dto.setAverageRating(averageRating);
+        } else if (respondDto instanceof TourRespondWithoutDetailsAndReviews dto) {
+            dto.setTotalAmountOfMarks(totalAmountOfMarks);
+            dto.setAverageRating(averageRating);
         }
-        respondDto.setTotalAmountOfMarks((long) ratings.size());
-        Long ratingSum = 0L;
-        for (Rating value : ratings) {
-            Integer rating = value.getRating();
-            ratingSum += rating;
-        }
-        respondDto.setAverageRating(ratingSum / ratings.size());
     }
 }

@@ -27,12 +27,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ReviewServiceImplTest {
@@ -121,6 +118,9 @@ public class ReviewServiceImplTest {
         Tour tour = new Tour();
         tour.setId(1L);
 
+        User user = new User();
+        user.setId(1L);
+
         Review review = new Review();
         review.setId(1L);
         review.setContent("Old review content");
@@ -133,21 +133,19 @@ public class ReviewServiceImplTest {
         responseDto.setTourId(tour.getId());
         responseDto.setDateCreated(LocalDateTime.now());
 
-        when(tourRepository.findTourByReviewsId(review.getId())).thenReturn(Optional.of(tour));
-        when(reviewRepository.existsByIdAndTourId(review.getId(), tour.getId())).thenReturn(true);
+        when(reviewRepository.existsByIdAndTourIdAndUserId(review.getId(), tour.getId(), user.getId())).thenReturn(true);
         when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
         doNothing().when(reviewMapper).updateEntityFromDto(review, requestDto);
         when(reviewRepository.save(review)).thenReturn(review);
         when(reviewMapper.toDto(review)).thenReturn(responseDto);
 
-        ReviewsRespondDto result = reviewService.updateReview(requestDto, review.getId());
+        ReviewsRespondDto result = reviewService.updateReview(requestDto, review.getId(), tour.getId(), user.getId());
 
         assertThat(result).isNotNull();
         assertThat(result.getContent()).isEqualTo(requestDto.getContent());
         assertThat(result.getTourId()).isEqualTo(tour.getId());
 
-        verify(tourRepository).findTourByReviewsId(review.getId());
-        verify(reviewRepository).existsByIdAndTourId(review.getId(), tour.getId());
+        verify(reviewRepository).existsByIdAndTourIdAndUserId(review.getId(), tour.getId(), user.getId());
         verify(reviewRepository).findById(review.getId());
         verify(reviewMapper).updateEntityFromDto(review, requestDto);
         verify(reviewRepository).save(review);
@@ -161,14 +159,15 @@ public class ReviewServiceImplTest {
         requestDto.setContent("Updated review content");
 
         Long reviewId = 1L;
+        Long userId = 1L;
+        Long tourId = -1L;
 
-        when(tourRepository.findTourByReviewsId(reviewId)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> reviewService.updateReview(requestDto, reviewId))
+        assertThatThrownBy(() -> reviewService.updateReview(requestDto, reviewId, tourId, userId))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining("Tour not found with review id: " + reviewId);
+                .hasMessageContaining("Review not found with id " + reviewId
+                        + " and tour id " + tourId);
 
-        verify(reviewRepository, never()).existsByIdAndTourId(anyLong(), anyLong());
+        verify(reviewRepository).existsByIdAndTourIdAndUserId(reviewId, tourId, userId);
         verify(reviewRepository, never()).findById(anyLong());
         verify(reviewMapper, never()).updateEntityFromDto(any(Review.class), any(ReviewRequestDto.class));
         verify(reviewRepository, never()).save(any(Review.class));
@@ -183,16 +182,18 @@ public class ReviewServiceImplTest {
         Tour tour = new Tour();
         tour.setId(1L);
 
-        Long reviewId = 1L;
+        User user = new User();
+        user.setId(1L);
 
-        when(tourRepository.findTourByReviewsId(reviewId)).thenReturn(Optional.of(tour));
-        when(reviewRepository.existsByIdAndTourId(reviewId, tour.getId())).thenReturn(false);
+        Long reviewId = 20L;
 
-        assertThatThrownBy(() -> reviewService.updateReview(requestDto, reviewId))
+        when(reviewRepository.existsByIdAndTourIdAndUserId(reviewId, tour.getId(), user.getId())).thenReturn(false);
+
+        assertThatThrownBy(() -> reviewService.updateReview(requestDto, reviewId, tour.getId(), user.getId()))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Review not found with id " + reviewId + " and tour id " + tour.getId());
 
-        verify(reviewRepository).existsByIdAndTourId(reviewId, tour.getId());
+        verify(reviewRepository).existsByIdAndTourIdAndUserId(reviewId, tour.getId(), user.getId());
         verify(reviewRepository, never()).findById(anyLong());
         verify(reviewMapper, never()).updateEntityFromDto(any(Review.class), any(ReviewRequestDto.class));
         verify(reviewRepository, never()).save(any(Review.class));
@@ -343,38 +344,34 @@ public class ReviewServiceImplTest {
     }
 
     @Test
-    @DisplayName("Delete review by id")
-    public void testDeleteByIdWhenReviewExistsThenReviewIsDeleted() {
+    @DisplayName("Delete review with valid data")
+    public void testDeleteById_SuccessfulDeletion() {
         Long reviewId = 1L;
-        Tour tour = new Tour();
-        tour.setId(1L);
+        Long userId = 1L;
+        Long tourId = 1L;
 
-        when(tourRepository.findTourByReviewsId(reviewId)).thenReturn(Optional.of(tour));
-        when(reviewRepository.existsByIdAndTourId(reviewId, tour.getId())).thenReturn(true);
+        when(reviewRepository.existsByIdAndTourIdAndUserId(reviewId, tourId, userId)).thenReturn(true);
 
-        reviewService.deleteById(reviewId);
+        reviewService.deleteById(reviewId, userId, tourId);
 
-        verify(tourRepository).findTourByReviewsId(reviewId);
-        verify(reviewRepository).existsByIdAndTourId(reviewId, tour.getId());
-        verify(reviewRepository).deleteById(reviewId);
+        verify(reviewRepository, times(1)).deleteById(reviewId);
     }
 
     @Test
-    @DisplayName("Delete review by not valid id")
-    public void testDeleteByIdWhenReviewDoesNotExistThenExceptionIsThrown() {
-        Long reviewId = 1L;
-        Tour tour = new Tour();
-        tour.setId(1L);
+    @DisplayName("Delete when review not exist")
+    public void testDeleteById_ReviewDoesNotExist() {
+        Long reviewId = 2L;
+        Long userId = 2L;
+        Long tourId = 2L;
 
-        when(tourRepository.findTourByReviewsId(reviewId)).thenReturn(Optional.of(tour));
-        when(reviewRepository.existsByIdAndTourId(reviewId, tour.getId())).thenReturn(false);
+        doThrow(new EntityNotFoundException("Review not found"))
+                .when(reviewRepository).existsByIdAndTourIdAndUserId(reviewId, tourId, userId);
 
-        assertThatThrownBy(() -> reviewService.deleteById(reviewId))
-                .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining("Review not found with id " + reviewId + " and tour id " + tour.getId());
 
-        verify(tourRepository).findTourByReviewsId(reviewId);
-        verify(reviewRepository).existsByIdAndTourId(reviewId, tour.getId());
-        verify(reviewRepository, never()).deleteById(reviewId);
+        assertThrows(EntityNotFoundException.class, () -> {
+            reviewService.deleteById(reviewId, userId, tourId);
+        });
+
+        verify(reviewRepository, never()).deleteById(anyLong());
     }
 }

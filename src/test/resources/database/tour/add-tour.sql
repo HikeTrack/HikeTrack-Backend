@@ -1,0 +1,16 @@
+insert into tours (id, name, length, price, date, difficulty, main_photo, country_id, user_id, is_deleted)
+value(1, "Tiger Leaping Gorge", 22000, 350.00, "2025-11-22 08:00:00", "MEDIUM", "img/tours/china/tour-china-00.png", 8, 1, false);
+insert into tours (id, name, length, price, date, difficulty, main_photo, country_id, user_id, is_deleted)
+value(2, "Tiger Leaping Gorge2", 10000, 350.00, "2025-11-22 08:00:00", "MEDIUM", "img/tours/china/tour-china-00.png", 8, 2, false);
+insert into tours (id, name, length, price, date, difficulty, main_photo, country_id, user_id, is_deleted)
+value(3, "Tiger Leaping Gorge3", 10000, 350.00, "2025-11-22 08:00:00", "MEDIUM", "img/tours/china/tour-china-00.png", 8, 1, false);
+insert into tours (id, name, length, price, date, difficulty, main_photo, country_id, user_id, is_deleted)
+value(4, "Tiger Leaping Gorge4", 10000, 350.00, "2025-11-22 08:00:00", "EASY", "img/tours/china/tour-china-00.png", 8, 4, false);
+insert into tours (id, name, length, price, date, difficulty, main_photo, country_id, user_id, is_deleted)
+value(5, "Tiger Leaping Gorge5", 22000, 350.00, "2025-11-22 08:00:00", "MEDIUM", "img/tours/china/tour-china-00.png", 8, 5, false);
+insert into tours (id, name, length, price, date, difficulty, main_photo, country_id, user_id, is_deleted)
+value(6, "Tiger Leaping Gorge6", 10000, 350.00, "2025-11-22 08:00:00", "EASY", "img/tours/china/tour-china-00.png", 8, 6, false);
+insert into tours (id, name, length, price, date, difficulty, main_photo, country_id, user_id, is_deleted)
+value(7, "Tiger Leaping Gorge7", 22000, 350.00, "2025-11-22 08:00:00", "MEDIUM", "img/tours/china/tour-china-00.png", 8, 7, false);
+insert into tours (id, name, length, price, date, difficulty, main_photo, country_id, user_id, is_deleted)
+value(8, "Tiger Leaping Gorge8", 22000, 350.00, "2025-11-22 08:00:00", "EASY", "img/tours/china/tour-china-00.png", 8, 8, false);

@@ -7,7 +7,6 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsA
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
-import com.hiketrackbackend.hiketrackbackend.exception.EntityAlreadyExistException;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.FileIsEmptyException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
@@ -137,12 +136,7 @@ public class TourServiceImpl implements TourService {
                 .toList();
     }
 
-    /*
-        Transactional annotation is used to skip lazy init exception,
-        so we can get reviews the way we needed
-     */
     @Override
-    @Transactional
     public TourRespondDto getById(Long id, int page, int size) {
         Tour tour = findTourByIdWithDetailsAndAdditionalPhotos(id);
         TourRespondDto respondDto = tourMapper.toDto(tour);
@@ -172,6 +166,7 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
+    @Transactional
     public List<TourRespondWithoutDetailsAndReviews> getByRating() {
         return tourRepository
                 .findTopToursWithHighestRatings(Pageable.ofSize(AMOUNT_OF_MOST_RATED_TOURS))
@@ -181,10 +176,11 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
+    @Transactional
     public void deleteTourByIdAndUserId(Long tourId, Long userId) {
         boolean exist = isExistTourById(tourId, userId);
-        if (exist) {
-            throw new EntityAlreadyExistException("Tour with id " + tourId + " already exists");
+        if (!exist) {
+            throw new EntityNotFoundException("Tour with id " + tourId + " not found");
         }
         tourRepository.deleteById(tourId);
     }

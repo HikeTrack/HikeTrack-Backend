@@ -6,11 +6,13 @@ import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserLoginRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserResponseDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
+import com.hiketrackbackend.hiketrackbackend.exception.InvalidTokenException;
 import com.hiketrackbackend.hiketrackbackend.exception.UserNotConfirmedException;
 import com.hiketrackbackend.hiketrackbackend.mapper.UserMapper;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.security.token.impl.ConfirmationTokenService;
+import com.hiketrackbackend.hiketrackbackend.security.token.impl.GoogleLogInTokenService;
 import com.hiketrackbackend.hiketrackbackend.security.token.impl.LogoutTokenService;
 import com.hiketrackbackend.hiketrackbackend.security.token.impl.PasswordResetUserTokenService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
@@ -36,15 +38,16 @@ public class AuthenticationService {
     private final UserMapper userMapper;
     private final UserService userService;
     private final ConfirmationTokenService confirmationTokenService;
+    private final GoogleLogInTokenService googleLogInTokenService;
 
     public UserResponseDto login(UserLoginRequestDto requestDto) {
+        final Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(requestDto.email(), requestDto.password())
+        );
         User user = findUserByEmail(requestDto.email());
         if (!user.isConfirmed()) {
             throw new UserNotConfirmedException("User email is not confirmed");
         }
-        final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(requestDto.email(), requestDto.password())
-        );
         String token = jwtUtil.generateToken(authentication.getName());
         return new UserResponseDto(token);
     }
@@ -86,6 +89,19 @@ public class AuthenticationService {
         userRepository.save(user);
         confirmationTokenService.delete(token);
         return new UserDevMsgRespondDto("User has been confirmed.");
+    }
+
+    @Transactional
+    public UserResponseDto getToken(String uuidToken) {
+        boolean exist = googleLogInTokenService.isKeyExist(uuidToken);
+        if (!exist) {
+            throw new InvalidTokenException("Token is invalid or expired");
+        }
+
+        String email = googleLogInTokenService.getValue(uuidToken);
+        String token = jwtUtil.generateToken(email);
+        googleLogInTokenService.delete(uuidToken);
+        return new UserResponseDto(token);
     }
 
     private User findUserByEmail(String email) {

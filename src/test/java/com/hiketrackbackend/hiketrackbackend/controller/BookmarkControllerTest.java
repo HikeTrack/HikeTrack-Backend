@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class BookmarkControllerTest {
     @Mock
-    private static BookmarkService bookmarkService;
+    protected BookmarkService bookmarkService;
 
     @InjectMocks
     private BookmarkController bookmarkController;

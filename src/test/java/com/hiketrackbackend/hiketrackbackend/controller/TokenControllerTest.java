@@ -1,78 +1,92 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.user.login.UserResponseDto;
-import com.hiketrackbackend.hiketrackbackend.exception.JwtException;
+import com.hiketrackbackend.hiketrackbackend.exception.InvalidTokenException;
+import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
 import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
-import com.hiketrackbackend.hiketrackbackend.security.token.UserTokenService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(TokenController.class)
-@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 public class TokenControllerTest {
-    private static MockMvc mockMvc;
+    @MockBean
+    protected JwtUtil jwtUtil;
 
     @MockBean
-    private static JwtUtil jwtUtil;
+    protected AuthenticationService authenticationService;
 
-    @MockBean
-    private static UserDetailsService userDetailsService;
-
-    @MockBean
-    private static UserTokenService<HttpServletRequest> userTokenService;
-
-    @BeforeAll
-    static void beforeAll(@Autowired WebApplicationContext applicationContext) {
-        mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext)
-                .apply(springSecurity())
-                .build();
-    }
+    @Autowired
+    protected MockMvc mockMvc;
 
     @Test
-    @DisplayName("Refresh JWT token when called with a valid request")
-    @WithMockUser(username = "user1")
-    public void testRefreshJWTTokenWhenCalledWithValidRequestThenReturnsExpectedUserResponseDto() throws Exception {
-        UserResponseDto expectedResponse = new UserResponseDto("newToken");
-        when(jwtUtil.refreshToken(any(HttpServletRequest.class))).thenReturn(expectedResponse);
+    @DisplayName("Refresh JWT Token with a valid token should return new token")
+    @WithMockUser(roles = "USER")
+    public void testRefreshJwtTokenWithValidToken() throws Exception {
+        when(jwtUtil.refreshToken(any(HttpServletRequest.class))).thenReturn(new UserResponseDto("newToken"));
 
-        var result = mockMvc.perform(post("/token")
-                        .with(csrf()))
+        var result = mockMvc.perform(post("/tokens/refresh"))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String actualResponse = result.getResponse().getContentAsString();
-        assertThat(actualResponse).isEqualTo("{\"Token\":\"newToken\"}");
+        String responseBody = result.getResponse().getContentAsString();
+        UserResponseDto responseDto = new ObjectMapper().readValue(responseBody, UserResponseDto.class);
+
+        assertThat(responseDto.Token()).isNotNull();
+        assertThat(responseDto.Token()).isNotEqualTo("validToken");
     }
 
     @Test
     @DisplayName("Refresh JWT token when called with an invalid request")
-    @WithMockUser(username = "user1")
     public void testRefreshJWTTokenWhenCalledWithInvalidRequestThenReturnsUnauthorized() throws Exception {
-        when(jwtUtil.refreshToken(any(HttpServletRequest.class))).thenThrow(new JwtException("Expired or invalid token"));
-
-        mockMvc.perform(post("/token")
-                        .with(csrf()))
+        mockMvc.perform(post("/tokens/refresh"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("Get JWT token with not valid access token")
+    public void getJwtToken_InvalidTokenReturn404() throws Exception {
+        Mockito.when(authenticationService.getToken("invalid_token"))
+                .thenThrow(new InvalidTokenException("Token is invalid or expired"));
+
+        mockMvc.perform(get("/tokens/access_token")
+                        .param("token", "invalid_token"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Get JWT token when access token is null")
+    public void getJwtToken_MissingTokenReturn400() throws Exception {
+        mockMvc.perform(get("/tokens/access_token"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void getJwtToken_Success() throws Exception {
+        UserResponseDto userResponseDto = new UserResponseDto("validJWTToken");
+        Mockito.when(authenticationService.getToken("valid_token")).thenReturn(userResponseDto);
+
+        mockMvc.perform(get("/tokens/access_token")
+                        .param("token", "valid_token"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }

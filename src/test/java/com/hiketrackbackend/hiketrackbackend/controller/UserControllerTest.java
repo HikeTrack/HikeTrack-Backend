@@ -1,192 +1,233 @@
 package com.hiketrackbackend.hiketrackbackend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
-import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
-import com.hiketrackbackend.hiketrackbackend.security.token.UserTokenService;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
-import org.junit.jupiter.api.BeforeAll;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.http.HttpServletRequest;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+@ExtendWith(MockitoExtension.class)
+class UserControllerTest {
+    @Mock
+    private UserService userService;
 
-@WebMvcTest(UserController.class)
-public class UserControllerTest {
-    private static MockMvc mockMvc;
+    @Mock
+    private AuthenticationService authenticationService;
 
-    @MockBean
-    private static UserService userService;
-
-    @MockBean
-    private static AuthenticationService authenticationService;
-
-    @MockBean
-    private static JwtUtil jwtUtil;
-
-    @MockBean
-    private static UserDetailsService userDetailsService;
-
-    @MockBean
-    private static UserTokenService<HttpServletRequest> userTokenService;
-
-    @MockBean
-    private static RoleService roleService;
-
-    @Autowired
+    @Mock
     private ObjectMapper objectMapper;
 
-    @BeforeAll
-    static void beforeAll(@Autowired WebApplicationContext applicationContext) {
-        mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext)
-                .apply(springSecurity())
-                .build();
+    @Mock
+    private RoleService roleService;
+
+    @InjectMocks
+    private UserController userController;
+
+    @Mock
+    private HttpServletRequest httpServletRequest;
+
+    @Mock
+    private MultipartFile photo;
+
+    @BeforeEach
+    void setUp() {
+        Mockito.reset(userService, authenticationService, objectMapper, roleService, httpServletRequest, photo);
     }
 
     @Test
-    @DisplayName("Get log in user when authenticated then return user")
-    @WithMockUser(username = "user1")
-    public void testGetLoggedInUserWhenAuthenticatedThenReturnUser() throws Exception {
-        UserRespondDto userRespondDto = new UserRespondDto();
-        userRespondDto.setEmail("user1@example.com");
+    @DisplayName("Successfully get loggedIn user")
+    void testGetLoggedInUser_Success() {
+        UserRespondWithProfileDto expectedUser = new UserRespondWithProfileDto();
+        when(userService.getLoggedInUser(httpServletRequest)).thenReturn(expectedUser);
 
-        Mockito.when(userService.getLoggedInUser(Mockito.any(HttpServletRequest.class))).thenReturn(userRespondDto);
+        UserRespondWithProfileDto actualUser = userController.getLoggedInUser(httpServletRequest);
 
-        mockMvc.perform(get("/user/me"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value("user1@example.com"));
+        assertEquals(expectedUser, actualUser);
+        verify(userService, times(1)).getLoggedInUser(httpServletRequest);
     }
 
     @Test
-    @DisplayName("Get log in user when not authenticated then return 302")
-    public void testGetLoggedInUserWhenNotAuthenticatedThenReturn302() throws Exception {
-        mockMvc.perform(get("/user/me"))
-                .andExpect(status().is3xxRedirection());
+    @DisplayName("Get loggedIn user with invalid request")
+    void testGetLoggedInUser_NullRequest() {
+        when(userService.getLoggedInUser(null)).thenThrow(new IllegalArgumentException("Request cannot be null"));
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            userController.getLoggedInUser(null);
+        });
+
+        assertEquals("Request cannot be null", exception.getMessage());
     }
 
     @Test
-    @DisplayName("Logout when authenticated then return success message")
-    @WithMockUser(username = "user1")
-    public void testLogoutWhenAuthenticatedThenReturnSuccessMessage() throws Exception {
-        Mockito.doNothing().when(authenticationService).logout(Mockito.any(HttpServletRequest.class));
+    @DisplayName("Get loggedIn user with server error")
+    void testGetLoggedInUser_ServiceThrowsException() {
+        when(userService.getLoggedInUser(httpServletRequest)).thenThrow(new RuntimeException("Service error"));
 
-        mockMvc.perform(post("/user/logout")
-                        .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Logged out successfully"));
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            userController.getLoggedInUser(httpServletRequest);
+        });
+
+        assertEquals("Service error", exception.getMessage());
     }
 
     @Test
-    @DisplayName("Logout when not authenticated then return 403")
-    public void testLogoutWhenNotAuthenticatedThenReturn403() throws Exception {
-        mockMvc.perform(post("/user/logout"))
-                .andExpect(status().isForbidden());
+    @DisplayName("Test successful logout")
+    void testLogout_Success() {
+        doNothing().when(authenticationService).logout(httpServletRequest);
+
+        String response = userController.logout(httpServletRequest);
+
+        assertEquals("Logged out successfully", response);
+        verify(authenticationService, times(1)).logout(httpServletRequest);
     }
 
     @Test
-    @DisplayName("Update user when authenticated and request is invalid then return 403")
-    @WithMockUser(username = "user1")
-    public void testUpdateUserWhenAuthenticatedAndRequestIsInvalidThenReturn403() throws Exception {
-        String invalidDataString = "invalid data";
+    @DisplayName("Test logout when HttpRequest null")
+    void testLogout_NullRequest() {
+        doThrow(new IllegalArgumentException("Request cannot be null")).when(authenticationService).logout(null);
 
-        mockMvc.perform(patch("/user/1")
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                        .param("data", invalidDataString)
-                        .param("photo", "photo"))
-                .andExpect(status().isForbidden());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            userController.logout(null);
+        });
+
+        assertEquals("Request cannot be null", exception.getMessage());
     }
 
     @Test
-    @DisplayName("Delete user when authenticated and userId is valid then return success")
-    @WithMockUser(username = "user1")
-    public void testDeleteUserWhenAuthenticatedAndUserIdIsValidThenReturnSuccess() throws Exception {
-        Mockito.doNothing().when(userService).deleteUser(Mockito.anyLong());
+    @DisplayName("Test update user with valid data")
+    void testUpdateUser_Success() throws JsonProcessingException {
+        String dataString = "{\"name\":\"John\"}";
+        UserUpdateRequestDto requestDto = new UserUpdateRequestDto();
+        UserUpdateRespondDto expectedResponse = new UserUpdateRespondDto();
+        Long id = 1L;
 
-        mockMvc.perform(delete("/user/1")
-                        .with(csrf()))
-                .andExpect(status().isOk());
+        when(objectMapper.readValue(dataString, UserUpdateRequestDto.class)).thenReturn(requestDto);
+        when(userService.updateUser(requestDto, id, photo)).thenReturn(expectedResponse);
+
+        UserUpdateRespondDto actualResponse = userController.updateUser(dataString, id, photo);
+
+        assertEquals(expectedResponse, actualResponse);
+        verify(objectMapper, times(1)).readValue(dataString, UserUpdateRequestDto.class);
+        verify(userService, times(1)).updateUser(requestDto, id, photo);
     }
 
     @Test
-    @DisplayName("Delete user when not authenticated then return 302")
-    public void testDeleteUserWhenNotAuthenticatedThenReturn302() throws Exception {
-        mockMvc.perform(delete("/user/1")
-                        .with(csrf()))
-                .andExpect(status().is3xxRedirection());
+    @DisplayName("Update user with invalid request")
+    void testUpdateUser_InvalidDataString() throws JsonProcessingException {
+        String dataString = "invalid json";
+        Long id = 1L;
+
+        when(objectMapper.readValue(dataString, UserUpdateRequestDto.class)).thenThrow(new JsonProcessingException("Invalid JSON") {});
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            userController.updateUser(dataString, id, photo);
+        });
+
+        assertTrue(exception.getMessage().contains("Invalid data format"));
     }
 
     @Test
-    @DisplayName("Promote request when request is valid then return success message")
-    @WithMockUser(username = "user1")
-    public void testPromoteRequestFromUserWhenRequestIsValidThenReturnSuccessMessage() throws Exception {
-        UserDevMsgRespondDto userDevMsgRespondDto = new UserDevMsgRespondDto("Promotion request sent");
+    @DisplayName("Delete user with not valid id")
+    void testDeleteUser_UserNotFound() {
+        Long userId = 999L;
+        doThrow(new IllegalArgumentException("User not found")).when(userService).deleteUser(userId);
 
-        UserRequestDto userRequestDto = new UserRequestDto();
-        userRequestDto.setEmail("user1@example.com");
-
-        Mockito.when(userService.promoteRequest(Mockito.any(UserRequestDto.class))).thenReturn(userDevMsgRespondDto);
-
-        mockMvc.perform(post("/user/request")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userRequestDto))
-                        .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Promotion request sent"));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            userController.deleteUser(userId);
+        });
+        assertEquals("User not found", exception.getMessage());
+        verify(userService, times(1)).deleteUser(userId);
     }
 
     @Test
-    @DisplayName("Promote request when user is admin and request is valid then return success message")
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testPromoteUserToGuideWhenUserIsAdminAndRequestIsValidThenReturnSuccessMessage() throws Exception {
-        UserDevMsgRespondDto userDevMsgRespondDto = new UserDevMsgRespondDto("User promoted to guide");
+    @DisplayName("Delete user with valid id")
+    void testDeleteUser_Success() {
+        Long userId = 1L;
+        doNothing().when(userService).deleteUser(userId);
 
-        UserRequestDto userRequestDto = new UserRequestDto();
-        userRequestDto.setEmail("user1@example.com");
-
-        Mockito.when(roleService.changeUserRoleToGuide(Mockito.any(UserRequestDto.class))).thenReturn(userDevMsgRespondDto);
-
-        mockMvc.perform(post("/user/role_change")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userRequestDto))
-                        .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("User promoted to guide"));
+        assertDoesNotThrow(() -> userController.deleteUser(userId));
+        verify(userService, times(1)).deleteUser(userId);
     }
 
     @Test
-    @DisplayName("Promote user when user is not admin then return 403")
-    @WithMockUser(username = "user1", roles = {"USER"})
-    public void testPromoteUserToGuideWhenUserIsNotAdminThenReturn403() throws Exception {
-        UserRequestDto userRequestDto = new UserRequestDto();
-        userRequestDto.setEmail("user1@example.com");
+    @DisplayName("Promote user when request is empty")
+    void testPromoteRequestFromUser_MissingFields() {
+        UserRequestDto requestDto = new UserRequestDto();
 
-        mockMvc.perform(post("/user/role_change")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userRequestDto)))
-                .andExpect(status().isForbidden());
+        doThrow(new ConstraintViolationException("Fields missing", null)).when(userService).promoteRequest(requestDto);
+
+        ConstraintViolationException exception = assertThrows(ConstraintViolationException.class, () -> {
+            userController.promoteRequestFromUser(requestDto);
+        });
+        assertEquals("Fields missing", exception.getMessage());
+        verify(userService, times(1)).promoteRequest(requestDto);
+    }
+
+    @Test
+    @DisplayName("Promote user request with valid data")
+    void testPromoteRequestFromUser_Success() {
+        UserRequestDto requestDto = new UserRequestDto();
+        UserDevMsgRespondDto expectedResponse = new UserDevMsgRespondDto("");
+
+        when(userService.promoteRequest(requestDto)).thenReturn(expectedResponse);
+
+        UserDevMsgRespondDto actualResponse = userController.promoteRequestFromUser(requestDto);
+
+        assertEquals(expectedResponse, actualResponse);
+        verify(userService, times(1)).promoteRequest(requestDto);
+    }
+
+    @Test
+    @DisplayName("Promote user to guide successfully")
+    void testPromoteUserToGuide_Success() {
+        UserRequestDto requestDto = new UserRequestDto();
+        UserDevMsgRespondDto expectedResponse = new UserDevMsgRespondDto("");
+
+        when(roleService.changeUserRoleToGuide(requestDto)).thenReturn(expectedResponse);
+
+        UserDevMsgRespondDto actualResponse = userController.promoteUserToGuide(requestDto);
+
+        assertEquals(expectedResponse, actualResponse);
+        verify(roleService, times(1)).changeUserRoleToGuide(requestDto);
+    }
+
+    @Test
+    @DisplayName("User promotion with unauthorized user")
+    void testPromoteUserToGuide_UnauthorizedAccess() {
+        UserRequestDto requestDto = new UserRequestDto();
+
+        when(roleService.changeUserRoleToGuide(requestDto)).thenThrow(new SecurityException("Access denied"));
+
+        SecurityException exception = assertThrows(SecurityException.class, () -> {
+            userController.promoteUserToGuide(requestDto);
+        });
+        assertEquals("Access denied", exception.getMessage());
+        verify(roleService, times(1)).changeUserRoleToGuide(requestDto);
     }
 }

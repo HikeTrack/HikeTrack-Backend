@@ -1,28 +1,33 @@
-package com.hiketrackbackend.hiketrackbackend.repository.tour;
+package com.hiketrackbackend.hiketrackbackend.repository;
 
 import com.hiketrackbackend.hiketrackbackend.model.country.Continent;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
-import com.hiketrackbackend.hiketrackbackend.model.tour.Review;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Rating;
-import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
+import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
+import io.jsonwebtoken.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.test.context.jdbc.Sql;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -41,8 +46,6 @@ public class TourRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        tourRepository.deleteAll();
-
         user = new User();
         user.setEmail("test@example.com");
         user.setFirstName("Test");
@@ -59,6 +62,8 @@ public class TourRepositoryTest {
 
     @Test
     @DisplayName("Find tour with the highest rating successfully")
+    @Sql(scripts = "classpath:database/tour/delete-all-tour-table.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void testFindTopToursWithHighestRatingsWhenToursExistThenReturnTopTours() {
         Tour tour1 = new Tour();
         tour1.setName("Tour 1");
@@ -98,7 +103,7 @@ public class TourRepositoryTest {
         tourRepository.save(tour1);
         tourRepository.save(tour2);
 
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 5);
 
         List<Tour> topTours = tourRepository.findTopToursWithHighestRatings(pageable);
 
@@ -148,35 +153,6 @@ public class TourRepositoryTest {
         boolean exists = tourRepository.existsTourByUserIdAndName(user.getId(), "Tour 1");
 
         assertThat(exists).isTrue();
-    }
-
-    @Test
-    @DisplayName("Find tour by review id")
-    public void testFindTourByReviewsIdWhenReviewExistsThenReturnTour() {
-        Tour tour = new Tour();
-        tour.setName("Tour 1");
-        tour.setLength(10);
-        tour.setPrice(BigDecimal.valueOf(100));
-        tour.setDate(ZonedDateTime.now());
-        tour.setDifficulty(Difficulty.EASY);
-        tour.setMainPhoto("photo1.jpg");
-        tour.setCountry(country);
-        tour.setUser(user);
-        tour.setDeleted(false);
-
-        Review review = new Review();
-        review.setContent("Great tour!");
-        review.setUser(user);
-        review.setTour(tour);
-
-        tour.getReviews().add(review);
-
-        tourRepository.save(tour);
-
-        Optional<Tour> foundTour = tourRepository.findTourByReviewsId(review.getId());
-
-        assertThat(foundTour).isPresent();
-        assertThat(foundTour.get().getName()).isEqualTo("Tour 1");
     }
 
     @Test

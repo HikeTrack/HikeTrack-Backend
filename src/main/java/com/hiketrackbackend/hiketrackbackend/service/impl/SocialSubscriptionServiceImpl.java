@@ -11,6 +11,7 @@ import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class SocialSubscriptionServiceImpl implements SocialSubscriptionService 
     }
 
     @Override
+    @Transactional
     public UserDevMsgRespondDto delete(String email) {
         boolean exists = socialSubscriptionRepository.existsByEmail(email);
         if (!exists) {

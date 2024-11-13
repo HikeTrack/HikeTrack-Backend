@@ -28,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class ReviewRepositoryTest {
-
     @Autowired
     private ReviewRepository reviewRepository;
 
@@ -107,7 +106,7 @@ public class ReviewRepositoryTest {
     @Test
     @DisplayName("Is review exist by id and tour id")
     public void testExistsByIdAndTourIdWhenReviewExistsThenReturnTrue() {
-        boolean exists = reviewRepository.existsByIdAndTourId(review.getId(), tour.getId());
+        boolean exists = reviewRepository.existsByIdAndTourIdAndUserId(review.getId(), tour.getId(), user.getId());
 
         assertThat(exists).isTrue();
     }
@@ -115,7 +114,7 @@ public class ReviewRepositoryTest {
     @Test
     @DisplayName("Is review exist by id and tour id negative result")
     public void testExistsByIdAndTourIdWhenReviewDoesNotExistThenReturnFalse() {
-        boolean exists = reviewRepository.existsByIdAndTourId(-1L, tour.getId());
+        boolean exists = reviewRepository.existsByIdAndTourIdAndUserId(-1L, tour.getId(), user.getId());
 
         assertThat(exists).isFalse();
     }
