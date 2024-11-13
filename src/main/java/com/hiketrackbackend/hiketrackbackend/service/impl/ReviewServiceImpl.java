@@ -78,6 +78,10 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private void isExistReviewByIdAndTourIdAndUserId(Long tourId, Long reviewId, Long userId) {
+        if (tourId == null || reviewId == null || userId == null) {
+            throw new InvalidIdException("Tour id " + tourId + " or user id "
+                    + userId + " or review id " + reviewId + " cannot be null");
+        }
         boolean isExist = reviewRepository.existsByIdAndTourIdAndUserId(reviewId, tourId, userId);
         if (!isExist) {
             throw new EntityNotFoundException("Review not found with id " + reviewId

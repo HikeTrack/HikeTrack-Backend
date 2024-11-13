@@ -1,7 +1,8 @@
-package com.hiketrackbackend.hiketrackbackend.repository.country;
+package com.hiketrackbackend.hiketrackbackend.repository;
 
 import com.hiketrackbackend.hiketrackbackend.model.country.Continent;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
+import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

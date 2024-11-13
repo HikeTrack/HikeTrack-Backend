@@ -49,6 +49,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
@@ -444,14 +445,12 @@ public class TourServiceImplTest {
     @Test
     @DisplayName("Delete tour by not valid id and user valid id")
     public void testDeleteTourByIdAndUserIdWhenTourDoesNotExistThenDeleteTour() {
-        Long tourId = 1L;
+        Long tourId = -1L;
         Long userId = 1L;
 
         when(tourRepository.existsByIdAndUserId(tourId, userId)).thenReturn(false);
 
-        tourService.deleteTourByIdAndUserId(tourId, userId);
-
-        verify(tourRepository, times(1)).deleteById(tourId);
+        assertThrows(EntityNotFoundException.class, () -> tourService.deleteTourByIdAndUserId(tourId, userId));
     }
 
     @Test
@@ -462,7 +461,9 @@ public class TourServiceImplTest {
 
         when(tourRepository.existsByIdAndUserId(tourId, userId)).thenReturn(true);
 
-        assertThrows(EntityAlreadyExistException.class, () -> tourService.deleteTourByIdAndUserId(tourId, userId));
+        tourService.deleteTourByIdAndUserId(tourId, userId);
+
+        verify(tourRepository, times(1)).deleteById(tourId);
     }
 
     @Test

@@ -18,7 +18,6 @@ databaseChangeLog:
                   type: integer
                   constraints:
                     nullable: false
-                    unique: true
               - column:
                   name: user_id
                   type: BIGINT

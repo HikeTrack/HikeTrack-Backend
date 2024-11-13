@@ -2,13 +2,13 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.service.TourDetailsService;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;

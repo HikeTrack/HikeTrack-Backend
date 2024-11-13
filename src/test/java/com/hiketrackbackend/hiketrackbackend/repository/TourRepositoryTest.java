@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.repository.tour;
+package com.hiketrackbackend.hiketrackbackend.repository;
 
 import com.hiketrackbackend.hiketrackbackend.model.country.Continent;
 import com.hiketrackbackend.hiketrackbackend.model.country.Country;
@@ -7,8 +7,8 @@ import com.hiketrackbackend.hiketrackbackend.model.tour.Review;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Rating;
-import com.hiketrackbackend.hiketrackbackend.repository.UserRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
+import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
