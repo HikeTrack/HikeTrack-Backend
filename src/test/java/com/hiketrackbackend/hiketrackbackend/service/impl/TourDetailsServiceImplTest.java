@@ -1,7 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
-import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.details.DetailsRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.exception.MemoryLimitException;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourDetailsMapper;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;

@@ -27,15 +27,14 @@ public class ConfirmationRequestEmailSenderImplTest {
     private static final String TO_EMAIL = "test@example.com";
     private static final String TOKEN = "12345";
     private static final String SUBJECT = "Confirm Your Email Address";
-    private static final String EXPECTED_MESSAGE = "<html>" +
-            "<body>" +
-            "<p>Hello mate,</p>" +
-            "<p>Thank you for signing up! To complete your registration, please confirm your email address by clicking the link below:</p>" +
-            "<p><a href=\"http://example.com/confirm?token=12345\">Confirm your email</a></p>" +
-            "<p>If you did not create an account, you can ignore this email.</p>" +
-            "<p>Thank you,<br>The Hike Track Team</p>" +
-            "</body>" +
-            "</html>";
+    private static final String EXPECTED_MESSAGE = "Hello mate,\n\n"
+            + "Thank you for signing up! To complete your registration, "
+            + "please confirm your email address by clicking the link below:\n\n"
+            + "http://example.com/confirm?token=12345" + "\n\n"
+            + ". If you did not create an account, you can ignore this email.\n\n"
+            + "Best regards,\n"
+            + "Hike Track Team";
+
 
     @BeforeEach
     public void setUp() throws Exception {

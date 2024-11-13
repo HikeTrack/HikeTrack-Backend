@@ -68,13 +68,26 @@ public class Tour {
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
 
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.REMOVE)
+    @OneToMany(
+            mappedBy = "tour",
+            cascade = CascadeType.REMOVE,
+            fetch = FetchType.LAZY
+    )
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToOne(mappedBy = "tour", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(
+            mappedBy = "tour",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
     private TourDetails tourDetails;
 
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "tour",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
     private Set<Bookmark> bookmarks = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

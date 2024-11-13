@@ -10,22 +10,27 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificationExecutor<Tour> {
-    @Query("SELECT t FROM Tour t "
-            + "LEFT JOIN t.ratings r "
-            + "LEFT JOIN t.user u "
-            + "GROUP BY t.id "
-            + "ORDER BY AVG(r.rating) DESC")
+    @Query(value =
+            "SELECT t.*, "
+            + "AVG(r.rating) AS average_rating "
+            + "FROM "
+            + "tours t "
+            + "LEFT JOIN "
+            + "ratings r ON t.id = r.tour_id "
+            + "GROUP BY "
+            + "t.id "
+            + "ORDER BY "
+            + "average_rating DESC",
+            nativeQuery = true)
     List<Tour> findTopToursWithHighestRatings(Pageable pageable);
 
     @Query("SELECT t FROM Tour t "
-            + "LEFT JOIN t.tourDetails td "
-            + "LEFT JOIN t.ratings r "
+            + "LEFT JOIN FETCH t.tourDetails td "
+            + "LEFT JOIN FETCH t.ratings r "
             + "WHERE t.id = :id")
     Optional<Tour> findTourById(Long id);
 
-    boolean existsTourByUserIdAndName(Long userId,String name);
-
-    Optional<Tour> findTourByReviewsId(Long id);
+    boolean existsTourByUserIdAndName(Long userId, String name);
 
     @EntityGraph(attributePaths = "tourDetails")
     Optional<Tour> findTourByIdAndUserId(Long id, Long userId);

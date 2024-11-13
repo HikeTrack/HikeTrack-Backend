@@ -41,12 +41,14 @@ public class ReviewController {
         return reviewService.createReview(requestDto, user, tourId);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
-    @PatchMapping("/{reviewId}")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")
+    @PatchMapping("/{userId}/{reviewId}/{tourId}")
     @Operation(summary = "Update Review", description = "Update an existing review by its ID.")
     public ReviewsRespondDto updateReview(@RequestBody @Valid ReviewRequestDto requestDto,
-                                          @PathVariable @Positive Long reviewId) {
-        return reviewService.updateReview(requestDto, reviewId);
+                                          @PathVariable @Positive Long reviewId,
+                                          @PathVariable @Positive Long tourId,
+                                          @PathVariable @Positive Long userId) {
+        return reviewService.updateReview(requestDto, reviewId, tourId, userId);
     }
 
     @GetMapping("user/{userId}")
@@ -73,10 +75,12 @@ public class ReviewController {
         return reviewService.getAllByTourId(tourId, pageable);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN')")
-    @DeleteMapping("/{reviewId}")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")
+    @DeleteMapping("/{userId}/{reviewId}/{tourId}")
     @Operation(summary = "Delete Review", description = "Delete a review by its ID.")
-    public void deleteReview(@PathVariable @Positive Long reviewId) {
-        reviewService.deleteById(reviewId);
+    public void deleteReview(@PathVariable @Positive Long reviewId,
+                             @PathVariable @Positive Long userId,
+                             @PathVariable @Positive Long tourId) {
+        reviewService.deleteById(reviewId, userId, tourId);
     }
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/rating")
+@RequestMapping("/ratings")
 @Validated
 @RequiredArgsConstructor
 @Tag(name = "Ratings", description = "Operations related to managing user ratings for tours.")

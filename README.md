@@ -38,7 +38,6 @@ Get ready to explore, contribute, and maybe even take HikeTrack for your own adv
    <a href="#-api-documentation">API Documentation</a> &nbsp;&bull;&nbsp;
    <a href="#bulb-downstream-services">Downstream Services</a> &nbsp;&bull;&nbsp;
    <a href="#bulb-upstream-services">Upstream Services</a> &nbsp;&bull;&nbsp;
-   <a href="#bulb-testing">Testing</a> &nbsp;&bull;&nbsp;
    <a href="#bulb-deployment">Deployment</a> &nbsp;&bull;&nbsp;
    <a href="#bulb-contributors">Contributors</a> &nbsp;&bull;&nbsp;
    <a href="#bulb-contacts-and-authors">Contacts and Authors</a> &nbsp;&bull;&nbsp;
@@ -110,6 +109,12 @@ This makes it ideal for applications where users want to find, explore, and shar
 
 <p align="center">
     <img src="docs/structure.png" align="center" height="500" width="1000" />
+</p>
+
+### MySQL Database Structure
+
+<p align="center">
+    <img src="docs/hike_track.png" align="center" height="1500" width="1000" />
 </p>
 
 
@@ -186,10 +191,10 @@ This makes it ideal for applications where users want to find, explore, and shar
 <p>The HikeTrack API documentation is available through Swagger or the live website. You can explore all available endpoints, view request/response formats, and test the API directly from your browser.</p>
 
 <p align="center">
-   <a href="https://your-domain.com/swagger-ui/index.html" style="text-decoration: none;">
+   <a href="http://ec2-54-93-237-212.eu-central-1.compute.amazonaws.com/swagger-ui/index.html#/" style="text-decoration: none;">
       <img src="https://img.shields.io/badge/Swagger-UI-blue?style=for-the-badge" alt="Swagger UI Documentation">
    </a>
-   <a href="https://your-domain.com" style="text-decoration: none;">
+   <a href="https://hiketrack.github.io/hike-track-frontend/?#/" style="text-decoration: none;">
       <img src="https://img.shields.io/badge/Live-Website-green?style=for-the-badge" alt="Live Website">
    </a>
 </p>
@@ -250,26 +255,6 @@ This makes it ideal for applications where users want to find, explore, and shar
 ## :bulb: Upstream Services
 
 - **Frontend**: Client application that interacts with the backend API
-
-![------------------------------------------------](docs/rainbow.png)
-
-## :bulb: Testing
-
-### Dependencies
-
-- **Spring Boot Starter Test**
-- **Testcontainers MySQL**
-
-### Test Flows
-
-- **Unit Tests**: For individual classes and methods
-- **Integration Tests**: For interacting with the database and other services
-- **End-to-End Tests**: For verifying the functionality of the entire application
-
-### Useful to Know
-
-- The project uses Testcontainers to run MySQL and Redis containers for testing.
-- The project uses Mockito for mocking dependencies in unit tests.
 
 ![------------------------------------------------](docs/rainbow.png)
 

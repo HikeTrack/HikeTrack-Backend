@@ -2,296 +2,298 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
-import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
+import com.hiketrackbackend.hiketrackbackend.model.user.Role;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
-import com.hiketrackbackend.hiketrackbackend.security.JwtUtil;
-import com.hiketrackbackend.hiketrackbackend.security.token.UserTokenService;
-import com.hiketrackbackend.hiketrackbackend.service.ReviewService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.hiketrackbackend.hiketrackbackend.model.user.UserProfile;
+import io.jsonwebtoken.io.IOException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Pageable;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ReviewController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ReviewControllerTest {
     private static MockMvc mockMvc;
 
-    @MockBean
-    private static ReviewService reviewService;
-
-    @MockBean
-    private static JwtUtil jwtUtil;
-
-    @MockBean
-    private static UserDetailsService userDetailsService;
-
-    @MockBean
-    private static UserTokenService<HttpServletRequest> userTokenService;
+    @Autowired
+    protected ObjectMapper objectMapper;
 
     @BeforeAll
-    static void beforeAll(@Autowired WebApplicationContext applicationContext) {
+    static void beforeAll(@Autowired WebApplicationContext applicationContext,
+                          @Autowired DataSource dataSource) {
         mockMvc = MockMvcBuilders.webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
+        List<String> scripts = List.of(
+                "database/review/delete-review.sql",
+                "database/tour/delete-all-tour-table.sql"
+        );
+
+        executeSqlScripts(dataSource, scripts);
+        SecurityContextHolder.clearContext();
+    }
+
+    @AfterEach
+    void afterEach(@Autowired DataSource dataSource) {
+        List<String> scripts = List.of(
+                "database/review/delete-review.sql",
+                "database/tour/delete-all-tour-table.sql"
+        );
+
+        executeSqlScripts(dataSource, scripts);
+        SecurityContextHolder.clearContext();
+    }
+
+    @Test
+    @DisplayName("Create review with valid data")
+    @WithMockUser(roles = "USER")
+    @Sql(scripts = "classpath:database/tour/add-tour.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void createReview_shouldCreateReviewSuccessfully() throws Exception {
+        ReviewRequestDto requestDto = new ReviewRequestDto();
+        requestDto.setContent("Great tour!");
+
+        String jsonRequest = objectMapper.writeValueAsString(requestDto);
+        setUserToContext();
+
+        mockMvc.perform(post("/reviews/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").value("Great tour!"));
     }
 
     @Test
     @DisplayName("Create review with invalid request")
-    @WithMockUser(username = "user1")
+    @WithMockUser(roles = "USER")
+    @Sql(scripts = "classpath:database/tour/add-tour.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void testCreateReviewWhenInvalidRequestThenReturnBadRequest() throws Exception {
         ReviewRequestDto requestDto = new ReviewRequestDto();
         requestDto.setContent("");
 
+        setUserToContext();
         mockMvc.perform(post("/reviews/1")
-                        .content(new ObjectMapper().writeValueAsString(requestDto))
+                        .content(objectMapper.writeValueAsString(requestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("Create review without authentication")
-    public void testCreateReviewWhenNotAuthenticatedThenReturnForbidden() throws Exception {
+    @DisplayName("Create review with not authenticated user")
+    public void createReview_shouldFailWithoutAuthentication() throws Exception {
         ReviewRequestDto requestDto = new ReviewRequestDto();
-        requestDto.setContent("Great tour!");
+        requestDto.setContent("Unauthorized review!");
+
+        String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
         mockMvc.perform(post("/reviews/1")
-                        .content(new ObjectMapper().writeValueAsString(requestDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @DisplayName("Successfully create a review when valid data is provided")
-    public void testCreateReviewWithValidData() {
-        ReviewService reviewService = mock(ReviewService.class);
-        ReviewRequestDto requestDto = new ReviewRequestDto();
-        requestDto.setContent("Great tour!");
-        User user = new User();
-        user.setId(1L);
-        Long tourId = 1L;
-
-        ReviewsRespondDto expectedResponse = new ReviewsRespondDto();
-        expectedResponse.setId(1L);
-        expectedResponse.setUserId(user.getId());
-        expectedResponse.setContent(requestDto.getContent());
-        expectedResponse.setTourId(tourId);
-
-        when(reviewService.createReview(requestDto, user, tourId)).thenReturn(expectedResponse);
-
-        ReviewController reviewController = new ReviewController(reviewService);
-        ReviewsRespondDto actualResponse = reviewController.createReview(requestDto, tourId, user);
-
-        assertEquals(expectedResponse.getId(), actualResponse.getId());
-        assertEquals(expectedResponse.getUserId(), actualResponse.getUserId());
-        assertEquals(expectedResponse.getContent(), actualResponse.getContent());
-        assertEquals(expectedResponse.getTourId(), actualResponse.getTourId());
-    }
-
-    @Test
-    @DisplayName("Update review with valid request")
-    @WithMockUser(username = "user1")
-    public void testUpdateReviewWhenValidRequestThenReturnUpdatedReview() throws Exception {
+    @WithMockUser(roles = "USER")
+    @DisplayName("Update review with valid data")
+    @Sql(scripts = "classpath:database/tour/add-tour.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:database/review/add-reviews.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void updateReview_shouldUpdateReviewSuccessfully() throws Exception {
         ReviewRequestDto requestDto = new ReviewRequestDto();
         requestDto.setContent("Updated review content");
 
-        ReviewsRespondDto expectedResponse = new ReviewsRespondDto();
-        expectedResponse.setId(1L);
-        expectedResponse.setUserId(1L);
-        expectedResponse.setContent("Updated review content");
-        expectedResponse.setTourId(1L);
-        expectedResponse.setDateCreated(LocalDateTime.now());
+        String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
-        when(reviewService.updateReview(any(ReviewRequestDto.class), eq(1L))).thenReturn(expectedResponse);
-
-        mockMvc.perform(patch("/reviews/1")
-                        .content(new ObjectMapper().writeValueAsString(requestDto))
+        setUserToContext();
+        mockMvc.perform(patch("/reviews/1/1/1")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest)
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(expectedResponse.getId()))
-                .andExpect(jsonPath("$.userId").value(expectedResponse.getUserId()))
-                .andExpect(jsonPath("$.content").value(expectedResponse.getContent()))
-                .andExpect(jsonPath("$.tourId").value(expectedResponse.getTourId()));
+                .andExpect(jsonPath("$.content").value("Updated review content"));
     }
 
     @Test
-    @DisplayName("Update review with invalid request")
-    @WithMockUser(username = "user1")
-    public void testUpdateReviewWhenInvalidRequestThenThrowException() throws Exception {
+    @WithMockUser(roles = "USER")
+    @DisplayName("Test review with invalid review ID")
+    @Sql(scripts = "classpath:database/tour/add-tour.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:database/review/add-reviews.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void updateReview_shouldFailWithInvalidReviewId() throws Exception {
         ReviewRequestDto requestDto = new ReviewRequestDto();
-        requestDto.setContent("");
+        requestDto.setContent("Invalid ID");
 
-        mockMvc.perform(patch("/reviews/1")
-                        .content(new ObjectMapper().writeValueAsString(requestDto))
+        String jsonRequest = objectMapper.writeValueAsString(requestDto);
+        setUserToContext();
+
+        mockMvc.perform(patch("/reviews/1/-1/1")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest)
                         .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("Update review without authentication")
-    public void testUpdateReviewWhenNotAuthenticatedThenThrowException() throws Exception {
+    @DisplayName("Test review with invalid tour ID")
+    @Sql(scripts = "classpath:database/tour/add-tour.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "classpath:database/review/add-reviews.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void updateReview_shouldFailWithoutAuthentication() throws Exception {
         ReviewRequestDto requestDto = new ReviewRequestDto();
-        requestDto.setContent("Updated review content");
+        requestDto.setContent("Unauthorized update!");
 
-        mockMvc.perform(patch("/reviews/1")
-                        .content(new ObjectMapper().writeValueAsString(requestDto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
+        String jsonRequest = objectMapper.writeValueAsString(requestDto);
+
+        mockMvc.perform(patch("/reviews/1/1/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @DisplayName("Get all reviews by user when user is authorized and request is valid")
-    @WithMockUser(username = "user1")
-    public void testGetAllReviewsByUserWhenUserIsAuthorizedAndRequestIsValidThenReturnReviews() throws Exception {
-        Long userId = 1L;
-        ReviewsRespondDto review1 = new ReviewsRespondDto();
-        review1.setId(1L);
-        review1.setUserId(userId);
-        review1.setContent("Review 1");
-        review1.setTourId(1L);
-        review1.setDateCreated(LocalDateTime.now());
-
-        ReviewsRespondDto review2 = new ReviewsRespondDto();
-        review2.setId(2L);
-        review2.setUserId(userId);
-        review2.setContent("Review 2");
-        review2.setTourId(2L);
-        review2.setDateCreated(LocalDateTime.now());
-
-        List<ReviewsRespondDto> reviews = Arrays.asList(review1, review2);
-
-        when(reviewService.getAllByUserId(eq(userId), any(Pageable.class))).thenReturn(reviews);
-
+    @WithMockUser(roles = "USER")
+    @DisplayName("Get all reviews by user with valid data")
+    public void getAllReviewsByUser_shouldReturnReviews() throws Exception {
+        setUserToContext();
         mockMvc.perform(get("/reviews/user/1")
-                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("page", "0")
+                        .param("size", "10")
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(review1.getId()))
-                .andExpect(jsonPath("$[0].userId").value(review1.getUserId()))
-                .andExpect(jsonPath("$[0].content").value(review1.getContent()))
-                .andExpect(jsonPath("$[0].tourId").value(review1.getTourId()))
-                .andExpect(jsonPath("$[1].id").value(review2.getId()))
-                .andExpect(jsonPath("$[1].userId").value(review2.getUserId()))
-                .andExpect(jsonPath("$[1].content").value(review2.getContent()))
-                .andExpect(jsonPath("$[1].tourId").value(review2.getTourId()));
+                .andExpect(jsonPath("$.length()").isNotEmpty());
     }
 
     @Test
-    @DisplayName("Get all reviews by user when user is not authorized")
-    public void testGetAllReviewsByUserWhenUserIsNotAuthorizedThenReturnRedirection() throws Exception {
-        mockMvc.perform(get("/reviews/user/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is3xxRedirection());
-    }
+    @DisplayName("Get reviews of user which not currently logged in")
+    @WithMockUser(roles = "USER")
+    public void getAllReviewsByUser_shouldFailIfNotUserWhichAreCurrentlyLogin() throws Exception {
+        setUserToContext();
 
-    @Test
-    @DisplayName("Get all reviews by user when userId is invalid")
-    @WithMockUser(username = "user1")
-    public void testGetAllReviewsByUserWhenUserIdIsInvalidThenReturnBadRequest() throws Exception {
-        mockMvc.perform(get("/reviews/user/invalid")
-                        .contentType(MediaType.APPLICATION_JSON)
+        // logged-in user with id 1, but trying to get excess to reviews of other user
+        mockMvc.perform(get("/reviews/user/2")
+                        .param("page", "0")
+                        .param("size", "10")
                         .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("Get all review by tour when called with valid parameters")
-    @WithMockUser(username = "user1")
-    public void testGetAllReviewsByTourWhenCalledWithValidParametersThenReturnListOfReviewsRespondDto() throws Exception {
-        Long tourId = 1L;
-        ReviewsRespondDto review1 = new ReviewsRespondDto();
-        review1.setId(1L);
-        review1.setUserId(1L);
-        review1.setContent("Review 1");
-        review1.setTourId(tourId);
-        review1.setDateCreated(LocalDateTime.now());
+    @DisplayName("Get reviews by not authorized user")
+    public void getAllReviewsByUser_shouldFailWithoutAuthentication() throws Exception {
+        mockMvc.perform(get("/reviews/user/1")
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(status().isUnauthorized());
+    }
 
-        ReviewsRespondDto review2 = new ReviewsRespondDto();
-        review2.setId(2L);
-        review2.setUserId(2L);
-        review2.setContent("Review 2");
-        review2.setTourId(tourId);
-        review2.setDateCreated(LocalDateTime.now());
-
-        List<ReviewsRespondDto> reviews = Arrays.asList(review1, review2);
-
-        when(reviewService.getAllByTourId(eq(tourId), any(Pageable.class))).thenReturn(reviews);
-
+    @Test
+    @DisplayName("Get all reviews by specific tour")
+    public void getAllReviewsByTour_shouldReturnReviews() throws Exception {
         mockMvc.perform(get("/reviews/tour/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf()))
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(review1.getId()))
-                .andExpect(jsonPath("$[0].userId").value(review1.getUserId()))
-                .andExpect(jsonPath("$[0].content").value(review1.getContent()))
-                .andExpect(jsonPath("$[0].tourId").value(review1.getTourId()))
-                .andExpect(jsonPath("$[1].id").value(review2.getId()))
-                .andExpect(jsonPath("$[1].userId").value(review2.getUserId()))
-                .andExpect(jsonPath("$[1].content").value(review2.getContent()))
-                .andExpect(jsonPath("$[1].tourId").value(review2.getTourId()));
+                .andExpect(jsonPath("$.length()").isNotEmpty());
     }
 
     @Test
-    @DisplayName("Get all review by tour when called with an invalid tourId")
-    @WithMockUser(username = "user1")
-    public void testGetAllReviewsByTourWhenCalledWithInvalidTourIdThenReturnBadRequest() throws Exception {
-        mockMvc.perform(get("/reviews/tour/invalid")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf()))
+    @DisplayName("Get reviews by invalid tour ID")
+    public void getAllReviewsByTour_shouldFailWithInvalidTourId() throws Exception {
+        mockMvc.perform(get("/reviews/tour/-1")
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DisplayName("Delete review with valid review ID")
-    @WithMockUser(username = "user1")
-    public void testDeleteReviewWhenReviewIdIsValidThenReviewIsDeleted() throws Exception {
-        Long reviewId = 1L;
-        doNothing().when(reviewService).deleteById(reviewId);
-
-        mockMvc.perform(delete("/reviews/1")
+    @DisplayName("Delete review for current logged in user")
+    @WithMockUser(roles = "USER")
+    @Sql(scripts = "classpath:database/review/add-reviews.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void deleteReview_shouldDeleteReviewSuccessfully() throws Exception {
+        setUserToContext();
+        mockMvc.perform(delete("/reviews/1/1/1")
                         .with(csrf()))
                 .andExpect(status().isOk());
-
-        Mockito.verify(reviewService).deleteById(reviewId);
     }
 
     @Test
-    @DisplayName("Delete review with invalid review ID")
-    @WithMockUser(username = "user1")
-    public void testDeleteReviewWhenReviewIdIsInvalidThenNotFound() throws Exception {
-        Long reviewId = 999L;
-        doThrow(new EntityNotFoundException("Review not found")).when(reviewService).deleteById(reviewId);
+    @DisplayName("Delete review with invalid ID")
+    @WithMockUser(roles = "USER")
+    public void deleteReview_shouldFailWithInvalidReviewId() throws Exception {
+        setUserToContext();
+        mockMvc.perform(delete("/reviews/-1/1/1").with(csrf()))
+                .andExpect(status().isBadRequest());
+    }
 
-        mockMvc.perform(delete("/reviews/999")
-                        .with(csrf()))
-                .andExpect(status().isNotFound());
+    @Test
+    @DisplayName("Delete review with not authorized user")
+    public void deleteReview_shouldFailWithoutAuthentication() throws Exception {
+        mockMvc.perform(delete("/reviews/1/1/1"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    private void setUserToContext() {
+        final User user = new User();
+        user.setId(1L);
+        user.setEmail("test@test.com");
+        user.setPassword("test");
+        user.setUserProfile(new UserProfile());
+        Role role = new Role();
+        role.setId(1L);
+        role.setName(Role.RoleName.ROLE_USER);
+        user.setRoles(Set.of(role));
+        user.setLastName("test");
+        user.setConfirmed(true);
+
+        final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    private static void executeSqlScripts(DataSource dataSource, List<String> scriptPaths) {
+        for (String scriptPath : scriptPaths) {
+            try (Connection connection = dataSource.getConnection()) {
+                connection.setAutoCommit(true);
+                ScriptUtils.executeSqlScript(
+                        connection,
+                        new ClassPathResource(scriptPath)
+                );
+            } catch (SQLException | IOException e) {
+                throw new RuntimeException("Failed to execute script: " + scriptPath, e);
+            }
+        }
     }
 }

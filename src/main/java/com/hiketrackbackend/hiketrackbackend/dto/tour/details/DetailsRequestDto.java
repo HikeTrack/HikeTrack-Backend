@@ -1,4 +1,4 @@
-package com.hiketrackbackend.hiketrackbackend.dto.details;
+package com.hiketrackbackend.hiketrackbackend.dto.tour.details;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.Activity;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.RouteType;
@@ -26,4 +26,7 @@ public class DetailsRequestDto {
 
     @NotNull(message = "Set at least one activity")
     private Activity activity;
+
+    @NotBlank(message = "Tour description is mandatory")
+    private String description;
 }
