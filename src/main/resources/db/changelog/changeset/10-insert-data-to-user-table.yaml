@@ -16,6 +16,18 @@ databaseChangeLog:
                   name: photo
                   value: "img/icons/defaultAvatar.svg"
         - insert:
+            tableName: user_profiles
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: registration_date
+                  value: "2024-10-12"
+              - column:
+                  name: photo
+                  value: "img/icons/defaultAvatar.svg"
+        - insert:
             tableName: users
             columns:
               - column: {name: id, value: 1}
@@ -58,7 +70,7 @@ databaseChangeLog:
         - insert:
             tableName: users
             columns:
-              - column: { name: id, value: 1 }
+              - column: { name: id, value: 2 }
               - column: { name: email, value: "guide@gmail.com" }
               - column: { name: password, value: "$2a$10$8BI2iR6p6NlDFXQ7/dmPdu0v69tchIXTfZrS1jkj4Zi.WXU4Xm8hq" }
               - column: { name: first_name, value: "Vadym" }
