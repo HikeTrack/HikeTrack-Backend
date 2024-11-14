@@ -167,7 +167,7 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<TourRespondWithoutDetailsAndReviews> getByRating() {
         return tourRepository
                 .findTopToursWithHighestRatings(Pageable.ofSize(AMOUNT_OF_MOST_RATED_TOURS))
