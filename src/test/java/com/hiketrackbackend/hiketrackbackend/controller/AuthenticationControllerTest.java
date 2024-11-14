@@ -3,12 +3,13 @@ package com.hiketrackbackend.hiketrackbackend.controller;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
@@ -204,7 +205,7 @@ public class AuthenticationControllerTest {
 
     @Test
     @DisplayName("Handles authentication failure for unconfirmed users")
-    @Sql(scripts = "classpath:database/user/add-users-notconfirmed.sql",
+    @Sql(scripts = "classpath:database/user/add-users-not-confirmed.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void testAuthenticationFailureForUnconfirmedUsers() throws Exception {
         UserLoginRequestDto requestDto = new UserLoginRequestDto("test@test.com", "Random147@");
@@ -344,5 +345,56 @@ public class AuthenticationControllerTest {
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    @DisplayName("Send confirmation for email successfully")
+    @Sql(scripts = "classpath:database/user/add-users-not-confirmed.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void emailRepeatConfirmation_shouldSendConfirmEmail() {
+        String email = "test@test.com";
+
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                "/auth/repeat_confirmation?email=" + email,
+                null,
+                String.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    @DisplayName("Do not send confirm email to user once hes already confirmed")
+    @Sql(scripts = "classpath:database/user/add-user.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void emailRepeatConfirmation_shouldDoNotSendConfirmEmailWhenUserAlreadyConfirmed() throws JsonProcessingException {
+        String email = "test@test.com";
+
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                "/auth/repeat_confirmation?email=" + email,
+                null,
+                String.class
+        );
+
+        UserDevMsgRespondDto responseBody = objectMapper.readValue(response.getBody(), UserDevMsgRespondDto.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseBody.message()).isEqualTo("User already confirmed");
+    }
+
+    @Test
+    @DisplayName("Do not send confirm email to user once hes already confirmed")
+    @Sql(scripts = "classpath:database/user/add-user.sql",
+            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    public void emailRepeatConfirmation_notValidEmailReturn400() {
+        String email = "invalidEmail";
+
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                "/auth/repeat_confirmation?email=" + email,
+                null,
+                String.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
