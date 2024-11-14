@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class RoleRepositoryTest {
-
     @Autowired
     private RoleRepository roleRepository;
 

@@ -14,7 +14,6 @@ import lombok.Setter;
         repeatPassword = "repeatPassword",
         message = "Passwords do not match")
 public class UserRegistrationRequestDto {
-
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is mandatory")
     private String email;

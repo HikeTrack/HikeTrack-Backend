@@ -50,8 +50,8 @@ public class TokenControllerTest {
         String responseBody = result.getResponse().getContentAsString();
         UserResponseDto responseDto = new ObjectMapper().readValue(responseBody, UserResponseDto.class);
 
-        assertThat(responseDto.Token()).isNotNull();
-        assertThat(responseDto.Token()).isNotEqualTo("validToken");
+        assertThat(responseDto.token()).isNotNull();
+        assertThat(responseDto.token()).isNotEqualTo("validToken");
     }
 
     @Test

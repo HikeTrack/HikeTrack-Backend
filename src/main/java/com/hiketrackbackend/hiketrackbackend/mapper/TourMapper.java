@@ -4,6 +4,7 @@ import com.hiketrackbackend.hiketrackbackend.config.MapperConfig;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviewsAndRating;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Rating;
@@ -27,6 +28,12 @@ public interface TourMapper {
     @Mapping(target = "countryId", source = "country.id")
     @Mapping(target = "guideId", source = "user.id")
     TourRespondWithoutDetailsAndReviews toDtoWithoutDetailsAndReviews(Tour tour);
+
+    @Mapping(target = "countryId", source = "country.id")
+    @Mapping(target = "guideId", source = "user.id")
+    TourRespondWithoutDetailsAndReviewsAndRating toDtoWithoutDetailsAndReviewsAndRating(
+            Tour tour
+    );
 
     @Mapping(source = "tourDetails", target = "details")
     @Mapping(target = "countryId", source = "country.id")

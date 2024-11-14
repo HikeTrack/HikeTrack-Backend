@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserProfileRequestDto {
-
     @Size(min = 1, max = 20, message = "Country name must be between 1 and 20 characters")
     private String country;
 

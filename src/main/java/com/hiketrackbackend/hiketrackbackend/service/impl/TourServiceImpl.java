@@ -4,6 +4,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviewsAndRating;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
@@ -118,10 +119,10 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourRespondWithoutDetailsAndReviews> getAll(Pageable pageable) {
+    public List<TourRespondWithoutDetailsAndReviewsAndRating> getAll(Pageable pageable) {
         return tourRepository.findAll(pageable)
                 .stream()
-                .map(tourMapper::toDtoWithoutDetailsAndReviews)
+                .map(tourMapper::toDtoWithoutDetailsAndReviewsAndRating)
                 .toList();
     }
 
@@ -154,14 +155,14 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourRespondWithoutDetailsAndReviews> search(
+    public List<TourRespondWithoutDetailsAndReviewsAndRating> search(
             TourSearchParameters params,
             Pageable pageable
     ) {
         Specification<Tour> tourSpecification = tourSpecificationBuilder.build(params);
         return tourRepository.findAll(tourSpecification, pageable)
                 .stream()
-                .map(tourMapper::toDtoWithoutDetailsAndReviews)
+                .map(tourMapper::toDtoWithoutDetailsAndReviewsAndRating)
                 .toList();
     }
 

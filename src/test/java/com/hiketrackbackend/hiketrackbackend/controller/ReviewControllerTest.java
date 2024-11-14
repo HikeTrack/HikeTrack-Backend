@@ -136,7 +136,7 @@ public class ReviewControllerTest {
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
         setUserToContext();
-        mockMvc.perform(patch("/reviews/1/1/1")
+        mockMvc.perform(patch("/reviews/{userId}/{reviewId}/{tourId}", 1, 1, 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest)
                         .with(csrf()))
@@ -158,7 +158,7 @@ public class ReviewControllerTest {
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         setUserToContext();
 
-        mockMvc.perform(patch("/reviews/1/-1/1")
+        mockMvc.perform(patch("/reviews/{userId}/{reviewId}/{tourId}", 1, -1, 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest)
                         .with(csrf()))
@@ -177,7 +177,7 @@ public class ReviewControllerTest {
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
-        mockMvc.perform(patch("/reviews/1/1/1")
+        mockMvc.perform(patch("/reviews/{userId}/{reviewId}/{tourId}", 1, 1, 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isUnauthorized());
@@ -207,7 +207,7 @@ public class ReviewControllerTest {
                         .param("page", "0")
                         .param("size", "10")
                         .with(csrf()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -245,7 +245,7 @@ public class ReviewControllerTest {
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void deleteReview_shouldDeleteReviewSuccessfully() throws Exception {
         setUserToContext();
-        mockMvc.perform(delete("/reviews/1/1/1")
+        mockMvc.perform(delete("/reviews/{userId}/{reviewId}/{tourId}", 1, 1, 1)
                         .with(csrf()))
                 .andExpect(status().isOk());
     }
@@ -255,14 +255,15 @@ public class ReviewControllerTest {
     @WithMockUser(roles = "USER")
     public void deleteReview_shouldFailWithInvalidReviewId() throws Exception {
         setUserToContext();
-        mockMvc.perform(delete("/reviews/-1/1/1").with(csrf()))
+        mockMvc.perform(delete("/reviews/{userId}/{reviewId}/{tourId}", 1, -1, 1)
+                        .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("Delete review with not authorized user")
     public void deleteReview_shouldFailWithoutAuthentication() throws Exception {
-        mockMvc.perform(delete("/reviews/1/1/1"))
+        mockMvc.perform(delete("/reviews/{userId}/{reviewId}/{tourId}",1, 1, 1))
                 .andExpect(status().isUnauthorized());
     }
 

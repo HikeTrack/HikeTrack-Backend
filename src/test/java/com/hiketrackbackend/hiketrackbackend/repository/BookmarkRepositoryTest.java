@@ -82,7 +82,9 @@ public class BookmarkRepositoryTest {
         bookmark.setTour(tour);
         bookmark.setAddedAt(LocalDateTime.now());
 
-        bookmarkId = new BookmarkId(user.getId(), tour.getId());
+        bookmarkId = new BookmarkId();
+        bookmarkId.setTourId(tour.getId());
+        bookmarkId.setUserId(user.getId());
         bookmark.setId(bookmarkId);
     }
 

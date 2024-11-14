@@ -53,7 +53,9 @@ public class BookmarkServiceImplTest {
         User user = new User();
         user.setId(1L);
 
-        BookmarkId bookmarkId = new BookmarkId(user.getId(), requestDto.getTourId());
+        BookmarkId bookmarkId = new BookmarkId();
+        bookmarkId.setTourId(requestDto.getTourId());
+        bookmarkId.setUserId(user.getId());
 
         when(bookmarkRepository.existsById(bookmarkId)).thenReturn(false);
 
@@ -92,7 +94,9 @@ public class BookmarkServiceImplTest {
         User user = new User();
         user.setId(1L);
 
-        BookmarkId bookmarkId = new BookmarkId(user.getId(), requestDto.getTourId());
+        BookmarkId bookmarkId = new BookmarkId();
+        bookmarkId.setTourId(requestDto.getTourId());
+        bookmarkId.setUserId(user.getId());
 
         when(bookmarkRepository.existsById(bookmarkId)).thenReturn(true);
 
@@ -110,7 +114,9 @@ public class BookmarkServiceImplTest {
         User user = new User();
         user.setId(1L);
 
-        BookmarkId bookmarkId = new BookmarkId(user.getId(), requestDto.getTourId());
+        BookmarkId bookmarkId = new BookmarkId();
+        bookmarkId.setTourId(requestDto.getTourId());
+        bookmarkId.setUserId(user.getId());
 
         when(bookmarkRepository.existsById(bookmarkId)).thenReturn(false);
         when(tourRepository.findById(requestDto.getTourId())).thenReturn(Optional.empty());
@@ -126,7 +132,10 @@ public class BookmarkServiceImplTest {
         Long userId = 1L;
         Set<Bookmark> bookmarks = new HashSet<>();
         Bookmark bookmark = new Bookmark();
-        bookmark.setId(new BookmarkId(userId, 1L));
+        BookmarkId bookmarkId = new BookmarkId();
+        bookmarkId.setTourId(1L);
+        bookmarkId.setUserId(userId);
+        bookmark.setId(bookmarkId);
         bookmarks.add(bookmark);
 
         when(bookmarkRepository.findByUser_Id(userId)).thenReturn(bookmarks);
@@ -171,7 +180,9 @@ public class BookmarkServiceImplTest {
     public void testDeleteBookmarkByIdWhenBookmarkExistsThenDeleteBookmark() {
         Long userId = 1L;
         Long tourId = 1L;
-        BookmarkId bookmarkId = new BookmarkId(userId, tourId);
+        BookmarkId bookmarkId = new BookmarkId();
+        bookmarkId.setTourId(tourId);
+        bookmarkId.setUserId(userId);
 
         Bookmark bookmark = new Bookmark();
         bookmark.setId(bookmarkId);
@@ -188,7 +199,9 @@ public class BookmarkServiceImplTest {
     public void testDeleteBookmarkByIdWhenBookmarkDoesNotExistThenThrowEntityNotFoundException() {
         Long userId = 1L;
         Long tourId = 1L;
-        BookmarkId bookmarkId = new BookmarkId(userId, tourId);
+        BookmarkId bookmarkId = new BookmarkId();
+        bookmarkId.setTourId(tourId);
+        bookmarkId.setUserId(userId);
 
         when(bookmarkRepository.findById(bookmarkId)).thenReturn(Optional.empty());
 
