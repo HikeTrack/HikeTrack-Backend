@@ -14,7 +14,6 @@ import lombok.Setter;
         message = "Passwords do not match"
 )
 public class UserUpdatePasswordRequestDto {
-
     @NotBlank(message = "Password is mandatory")
     @Password(message = "Password must meet complexity requirements")
     private String password;

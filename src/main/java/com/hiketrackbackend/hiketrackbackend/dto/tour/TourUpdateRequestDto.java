@@ -13,7 +13,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TourUpdateRequestDto {
-
     @NotBlank(message = "Tour name is mandatory and cannot be empty")
     private String name;
 

@@ -107,7 +107,7 @@ public class AuthenticationServiceTest {
 
         UserResponseDto responseDto = authenticationService.login(requestDto);
 
-        assertEquals(token, responseDto.Token());
+        assertEquals(token, responseDto.token());
     }
 
     @Test
