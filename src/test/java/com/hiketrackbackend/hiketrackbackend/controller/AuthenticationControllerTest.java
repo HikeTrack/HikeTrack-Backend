@@ -224,7 +224,7 @@ public class AuthenticationControllerTest {
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void login_shouldFailWithInvalidPassword() {
         UserLoginRequestDto loginRequestDto
-                = new UserLoginRequestDto("test@test.com", "IncorectPass147@");
+                = new UserLoginRequestDto("test@test.com", "IncorrectPass147@");
 
         ResponseEntity<String> response = restTemplate.postForEntity(
                 "/auth/login",
@@ -232,7 +232,7 @@ public class AuthenticationControllerTest {
                 String.class
         );
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test

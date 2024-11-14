@@ -1,14 +1,9 @@
 
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
+import com.hiketrackbackend.hiketrackbackend.dto.tour.*;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityAlreadyExistException;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
@@ -266,9 +261,9 @@ public class TourServiceImplTest {
         List<Tour> tours = List.of(tour);
         Pageable pageable = PageRequest.of(0, 10);
         when(tourRepository.findAll(pageable)).thenReturn(new PageImpl<>(tours));
-        when(tourMapper.toDtoWithoutDetailsAndReviews(any(Tour.class))).thenReturn(new TourRespondWithoutDetailsAndReviews());
+        when(tourMapper.toDtoWithoutDetailsAndReviewsAndRating(any(Tour.class))).thenReturn(new TourRespondWithoutDetailsAndReviewsAndRating());
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAll(pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAll(pageable);
 
         assertThat(result).isNotEmpty();
         assertThat(result.size()).isEqualTo(tours.size());
@@ -281,7 +276,7 @@ public class TourServiceImplTest {
         Pageable pageable = PageRequest.of(0, 10);
         when(tourRepository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAll(pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAll(pageable);
 
         assertThat(result).isEmpty();
         verify(tourRepository, times(1)).findAll(pageable);
@@ -349,9 +344,9 @@ public class TourServiceImplTest {
 
         when(tourSpecificationBuilder.build(params)).thenReturn(specification);
         when(tourRepository.findAll(specification, pageable)).thenReturn(new PageImpl<>(tours));
-        when(tourMapper.toDtoWithoutDetailsAndReviews(any(Tour.class))).thenReturn(new TourRespondWithoutDetailsAndReviews());
+        when(tourMapper.toDtoWithoutDetailsAndReviewsAndRating(any(Tour.class))).thenReturn(new TourRespondWithoutDetailsAndReviewsAndRating());
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.search(params, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.search(params, pageable);
 
         assertThat(result).isNotEmpty();
         assertThat(result.size()).isEqualTo(tours.size());
@@ -377,7 +372,7 @@ public class TourServiceImplTest {
         when(tourSpecificationBuilder.build(params)).thenReturn(specification);
         when(tourRepository.findAll(specification, pageable)).thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.search(params, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.search(params, pageable);
 
         assertThat(result).isEmpty();
         verify(tourRepository, times(1)).findAll(specification, pageable);

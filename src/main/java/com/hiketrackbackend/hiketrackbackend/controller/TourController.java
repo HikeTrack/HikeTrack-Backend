@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviewsAndRating;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
@@ -142,7 +143,7 @@ public class TourController {
 
     @GetMapping
     @Operation(summary = "Get all tours", description = "Retrieve a paginated list of all tours.")
-    public List<TourRespondWithoutDetailsAndReviews> getAllTours(
+    public List<TourRespondWithoutDetailsAndReviewsAndRating> getAllTours(
             @ParameterObject @PageableDefault Pageable pageable
     ) {
         return tourService.getAll(pageable);
@@ -153,7 +154,7 @@ public class TourController {
             summary = "Search tours",
             description = "Search for tours based on various parameters."
     )
-    public List<TourRespondWithoutDetailsAndReviews> searchTours(
+    public List<TourRespondWithoutDetailsAndReviewsAndRating> searchTours(
             @Valid TourSearchParameters params,
             @ParameterObject @PageableDefault Pageable pageable
     ) {

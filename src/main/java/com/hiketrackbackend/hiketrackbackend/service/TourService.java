@@ -3,6 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.service;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviews;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsAndReviewsAndRating;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
@@ -23,13 +24,13 @@ public interface TourService {
 
     TourRespondWithoutReviews updateTourPhoto(MultipartFile mainPhoto, Long userId, Long tourId);
 
-    List<TourRespondWithoutDetailsAndReviews> getAll(Pageable pageable);
+    List<TourRespondWithoutDetailsAndReviewsAndRating> getAll(Pageable pageable);
 
     TourRespondDto getById(Long id, int page, int size);
 
     List<TourRespondWithoutDetailsAndReviews> getByRating();
 
-    List<TourRespondWithoutDetailsAndReviews> search(
+    List<TourRespondWithoutDetailsAndReviewsAndRating> search(
             TourSearchParameters params,
             Pageable pageable
     );

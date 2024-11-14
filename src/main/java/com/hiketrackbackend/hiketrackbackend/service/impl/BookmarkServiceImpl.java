@@ -26,7 +26,9 @@ public class BookmarkServiceImpl implements BookmarkService {
 
     @Override
     public BookmarkRespondDto addToBookmarks(BookmarkRequestDto requestDto, User user) {
-        BookmarkId bookmarkId = new BookmarkId(user.getId(), requestDto.getTourId());
+        BookmarkId bookmarkId = new BookmarkId();
+        bookmarkId.setUserId(user.getId());
+        bookmarkId.setTourId(requestDto.getTourId());
         isExistBookmark(bookmarkId);
         Bookmark bookmark = new Bookmark();
         bookmark.setUser(user);
@@ -45,7 +47,9 @@ public class BookmarkServiceImpl implements BookmarkService {
 
     @Override
     public void deleteBookmarkById(Long tourId, Long userId) {
-        BookmarkId bookmarkId = new BookmarkId(userId, tourId);
+        BookmarkId bookmarkId = new BookmarkId();
+        bookmarkId.setUserId(userId);
+        bookmarkId.setTourId(tourId);
         Bookmark bookmark = bookmarkRepository.findById(bookmarkId).orElseThrow(
                 () -> new EntityNotFoundException("Bookmark with id " + bookmarkId + " not found"));
         bookmarkRepository.delete(bookmark);

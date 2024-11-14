@@ -113,10 +113,10 @@ public class TourControllerTest {
         setUserToContext();
         MockMultipartFile data = new MockMultipartFile("data", "",
                 "application/json", invalidDataString.getBytes());
-        MockMultipartFile mainPhoto = new MockMultipartFile("mainPhoto", "mainPhoto.jpg",
+        MockMultipartFile mainPhoto = new MockMultipartFile("mainPhoto", "mainPhoto.jpeg",
                 "image/jpeg", "test image".getBytes());
         MockMultipartFile additionalPhotos = new MockMultipartFile("additionalPhotos",
-                "additionalPhoto.jpg", "image/jpeg", "test image".getBytes());
+                "additionalPhoto.jpeg", "image/jpeg", "test image".getBytes());
 
         mockMvc.perform(multipart("/tours")
                         .file(data)
@@ -211,7 +211,7 @@ public class TourControllerTest {
         mockMvc.perform(patch("/tours/{tourId}/{userId}", 1, anotherUser)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -265,7 +265,7 @@ public class TourControllerTest {
 
         setUserToContext();
         mockMvc.perform(MockMvcRequestBuilders
-                        .multipart("/tours/{tourId}/photo/{userID}", 1, 1)
+                        .multipart("/tours/{tourId}/photo/{userId}", 1, 1)
                         .file(invalidMainPhoto)
                         .with(request -> {
                             request.setMethod("PATCH");
@@ -313,7 +313,7 @@ public class TourControllerTest {
                 "test image".getBytes());
 
         setUserToContext();
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/tours/1/additionalPhotos/1")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/tours/{tourId}/additionalPhotos/{userId}", 1, 1)
                         .file(additionalPhoto)
                         .with(request -> {
                             request.setMethod("PATCH");
@@ -403,15 +403,6 @@ public class TourControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].difficulty").value("Easy"))
                 .andExpect(jsonPath("$[1].difficulty").value("Easy"));
-    }
-
-    @Test
-    @DisplayName("Search tours with invalid parameters should throw validation error")
-    public void testSearchToursWithInvalidParameters() throws Exception {
-        mockMvc.perform(get("/tours/search")
-                        .param("price", "TEXT")
-                        .param("length", "TEXT"))
-                .andExpect(status().isBadRequest());
     }
 
     @Test

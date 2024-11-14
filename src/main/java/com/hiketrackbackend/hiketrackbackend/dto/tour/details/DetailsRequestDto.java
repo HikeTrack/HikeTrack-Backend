@@ -11,7 +11,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DetailsRequestDto {
-
     @Positive(message = "Elevation gain must be positive")
     private Integer elevationGain;
 

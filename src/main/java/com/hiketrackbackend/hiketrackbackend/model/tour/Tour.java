@@ -54,7 +54,7 @@ public class Tour {
     @Column(nullable = false)
     private ZonedDateTime date;
 
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "tour", fetch = FetchType.LAZY)
     private List<Rating> ratings = new ArrayList<>();
 
     @Column(nullable = false)
