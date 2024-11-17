@@ -9,53 +9,74 @@ databaseChangeLog:
               - column: {name: id, value: 1}
               - column: {name: name, value: "Ukraine"}
               - column: {name: continent, value: "EUROPE"}
-              - column: {name: photo, value: "img/country/small-ukraine.png"}
+              - column: {name: photo, value: ""}
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 2}
               - column: { name: name, value: "Indonesia" }
-              - column: {name: photo, value: "img/country/small-indonesia.png"}
+              - column: {name: photo, value: ""}
               - column: { name: continent, value: "ASIA" }
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 3}
               - column: { name: name, value: "India" }
-              - column: {name: photo, value: "img/country/small-india.png"}
+              - column: {name: photo, value: ""}
               - column: { name: continent, value: "ASIA" }
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 4}
               - column: { name: name, value: "Italy" }
-              - column: {name: photo, value: "img/country/small-italy.png"}
+              - column: {name: photo, value: ""}
               - column: { name: continent, value: "EUROPE" }
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 5}
               - column: { name: name, value: "Turkey" }
-              - column: {name: photo, value: "img/country/small-turkey.png"}
+              - column: {name: photo, value: ""}
               - column: { name: continent, value: "EUROPE" }
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 6}
               - column: { name: name, value: "Canada" }
-              - column: {name: photo, value: "img/country/small-canada.png"}
+              - column: {name: photo, value: ""}
               - column: { name: continent, value: "NORTH_AMERICA" }
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 7}
               - column: { name: name, value: "Nepal" }
-              - column: {name: photo, value: "img/country/small-nepal.png"}
+              - column: {name: photo, value: ""}
               - column: { name: continent, value: "ASIA" }
         - insert:
             tableName: countries
             columns:
               - column: {name: id, value: 8}
               - column: { name: name, value: "China" }
-              - column: { name: photo, value: "img/country/small-china.png" }
+              - column: { name: photo, value: "" }
+              - column: { name: continent, value: "ASIA" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: id, value: 8 }
+              - column: { name: name, value: "China" }
+              - column: { name: photo, value: "" }
+              - column: { name: continent, value: "ASIA" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: id, value: 8 }
+              - column: { name: name, value: "China" }
+              - column: { name: photo, value: "" }
+              - column: { name: continent, value: "ASIA" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: id, value: 8 }
+              - column: { name: name, value: "China" }
+              - column: { name: photo, value: "" }
               - column: { name: continent, value: "ASIA" }
