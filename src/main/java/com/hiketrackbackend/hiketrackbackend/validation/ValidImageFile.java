@@ -13,7 +13,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE_USE, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidImageFile {
-    String message() default "Invalid image file";
+    String message() default "Invalid image file, "
+            + "image size must be maximum 5mb and 365x420, "
+            + "file type png or jpg or jpeg";
 
     Class<?>[] groups() default {};
 

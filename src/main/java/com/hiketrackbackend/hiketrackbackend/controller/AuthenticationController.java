@@ -80,8 +80,8 @@ public class AuthenticationController {
     }
 
     @Operation(
-            summary = "Email Confirmation",
-            description = "Confirm the user's email using the provided token."
+            summary = "Resend Email Confirmation",
+            description = "Resend confirmation to the user's email"
     )
     @PostMapping("/repeat_confirmation")
     public UserDevMsgRespondDto repeatEmailConfirmation(

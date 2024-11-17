@@ -383,61 +383,61 @@ public class CountryControllerTest {
 
         CountryRespondWithPhotoDto countryRespondWithPhotoDto = new CountryRespondWithPhotoDto();
         countryRespondWithPhotoDto.setId(1L);
-        countryRespondWithPhotoDto.setPhotoUrl("photo1.jpg");
+        countryRespondWithPhotoDto.setPhoto("photo1.jpg");
         countryRespondWithPhotoDto.setContinent(Continent.ASIA);
         expectedCountries.add(countryRespondWithPhotoDto);
 
         CountryRespondWithPhotoDto countryRespondWithPhotoDto2 = new CountryRespondWithPhotoDto();
         countryRespondWithPhotoDto.setId(2L);
-        countryRespondWithPhotoDto.setPhotoUrl("photo2.jpg");
+        countryRespondWithPhotoDto.setPhoto("photo2.jpg");
         countryRespondWithPhotoDto.setContinent(Continent.EUROPE);
         expectedCountries.add(countryRespondWithPhotoDto2);
 
         CountryRespondWithPhotoDto countryRespondWithPhotoDto3 = new CountryRespondWithPhotoDto();
         countryRespondWithPhotoDto.setId(3L);
-        countryRespondWithPhotoDto.setPhotoUrl("photo3.jpg");
+        countryRespondWithPhotoDto.setPhoto("photo3.jpg");
         countryRespondWithPhotoDto.setContinent(Continent.AFRICA);
         expectedCountries.add(countryRespondWithPhotoDto3);
 
         CountryRespondWithPhotoDto countryRespondWithPhotoDto4 = new CountryRespondWithPhotoDto();
         countryRespondWithPhotoDto.setId(4L);
-        countryRespondWithPhotoDto.setPhotoUrl("photo4.jpg");
+        countryRespondWithPhotoDto.setPhoto("photo4.jpg");
         countryRespondWithPhotoDto.setContinent(Continent.AUSTRALIA);
         expectedCountries.add(countryRespondWithPhotoDto4);
 
         CountryRespondWithPhotoDto countryRespondWithPhotoDto5 = new CountryRespondWithPhotoDto();
         countryRespondWithPhotoDto.setId(5L);
-        countryRespondWithPhotoDto.setPhotoUrl("photo5.jpg");
+        countryRespondWithPhotoDto.setPhoto("photo5.jpg");
         countryRespondWithPhotoDto.setContinent(Continent.ASIA);
         expectedCountries.add(countryRespondWithPhotoDto5);
 
         CountryRespondWithPhotoDto countryRespondWithPhotoDto6 = new CountryRespondWithPhotoDto();
         countryRespondWithPhotoDto.setId(6L);
-        countryRespondWithPhotoDto.setPhotoUrl("photo6.jpg");
+        countryRespondWithPhotoDto.setPhoto("photo6.jpg");
         countryRespondWithPhotoDto.setContinent(Continent.NORTH_AMERICA);
         expectedCountries.add(countryRespondWithPhotoDto6);
 
         CountryRespondWithPhotoDto countryRespondWithPhotoDto7 = new CountryRespondWithPhotoDto();
         countryRespondWithPhotoDto.setId(7L);
-        countryRespondWithPhotoDto.setPhotoUrl("photo7.jpg");
+        countryRespondWithPhotoDto.setPhoto("photo7.jpg");
         countryRespondWithPhotoDto.setContinent(Continent.ASIA);
         expectedCountries.add(countryRespondWithPhotoDto7);
 
         CountryRespondWithPhotoDto countryRespondWithPhotoDto8 = new CountryRespondWithPhotoDto();
         countryRespondWithPhotoDto.setId(8L);
-        countryRespondWithPhotoDto.setPhotoUrl("photo8.jpg");
+        countryRespondWithPhotoDto.setPhoto("photo8.jpg");
         countryRespondWithPhotoDto.setContinent(Continent.SOUTH_AMERICA);
         expectedCountries.add(countryRespondWithPhotoDto8);
 
         CountryRespondWithPhotoDto countryRespondWithPhotoDto9 = new CountryRespondWithPhotoDto();
         countryRespondWithPhotoDto.setId(9L);
-        countryRespondWithPhotoDto.setPhotoUrl("photo9.jpg");
+        countryRespondWithPhotoDto.setPhoto("photo9.jpg");
         countryRespondWithPhotoDto.setContinent(Continent.SOUTH_AMERICA);
         expectedCountries.add(countryRespondWithPhotoDto9);
 
         CountryRespondWithPhotoDto countryRespondWithPhotoDto10 = new CountryRespondWithPhotoDto();
         countryRespondWithPhotoDto.setId(10L);
-        countryRespondWithPhotoDto.setPhotoUrl("photo10.jpg");
+        countryRespondWithPhotoDto.setPhoto("photo10.jpg");
         countryRespondWithPhotoDto.setContinent(Continent.EUROPE);
         expectedCountries.add(countryRespondWithPhotoDto10);
 
