@@ -2,12 +2,14 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 
 import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.details.file.TourDetailFileRespondDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.exception.MemoryLimitException;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourDetailsMapper;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetailsFile;
+import com.hiketrackbackend.hiketrackbackend.repository.TourDetailsFileRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import com.hiketrackbackend.hiketrackbackend.service.TourDetailsService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
@@ -26,6 +28,7 @@ public class TourDetailsServiceImpl implements TourDetailsService {
     private final FileStorageService s3Service;
     private final TourDetailsMapper tourDetailsMapper;
     private final TourRepository tourRepository;
+    private final TourDetailsFileRepository tourDetailsFileRepository;
 
     @Override
     public TourDetails createTourDetails(
@@ -64,6 +67,14 @@ public class TourDetailsServiceImpl implements TourDetailsService {
         tour.setTourDetails(tourDetails);
         tourRepository.save(tour);
         return tourDetailsMapper.toDto(tourDetails);
+    }
+
+    @Override
+    public TourDetailFileRespondDto getSinglePhoto(Long tourDetailsId) {
+        TourDetailsFile detailsFile = tourDetailsFileRepository.findFirstByTourDetailsId(tourDetailsId).orElseThrow(
+                () -> new EntityNotFoundException("Can`t find file with tour details id " + tourDetailsId)
+        );
+        return tourDetailsMapper.toDto(detailsFile);
     }
 
     private void setAdditionalFilesToTourDetails(

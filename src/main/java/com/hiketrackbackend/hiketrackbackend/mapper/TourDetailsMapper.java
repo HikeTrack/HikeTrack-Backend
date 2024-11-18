@@ -4,6 +4,7 @@ import com.hiketrackbackend.hiketrackbackend.config.MapperConfig;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondWithoutPhotosDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.details.file.TourDetailFileRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetailsFile;
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public interface TourDetailsMapper {
     DetailsRespondDto toDto(TourDetails tourDetails);
 
     DetailsRespondWithoutPhotosDto toDtoWithoutPhotos(TourDetails tourDetails);
+
+    TourDetailFileRespondDto toDto(TourDetailsFile detailsFile);
 
     @AfterMapping
     default void setUrls(@MappingTarget DetailsRespondDto respondDto, TourDetails tourDetails) {

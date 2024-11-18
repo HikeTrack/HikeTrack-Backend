@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-to-user
+      author: Vadym P
+      changes:
+        - insert:
+            tableName: user_profiles
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: registration_date
+                  value: "2024-10-12"
+              - column:
+                  name: photo
+                  value: "https://elasticbeanstalk-eu-central-1-954976302863.s3.eu-central-1.amazonaws.com/user_profile/guide-05.png"
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: id, value: 2
+              - column: {name: email, value: "test_1@test.com"}
+              - column: {name: password, value: "$2a$10$8BI2iR6p6NlDFXQ7/dmPdu0v69tchIXTfZrS1jkj4Zi.WXU4Xm8hq"}
+              - column: {name: first_name, value: "Chen"}
+              - column: {name: last_name, value: "Wei"}
+              - column: {name: user_profile_id, value: 2}
+              - column: {name: is_confirmed, value: 1}
+        - insert:
+            tableName: users_roles
+            columns:
+              - column: { name: user_id, value: 3 }
+              - column: { name: role_id, value: 3 }
+        - insert:
+            tableName: users_roles
+            columns:
+              - column: { name: user_id, value: 3 }
+              - column: { name: role_id, value: 2 }

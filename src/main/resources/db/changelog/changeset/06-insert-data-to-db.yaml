@@ -8,27 +8,98 @@ databaseChangeLog:
             columns:
               - column: {name: id, value: 1 }
               - column: {name: name, value: "Tiger Leaping Gorge" }
-              - column: {name: length, value: 22000 }
-              - column: {name: price, value: 350 }
+              - column: {name: length, value: 28800 }
+              - column: {name: price, value: 900 }
               - column: { name: difficulty, value: "MEDIUM" }
-              - column: { name: main_photo, value: "img/tours/china/tour-china-00.png" }
-              - column: {name: date, value: 2025-11-22 08:00:00 }
+              - column: { name: main_photo, value: "https://elasticbeanstalk-eu-central-1-954976302863.s3.eu-central-1.amazonaws.com/tours/Tiger_Leaping_Gorge_Trail_mainPhoto.png" }
+              - column: {name: date, value: 2026-11-22 08:00:00 }
               - column: {name: country_id, value: 8}
-              - column: {name: user_id, value: 1 }
+              - column: {name: user_id, value: 3 }
               - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: tour_details
+            columns:
+              - column: { name: id, value: 1 }
+              - column: { name: duration, value: 847 }
+              - column: { name: elevation_gain, value: 2612 }
+              - column: { name: route_type, value: "POINT_TO_POINT" }
+              - column: { name: map, value: "https://elasticbeanstalk-eu-central-1-954976302863.s3.eu-central-1.amazonaws.com/tours/maps/TIGER_LEAPING_GORGE_map.png" }
+              - column: { name: activity, value: "HIKING" }
+              - column: { name: description, value: "Check out this 28.8-km point-to-point trail near Hutiaoxia, Yunnan. Generally considered a challenging route, it takes an average of 14 h 7 min to complete. This is a very popular area for backpacking, camping, and hiking, so you'll likely encounter other people while exploring. The best times to visit this trail are July through September." }
+              - column: { name: tour_id, value: 1 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: tour_details_files
+            columns:
+              - column: { name: id, value: 1 }
+              - column: { name: file_url, value: "https://elasticbeanstalk-eu-central-1-954976302863.s3.eu-central-1.amazonaws.com/tours/tiger-leaping-gorge-trail.png" }
+              - column: { name: tour_details_id, value: 1 }
+              - column: { name: created_at, value: 2026-11-22 08:00:00 }
+        - insert:
+            tableName: tour_details_files
+            columns:
+              - column: { name: id, value: 2 }
+              - column: { name: file_url, value: "https://elasticbeanstalk-eu-central-1-954976302863.s3.eu-central-1.amazonaws.com/tours/tiger-leaping-gorge-trail1.png" }
+              - column: { name: tour_details_id, value: 1 }
+              - column: { name: created_at, value: 2026-11-22 08:00:00 }
+        - insert:
+            tableName: tour_details_files
+            columns:
+              - column: { name: id, value: 3 }
+              - column: { name: file_url, value: "https://elasticbeanstalk-eu-central-1-954976302863.s3.eu-central-1.amazonaws.com/tours/tiger-leaping-gorge-trail2.png" }
+              - column: { name: tour_details_id, value: 1 }
+              - column: { name: created_at, value: 2026-11-22 08:00:00 }
         - insert:
             tableName: tours
             columns:
               - column: { name: id, value: 2 }
-              - column: { name: main_photo, value: "img/tours/china/tour-china-01.png" }
+              - column: { name: main_photo, value: "https://elasticbeanstalk-eu-central-1-954976302863.s3.eu-central-1.amazonaws.com/tours/Mount_Hua_mainPhoto.png" }
               - column: { name: name, value: "Mount Hua" }
-              - column: { name: length, value: 12000 }
-              - column: { name: price, value: 400 }
+              - column: { name: length, value: 16900 }
+              - column: { name: price, value: 600 }
               - column: { name: difficulty, value: "HARD" }
-              - column: { name: date, value: 2025-05-17 12:00:00 }
+              - column: { name: date, value: 2026-05-17 12:00:00 }
               - column: { name: country_id, value: 8 }
-              - column: {name: user_id, value: 1 }
+              - column: {name: user_id, value: 3 }
               - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: tour_details
+            columns:
+              - column: { name: id, value: 2 }
+              - column: { name: duration, value: 847 }
+              - column: { name: elevation_gain, value: 2612 }
+              - column: { name: route_type, value: "POINT_TO_POINT" }
+              - column: { name: map, value: "https://elasticbeanstalk-eu-central-1-954976302863.s3.eu-central-1.amazonaws.com/tours/maps/TIGER_LEAPING_GORGE_map.png" }
+              - column: { name: activity, value: "HIKING" }
+              - column: { name: description, value: "Huashan has gondolas to the North peak and many people choose to ride the Gondola. 
+              So the trail from starting point YuQuanYuan (玉泉院) to North peak is pretty empty. The trail is a typical Chinese fashion 
+              with well built steps, and some light poles, indicating that it is possible to hike at night without flash light. 
+              The first few miles are gradual accent until the point of Thousand Foot Narrow (千尺幢), Then the trail becomes narrow 
+              and steep, almost all the way to the North Peak. There are a number of attractions on the peaks, some appear very dangerous 
+              requiring ropes for protection. You have the option to skip these attractions." }
+              - column: { name: tour_id, value: 2 }
+              - column: { name: is_deleted, valueBoolean: false }
+        - insert:
+            tableName: tour_details_files
+            columns:
+              - column: { name: id, value: 4 }
+              - column: { name: file_url, value: "https://elasticbeanstalk-eu-central-1-954976302863.s3.eu-central-1.amazonaws.com/tours/Mount_Hua1.png" }
+              - column: { name: tour_details_id, value: 1 }
+              - column: { name: created_at, value: 2026-11-22 08:00:00 }
+        - insert:
+            tableName: tour_details_files
+            columns:
+              - column: { name: id, value: 5 }
+              - column: { name: file_url, value: "https://elasticbeanstalk-eu-central-1-954976302863.s3.eu-central-1.amazonaws.com/tours/Mount_Hua2.png" }
+              - column: { name: tour_details_id, value: 1 }
+              - column: { name: created_at, value: 2026-11-22 08:00:00 }
+        - insert:
+            tableName: tour_details_files
+            columns:
+              - column: { name: id, value: 6 }
+              - column: { name: file_url, value: "https://elasticbeanstalk-eu-central-1-954976302863.s3.eu-central-1.amazonaws.com/tours/Mount_Hua.png" }
+              - column: { name: tour_details_id, value: 1 }
+              - column: { name: created_at, value: 2026-11-22 08:00:00 }
         - insert:
             tableName: tours
             columns:
@@ -315,41 +386,4 @@ databaseChangeLog:
               - column: { name: country_id, value: 6 }
               - column: {name: user_id, value: 1}
               - column: { name: is_deleted, valueBoolean: false }
-        - insert:
-            tableName: tour_details
-            columns:
-              - column: { name: id, value: 1 }
-              - column: { name: duration, value: 320 }
-              - column: { name: elevation_gain, value: 500 }
-              - column: { name: route_type, value: "POINT_TO_POINT" }
-              - column: { name: map, value: "link for map" }
-              - column: { name: activity, value: "HIKING" }
-              - column: { name: tour_id, value: 1 }
-              - column: { name: is_deleted, valueBoolean: false }
-        - insert:
-            tableName: tour_details
-            columns:
-              - column: { name: id, value: 2 }
-              - column: { name: duration, value: 210 }
-              - column: { name: elevation_gain, value: 300 }
-              - column: { name: route_type, value: "POINT_TO_POINT" }
-              - column: { name: map, value: "link for map2" }
-              - column: { name: activity, value: "HIKING" }
-              - column: { name: tour_id, value: 2 }
-              - column: { name: is_deleted, valueBoolean: false }
-        - insert:
-            tableName: reviews
-            columns:
-              - column: { name: id, value: 1 }
-              - column: { name: content, value: "verrrrrrrrrrrrrry good hike" }
-              - column: { name: user_id, value: 1 }
-              - column: { name: tour_id, value: 2 }
-              - column: { name: date_created, value: 2025-09-05 06:50:00 }
-        - insert:
-            tableName: reviews
-            columns:
-              - column: { name: id, value: 2 }
-              - column: { name: content, value: "verrrrrrrrrrrrrry good hike aggggggaaaaaaaaain" }
-              - column: { name: tour_id, value: 1 }
-              - column: { name: date_created, value: 2025-09-05 06:50:00 }
-              - column: { name: user_id, value: 1 }
+

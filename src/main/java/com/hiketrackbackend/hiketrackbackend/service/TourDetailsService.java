@@ -2,6 +2,7 @@ package com.hiketrackbackend.hiketrackbackend.service;
 
 import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.tour.details.file.TourDetailFileRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
 import java.util.List;
@@ -19,4 +20,6 @@ public interface TourDetailsService {
             Long userId,
             Long tourId
     );
+
+    TourDetailFileRespondDto getSinglePhoto(Long tourDetailsId);
 }

@@ -46,7 +46,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Tour Management", description = "Endpoints for managing tours")
 public class TourController {
     private final TourService tourService;
-    private final TourDetailsService tourDetailsService;
     private final ObjectMapper objectMapper;
 
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
@@ -96,19 +95,6 @@ public class TourController {
             @PathVariable @Positive Long tourId
     ) {
         return tourService.updateTourPhoto(mainPhoto, userId, tourId);
-    }
-
-    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN') && #userId == authentication.principal.id")
-    @PatchMapping("/{tourId}/additionalPhotos/{userId}")
-    @Operation(summary = "Update tour additional photos",
-            description = "Update the additional photos of an existing tour.")
-    public DetailsRespondDto updateTourDetailsPhotos(
-            @RequestPart("additionalPhotos") @Valid
-            List<@ValidImageFile MultipartFile> additionalPhotos,
-            @PathVariable @Positive Long userId,
-            @PathVariable @Positive Long tourId
-    ) {
-        return tourDetailsService.updateTourDetailsPhotos(additionalPhotos, userId, tourId);
     }
 
     @GetMapping("/{id}")

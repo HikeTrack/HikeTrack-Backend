@@ -14,4 +14,5 @@ public class DetailsRespondWithoutPhotosDto {
     private int duration;
     private String map;
     private Activity activity;
+    private String description;
 }
