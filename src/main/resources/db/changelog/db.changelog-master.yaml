@@ -31,3 +31,5 @@ databaseChangeLog:
       file: db/changelog/changeset/15-create-rating-table.yaml
   - include:
       file: db/changelog/changeset/16-create-social-subscription-table.yaml
+  - include:
+      file: db/changelog/changeset/17-insert-data-to-files.yaml

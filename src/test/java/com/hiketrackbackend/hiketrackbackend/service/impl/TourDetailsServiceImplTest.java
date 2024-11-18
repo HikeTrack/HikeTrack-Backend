@@ -17,10 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -91,7 +88,7 @@ public class TourDetailsServiceImplTest {
 
         Tour tour = new Tour();
         TourDetails tourDetails = new TourDetails();
-        List<TourDetailsFile> savedPhotos = new ArrayList<>();
+        Set<TourDetailsFile> savedPhotos = new HashSet<>();
         for (int i = 0; i < 5; i++) {
             savedPhotos.add(new TourDetailsFile());
         }
@@ -117,7 +114,7 @@ public class TourDetailsServiceImplTest {
 
         Tour tour = new Tour();
         TourDetails tourDetails = new TourDetails();
-        List<TourDetailsFile> savedPhotos = new ArrayList<>();
+        Set<TourDetailsFile> savedPhotos = new HashSet<>();
         for (int i = 0; i < 3; i++) {
             savedPhotos.add(new TourDetailsFile());
         }

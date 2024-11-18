@@ -14,8 +14,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
@@ -36,7 +36,7 @@ public class TourDetails {
     private Long id;
 
     @OneToMany(mappedBy = "tourDetails", fetch = FetchType.LAZY)
-    private List<TourDetailsFile> additionalPhotos = new ArrayList<>();
+    private Set<TourDetailsFile> additionalPhotos = new HashSet<>();
 
     @Column(nullable = false)
     private int elevationGain;

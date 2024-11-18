@@ -3,11 +3,11 @@ package com.hiketrackbackend.hiketrackbackend.mapper;
 import com.hiketrackbackend.hiketrackbackend.config.MapperConfig;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondWithoutPhotosDto;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetailsFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,16 +20,14 @@ public interface TourDetailsMapper {
     @Mapping(target = "additionalPhotos", ignore = true)
     DetailsRespondDto toDto(TourDetails tourDetails);
 
-    DetailsRespondWithoutPhotosDto toDtoWithoutPhotos(TourDetails tourDetails);
-
     @AfterMapping
-    default void setUrls(@MappingTarget DetailsRespondDto respondDto, TourDetails tourDetails) {
-        List<TourDetailsFile> photos = tourDetails.getAdditionalPhotos();
-        List<String> urls = new ArrayList<>();
+    default void setPhotoIds(@MappingTarget DetailsRespondDto respondDto, TourDetails tourDetails) {
+        Set<TourDetailsFile> photos = tourDetails.getAdditionalPhotos();
+        List<Long> ids = new ArrayList<>();
         for (TourDetailsFile photo : photos) {
-            String fileUrl = photo.getFileUrl();
-            urls.add(fileUrl);
+            Long id = photo.getId();
+            ids.add(id);
         }
-        respondDto.setAdditionalPhotos(urls);
+        respondDto.setAdditionalPhotos(ids);
     }
 }
