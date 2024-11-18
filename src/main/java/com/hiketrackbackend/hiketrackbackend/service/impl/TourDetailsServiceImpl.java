@@ -13,8 +13,9 @@ import com.hiketrackbackend.hiketrackbackend.repository.TourDetailsFileRepositor
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import com.hiketrackbackend.hiketrackbackend.service.TourDetailsService;
 import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +56,7 @@ public class TourDetailsServiceImpl implements TourDetailsService {
         Tour tour = findTourByIdAndUserId(tourId, userId);
 
         TourDetails tourDetails = tour.getTourDetails();
-        List<TourDetailsFile> savedPhotos = tourDetails.getAdditionalPhotos();
+        Set<TourDetailsFile> savedPhotos = tourDetails.getAdditionalPhotos();
         if (additionalPhotos.size() > (ADDITIONAL_PHOTOS_LIMIT - savedPhotos.size())) {
             throw new MemoryLimitException("Max storage is limited by "
                     + ADDITIONAL_PHOTOS_LIMIT + ". Delete some photos or add "
@@ -81,7 +82,7 @@ public class TourDetailsServiceImpl implements TourDetailsService {
             List<MultipartFile> files,
             TourDetails tourDetails
     ) {
-        List<TourDetailsFile> photos = new ArrayList<>();
+        Set<TourDetailsFile> photos = new HashSet<>();
         List<String> urls = s3Service.uploadFileToS3(FOLDER_NAME, files);
         for (String url : urls) {
             TourDetailsFile file = new TourDetailsFile();

@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-data-to-countries-tablwe
+      author: Vadym P
+      changes:
+        - insert:
+            tableName: tour_details_files
+            columns:
+              - column: {name: id, value: 1 }
+              - column: {name: file_url, value: "Ukraine" }
+              - column: {name: tour_details_id, value: 1 }
+              - column: {name: created_at, value: 2025-08-23 06:30:00 }
+
