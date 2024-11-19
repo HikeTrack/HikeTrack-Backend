@@ -9,9 +9,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsA
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
-import com.hiketrackbackend.hiketrackbackend.service.TourDetailsService;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFile;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,7 +44,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Tour Management", description = "Endpoints for managing tours")
 public class TourController {
     private final TourService tourService;
-    private final TourDetailsService tourDetailsService;
     private final ObjectMapper objectMapper;
 
     @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
@@ -96,19 +93,6 @@ public class TourController {
             @PathVariable @Positive Long tourId
     ) {
         return tourService.updateTourPhoto(mainPhoto, userId, tourId);
-    }
-
-    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN') && #userId == authentication.principal.id")
-    @PatchMapping("/{tourId}/additionalPhotos/{userId}")
-    @Operation(summary = "Update tour additional photos",
-            description = "Update the additional photos of an existing tour.")
-    public DetailsRespondDto updateTourDetailsPhotos(
-            @RequestPart("additionalPhotos") @Valid
-            List<@ValidImageFile MultipartFile> additionalPhotos,
-            @PathVariable @Positive Long userId,
-            @PathVariable @Positive Long tourId
-    ) {
-        return tourDetailsService.updateTourDetailsPhotos(additionalPhotos, userId, tourId);
     }
 
     @GetMapping("/{id}")
@@ -170,13 +154,5 @@ public class TourController {
     public void deleteTour(@PathVariable @Positive Long tourId,
                            @PathVariable @Positive Long userId) {
         tourService.deleteTourByIdAndUserId(tourId, userId);
-    }
-
-    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
-    @DeleteMapping("/additional_photo/{additionalPhotoId}")
-    @Operation(summary = "Delete additional photo",
-            description = "Delete a specific additional photo from a tour by its ID.")
-    public void deleteSingleTourDetailsPhoto(@PathVariable @Positive Long additionalPhotoId) {
-        tourService.deleteTourDetailsPhotoById(additionalPhotoId);
     }
 }

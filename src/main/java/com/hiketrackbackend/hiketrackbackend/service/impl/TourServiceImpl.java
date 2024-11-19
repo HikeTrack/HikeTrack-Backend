@@ -16,10 +16,8 @@ import com.hiketrackbackend.hiketrackbackend.model.country.Country;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Review;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
-import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetailsFile;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.repository.ReviewRepository;
-import com.hiketrackbackend.hiketrackbackend.repository.TourDetailsFileRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.country.CountryRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.tour.TourSpecificationBuilder;
@@ -53,7 +51,6 @@ public class TourServiceImpl implements TourService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
     private final FileStorageService s3Service;
-    private final TourDetailsFileRepository tourDetailsFileRepository;
     private final TourDetailsService tourDetailsService;
 
     @Override
@@ -184,15 +181,6 @@ public class TourServiceImpl implements TourService {
             throw new EntityNotFoundException("Tour with id " + tourId + " not found");
         }
         tourRepository.deleteById(tourId);
-    }
-
-    @Override
-    @Transactional
-    public void deleteTourDetailsPhotoById(Long id) {
-        TourDetailsFile photo = tourDetailsFileRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Tour details photo not found with id: " + id)
-        );
-        tourDetailsFileRepository.delete(photo);
     }
 
     private boolean isExistTourById(Long tourId, Long userId) {
