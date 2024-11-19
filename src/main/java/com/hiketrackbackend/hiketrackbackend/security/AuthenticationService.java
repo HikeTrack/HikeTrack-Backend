@@ -19,7 +19,7 @@ import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,9 +27,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
+
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordResetUserTokenService passwordResetTokenService;
@@ -39,6 +39,35 @@ public class AuthenticationService {
     private final UserService userService;
     private final ConfirmationTokenService confirmationTokenService;
     private final GoogleLogInTokenService googleLogInTokenService;
+    private final EmailSender confirmationEmailSenderImpl;
+
+    public AuthenticationService(
+            AuthenticationManager authenticationManager,
+            JwtUtil jwtUtil,
+            UserRepository userRepository,
+            PasswordResetUserTokenService passwordResetTokenService,
+            LogoutTokenService logoutTokenService,
+            @Qualifier("passwordResetEmailSenderImpl")
+            EmailSender passwordResetEmailSenderImpl,
+            UserMapper userMapper,
+            UserService userService,
+            ConfirmationTokenService confirmationTokenService,
+            GoogleLogInTokenService googleLogInTokenService,
+            @Qualifier("confirmationRequestEmailSenderImpl")
+            EmailSender confirmationEmailSenderImpl
+    ) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
+        this.passwordResetTokenService = passwordResetTokenService;
+        this.logoutTokenService = logoutTokenService;
+        this.passwordResetEmailSenderImpl = passwordResetEmailSenderImpl;
+        this.userMapper = userMapper;
+        this.userService = userService;
+        this.confirmationTokenService = confirmationTokenService;
+        this.googleLogInTokenService = googleLogInTokenService;
+        this.confirmationEmailSenderImpl = confirmationEmailSenderImpl;
+    }
 
     public UserResponseDto login(UserLoginRequestDto requestDto) {
         final Authentication authentication = authenticationManager.authenticate(
@@ -89,6 +118,17 @@ public class AuthenticationService {
         userRepository.save(user);
         confirmationTokenService.delete(token);
         return new UserDevMsgRespondDto("User has been confirmed.");
+    }
+
+    public UserDevMsgRespondDto repeatEmailConfirmation(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException("Can`t find user with email " + email));
+        if (user.isConfirmed()) {
+            return new UserDevMsgRespondDto("User already confirmed");
+        }
+        String token = confirmationTokenService.save(user.getEmail());
+        confirmationEmailSenderImpl.send(email, token);
+        return new UserDevMsgRespondDto("New confirmation request has been sent");
     }
 
     @Transactional

@@ -13,6 +13,7 @@ import com.hiketrackbackend.hiketrackbackend.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,5 +77,16 @@ public class AuthenticationController {
     @PostMapping("/confirmation")
     public UserDevMsgRespondDto emailConfirmation(@RequestParam("token") String token) {
         return authenticationService.changeConfirmingStatus(token);
+    }
+
+    @Operation(
+            summary = "Resend Email Confirmation",
+            description = "Resend confirmation to the user's email"
+    )
+    @PostMapping("/repeat_confirmation")
+    public UserDevMsgRespondDto repeatEmailConfirmation(
+            @RequestParam("email") @Email String email
+    ) {
+        return authenticationService.repeatEmailConfirmation(email);
     }
 }

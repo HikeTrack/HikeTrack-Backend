@@ -14,7 +14,9 @@ import com.hiketrackbackend.hiketrackbackend.security.token.impl.ConfirmationTok
 import com.hiketrackbackend.hiketrackbackend.security.token.impl.LogoutTokenService;
 import com.hiketrackbackend.hiketrackbackend.security.token.impl.PasswordResetUserTokenService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
+import com.hiketrackbackend.hiketrackbackend.service.notification.ConfirmationRequestEmailSenderImpl;
 import com.hiketrackbackend.hiketrackbackend.service.notification.EmailSender;
+import com.hiketrackbackend.hiketrackbackend.service.notification.PasswordResetEmailSenderImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.DisplayName;
@@ -29,13 +31,8 @@ import org.springframework.security.core.Authentication;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthenticationServiceTest {
@@ -52,7 +49,10 @@ public class AuthenticationServiceTest {
     private PasswordResetUserTokenService passwordResetTokenService;
 
     @Mock
-    private EmailSender passwordResetEmailSenderImpl;
+    private PasswordResetEmailSenderImpl passwordResetEmailSenderImpl;
+
+    @Mock
+    private ConfirmationRequestEmailSenderImpl confirmationEmailSenderImpl;
 
     @Mock
     private UserMapper userMapper;
@@ -122,7 +122,6 @@ public class AuthenticationServiceTest {
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         when(passwordResetTokenService.save(email)).thenReturn(token);
-        doNothing().when(passwordResetEmailSenderImpl).send(email, token);
         when(userMapper.toDto("Password reset link sent to email.")).thenReturn(new UserDevMsgRespondDto("Password reset link sent to email."));
 
         UserDevMsgRespondDto responseDto = authenticationService.createRestoreRequest(requestDto);
@@ -256,5 +255,41 @@ public class AuthenticationServiceTest {
         assertThrows(EntityNotFoundException.class, () -> {
             authenticationService.changeConfirmingStatus(token);
         });
+    }
+
+    @Test
+    @DisplayName("Successfully resend confirmation")
+    void testRepeatConfirmEmailValidEmailSuccess() {
+        String email = "test@test.com";
+        String token = "token";
+        User user = new User();
+        user.setEmail(email);
+        user.setConfirmed(false);
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(confirmationTokenService.save(email)).thenReturn(token);
+
+        UserDevMsgRespondDto userDevMsgRespondDto = authenticationService.repeatEmailConfirmation(email);
+
+        assertFalse(user.isConfirmed());
+        assertEquals("New confirmation request has been sent", userDevMsgRespondDto.message());
+    }
+
+    @Test
+    @DisplayName("Do not sent confirm message if user confirmed")
+    void testRepeatConfirmEmailAlreadyConfirmedUserReturnSpecificMessage() {
+        String email = "test@test.com";
+        User user = new User();
+        user.setEmail(email);
+        user.setConfirmed(true);
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        UserDevMsgRespondDto userDevMsgRespondDto = authenticationService.repeatEmailConfirmation(email);
+
+        assertTrue(user.isConfirmed());
+        assertEquals("User already confirmed", userDevMsgRespondDto.message());
+        verify(confirmationTokenService, never()).save(anyString());
+        verify(confirmationEmailSenderImpl, never()).send(anyString(), anyString());
     }
 }

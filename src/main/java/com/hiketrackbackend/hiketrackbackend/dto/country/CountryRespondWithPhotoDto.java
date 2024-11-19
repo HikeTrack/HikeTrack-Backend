@@ -10,5 +10,5 @@ public class CountryRespondWithPhotoDto {
     private Long id;
     private String name;
     private Continent continent;
-    private String photoUrl;
+    private String photo;
 }
