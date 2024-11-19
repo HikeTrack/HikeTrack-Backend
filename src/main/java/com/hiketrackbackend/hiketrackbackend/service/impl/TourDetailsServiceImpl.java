@@ -16,6 +16,7 @@ import com.hiketrackbackend.hiketrackbackend.service.files.FileStorageService;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,11 +72,22 @@ public class TourDetailsServiceImpl implements TourDetailsService {
     }
 
     @Override
-    public TourDetailFileRespondDto getSinglePhoto(Long tourDetailsId) {
-        TourDetailsFile detailsFile = tourDetailsFileRepository.findFirstByTourDetailsId(tourDetailsId).orElseThrow(
-                () -> new EntityNotFoundException("Can`t find file with tour details id " + tourDetailsId)
-        );
-        return tourDetailsMapper.toDto(detailsFile);
+    public TourDetailFileRespondDto getTourDetailPhoto(Long id) {
+        return tourDetailsMapper.toDto(findById(id));
+    }
+
+    @Override
+    public Set<TourDetailFileRespondDto> getAllByTourDetail(Long tourDetailId) {
+        return tourDetailsFileRepository.findByTourDetailsId(tourDetailId)
+                .stream()
+                .map(tourDetailsMapper::toDto)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    @Transactional
+    public void deleteTourDetailsPhotoById(Long id) {
+        tourDetailsFileRepository.delete(findById(id));
     }
 
     private void setAdditionalFilesToTourDetails(
@@ -97,6 +109,12 @@ public class TourDetailsServiceImpl implements TourDetailsService {
         return tourRepository.findTourByIdAndUserId(id, userId).orElseThrow(
                 () -> new EntityNotFoundException(
                         "Tour not found with id: " + id + " and user id: " + userId)
+        );
+    }
+
+    private TourDetailsFile findById(Long id) {
+        return tourDetailsFileRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Tour details photo not found with id: " + id)
         );
     }
 }

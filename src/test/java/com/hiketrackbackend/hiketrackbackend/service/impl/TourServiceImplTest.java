@@ -4,7 +4,6 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.*;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
-import com.hiketrackbackend.hiketrackbackend.exception.EntityAlreadyExistException;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
@@ -13,7 +12,6 @@ import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Review;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
-import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetailsFile;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.repository.ReviewRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.TourDetailsFileRepository;
@@ -33,18 +31,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
@@ -78,9 +73,6 @@ public class TourServiceImplTest {
 
     @Mock
     private TourSpecificationBuilder tourSpecificationBuilder;
-
-    @Mock
-    private TourDetailsFileRepository tourDetailsFileRepository;
 
     @InjectMocks
     private TourServiceImpl tourService;
@@ -493,29 +485,5 @@ public class TourServiceImplTest {
         List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(0, result.size());
-    }
-
-    @Test
-    @DisplayName("Delete additional tour photo")
-    public void testDeleteTourDetailsPhotoByIdWhenPhotoFoundThenDeletePhoto() {
-        Long photoId = 1L;
-        TourDetailsFile photo = new TourDetailsFile();
-        photo.setId(photoId);
-
-        when(tourDetailsFileRepository.findById(photoId)).thenReturn(Optional.of(photo));
-
-        tourService.deleteTourDetailsPhotoById(photoId);
-
-        verify(tourDetailsFileRepository, times(1)).delete(photo);
-    }
-
-    @Test
-    @DisplayName("Delete additional tour photo with not valid id")
-    public void testDeleteTourDetailsPhotoByIdWhenPhotoNotFoundThenThrowEntityNotFoundException() {
-        Long photoId = 1L;
-
-        when(tourDetailsFileRepository.findById(photoId)).thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class, () -> tourService.deleteTourDetailsPhotoById(photoId));
     }
 }

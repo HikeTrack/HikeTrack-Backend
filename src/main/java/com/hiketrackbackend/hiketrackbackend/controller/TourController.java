@@ -9,9 +9,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutDetailsA
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourSearchParameters;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
-import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRespondDto;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
-import com.hiketrackbackend.hiketrackbackend.service.TourDetailsService;
 import com.hiketrackbackend.hiketrackbackend.service.TourService;
 import com.hiketrackbackend.hiketrackbackend.validation.ValidImageFile;
 import io.swagger.v3.oas.annotations.Operation;
@@ -156,13 +154,5 @@ public class TourController {
     public void deleteTour(@PathVariable @Positive Long tourId,
                            @PathVariable @Positive Long userId) {
         tourService.deleteTourByIdAndUserId(tourId, userId);
-    }
-
-    @PreAuthorize("hasAnyRole('GUIDE', 'ADMIN')")
-    @DeleteMapping("/additional_photo/{additionalPhotoId}")
-    @Operation(summary = "Delete additional photo",
-            description = "Delete a specific additional photo from a tour by its ID.")
-    public void deleteSingleTourDetailsPhoto(@PathVariable @Positive Long additionalPhotoId) {
-        tourService.deleteTourDetailsPhotoById(additionalPhotoId);
     }
 }

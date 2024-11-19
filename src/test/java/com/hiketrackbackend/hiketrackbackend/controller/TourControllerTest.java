@@ -28,7 +28,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -36,7 +35,6 @@ import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -277,54 +275,6 @@ public class TourControllerTest {
     }
 
     @Test
-    @DisplayName("Update tour details photo with valid request")
-    @WithMockUser(roles = "GUIDE")
-    @Sql(scripts = "classpath:database/tour/add-tour.sql",
-            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "classpath:database/tour/add-tour-details.sql",
-            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void testUpdateTourDetailsPhotosWhenRequestIsValidThenReturnDetailsRespondDto() throws Exception {
-        MockMultipartFile additionalPhoto = new MockMultipartFile(
-                "additionalPhotos",
-                "additionalPhoto.jpg",
-                "image/jpg",
-                "test image".getBytes());
-
-        setUserToContext();
-        mockMvc.perform(MockMvcRequestBuilders
-                        .multipart("/tours/{tourId}/additionalPhotos/{userId}", 1, 1)
-                        .file(additionalPhoto)
-                        .with(request -> {
-                            request.setMethod("PATCH");
-                            return request;
-                        })
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .with(csrf()))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("Handles empty invalid format of additional photos gracefully")
-    public void testUpdateAdditionalPhotosInvalidFormatReturn400() throws Exception {
-        MockMultipartFile additionalPhoto = new MockMultipartFile(
-                "additionalPhotos",
-                "additionalPhoto.txt",
-                "image/txt",
-                "test image".getBytes());
-
-        setUserToContext();
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/tours/{tourId}/additionalPhotos/{userId}", 1, 1)
-                        .file(additionalPhoto)
-                        .with(request -> {
-                            request.setMethod("PATCH");
-                            return request;
-                        })
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .with(csrf()))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     @DisplayName("Get tour by valid ID")
     @Sql(scripts = "classpath:database/tour/add-tour.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
@@ -435,20 +385,6 @@ public class TourControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("Delete single tour photo with valid ID")
-    @WithMockUser(roles = "GUIDE")
-    @Sql(scripts = "classpath:database/tour/add-tour-details-file.sql",
-            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    public void testDeleteSingleTourDetailsPhotoWhenIdIsValidThenReturnOK() throws Exception {
-        setUserToContext();
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/tours/additional_photo/{additionalPhotoId}", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf()))
-                .andExpect(status().isOk());
     }
 
     private void setUserToContext() {

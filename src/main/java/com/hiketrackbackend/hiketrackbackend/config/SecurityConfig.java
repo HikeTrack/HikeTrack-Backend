@@ -53,6 +53,8 @@ public class SecurityConfig {
                                         antMatcher("/socials/subscribe"),
                                         antMatcher("/reviews/tour/{tourId}"),
                                         antMatcher("/socials/unsubscribe"),
+                                        antMatcher("/tour_details/photo/*"),
+                                        antMatcher("/tour_details/all_detail_photos/*"),
                                         antMatcher("/tokens/access_token/**")
                                 )
                                 .permitAll()
