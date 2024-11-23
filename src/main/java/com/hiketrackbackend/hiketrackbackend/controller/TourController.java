@@ -118,7 +118,7 @@ public class TourController {
     @Operation(
             summary = "Get tours by guide",
             description = "Retrieve all tours created by a specific guide.")
-    public List<TourRespondWithoutDetailsAndReviews> getAllToursMadeByGuide(
+    public List<TourRespondWithoutDetailsAndReviewsAndRating> getAllToursMadeByGuide(
             @PathVariable @Positive Long guideId,
             @ParameterObject @PageableDefault Pageable pageable
     ) {

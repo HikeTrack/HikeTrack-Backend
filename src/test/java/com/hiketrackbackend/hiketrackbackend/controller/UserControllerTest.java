@@ -6,6 +6,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
@@ -287,5 +288,61 @@ class UserControllerTest {
         }
 
         verify(userService, times(1)).getUserProfileByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("Update user password for not exist user id")
+    void testUpdatePassword_NotExistUserId() {
+        UserUpdatePasswordRequestDto requestDto = new UserUpdatePasswordRequestDto();
+        requestDto.setPassword("newPasss123@");
+        requestDto.setRepeatPassword("newPasss123@");
+        Long userId = 1L;
+
+        when(userService.updatePassword(requestDto, userId))
+                .thenThrow(new EntityNotFoundException("User with id " + userId + " not found"));
+
+        try {
+            userController.updateUserPassword(requestDto, userId);
+        } catch (EntityNotFoundException e) {
+            assertEquals("User with id " + userId + " not found", e.getMessage());
+        }
+
+        verify(userService, times(1)).updatePassword(requestDto, userId);
+    }
+
+    @Test
+    @DisplayName("Update user password with invalid user ID")
+    void testUpdatePassword_InvalidId() {
+        UserUpdatePasswordRequestDto requestDto = new UserUpdatePasswordRequestDto();
+        requestDto.setPassword("newPasss123@");
+        requestDto.setRepeatPassword("newPasss123@");
+        Long invalidUserId = -1L;
+
+        when(userService.updatePassword(requestDto, invalidUserId))
+                .thenThrow(new IllegalArgumentException("Invalid user ID"));
+
+        try {
+            userController.updateUserPassword(requestDto, invalidUserId);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Invalid user ID", e.getMessage());
+        }
+
+        verify(userService, times(1)).updatePassword(requestDto, invalidUserId);
+    }
+
+    @Test
+    @DisplayName("Update password with valid user Id")
+    void testUpdatePasswordWithValidId_Success() {
+        UserUpdatePasswordRequestDto requestDto = new UserUpdatePasswordRequestDto();
+        requestDto.setPassword("newPasss123@");
+        requestDto.setRepeatPassword("newPasss123@");
+        Long userId = 1L;
+
+        when(userService.updatePassword(requestDto, userId)).thenReturn(new UserDevMsgRespondDto("Password successfully changed."));
+
+        UserDevMsgRespondDto result = userController.updateUserPassword(requestDto, userId);
+
+        assertEquals("Password successfully changed.", result.message());
+        verify(userService, times(1)).updatePassword(requestDto, userId);
     }
 }
