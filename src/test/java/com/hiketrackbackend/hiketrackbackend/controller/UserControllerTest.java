@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
+import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
 import com.hiketrackbackend.hiketrackbackend.service.RoleService;
 import com.hiketrackbackend.hiketrackbackend.service.UserService;
@@ -21,7 +23,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
-
+import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -229,5 +231,61 @@ class UserControllerTest {
         });
         assertEquals("Access denied", exception.getMessage());
         verify(roleService, times(1)).changeUserRoleToGuide(requestDto);
+    }
+
+    @Test
+    @DisplayName("Get user profile with valid data")
+    void testGetUserProfileById_Success() {
+        Long userId = 1L;
+        UserProfileRespondDto respondDto = new UserProfileRespondDto();
+        respondDto.setCountry("testCountry");
+        respondDto.setCity("testCity");
+        respondDto.setPhoneNumber("+3809911111111");
+        respondDto.setAboutMe("about me");
+        respondDto.setRegistrationDate(LocalDate.now());
+        respondDto.setDateOfBirth(LocalDate.now());
+        respondDto.setPhoto("link");
+        respondDto.setId(userId);
+
+        when(userService.getUserProfileByUserId(userId)).thenReturn(respondDto);
+
+        UserProfileRespondDto result = userController.getUserProfileById(userId);
+
+        assertEquals(userId, result.getId());
+        assertEquals("testCountry", result.getCountry());
+        assertEquals("+3809911111111", result.getPhoneNumber());
+        verify(userService, times(1)).getUserProfileByUserId(userId);
+    }
+
+    @Test
+    @DisplayName("Get user profile with invalid user ID")
+    void testGetUserProfileById_InvalidId() {
+        Long invalidUserId = -1L;
+        when(userService.getUserProfileByUserId(invalidUserId))
+                .thenThrow(new IllegalArgumentException("Invalid user ID"));
+
+        try {
+            userController.getUserProfileById(invalidUserId);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Invalid user ID", e.getMessage());
+        }
+
+        verify(userService, times(1)).getUserProfileByUserId(invalidUserId);
+    }
+
+    @Test
+    @DisplayName("Get profile with not exist user ID")
+    void testGetUserProfileById_UserNotFound() {
+        Long userId = 9999L;
+        when(userService.getUserProfileByUserId(userId))
+                .thenThrow(new EntityNotFoundException("User with id " + userId + " not found"));
+
+        try {
+            userController.getUserProfileById(userId);
+        } catch (EntityNotFoundException e) {
+            assertEquals("User with id " + userId + " not found", e.getMessage());
+        }
+
+        verify(userService, times(1)).getUserProfileByUserId(userId);
     }
 }

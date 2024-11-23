@@ -55,7 +55,8 @@ public class SecurityConfig {
                                         antMatcher("/socials/unsubscribe"),
                                         antMatcher("/tour_details/photo/*"),
                                         antMatcher("/tour_details/all_detail_photos/*"),
-                                        antMatcher("/tokens/access_token/**")
+                                        antMatcher("/tokens/access_token/**"),
+                                        antMatcher("/users/{userId}")
                                 )
                                 .permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.GET, "/countries/**"),

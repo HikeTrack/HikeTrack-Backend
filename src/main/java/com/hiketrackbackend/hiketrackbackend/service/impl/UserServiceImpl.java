@@ -3,6 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
@@ -148,6 +149,12 @@ public class UserServiceImpl implements UserService {
         String username = jwtUtil.getUsername(token);
         User user = findUserByEmail(username);
         return userMapper.toRespondDto(user);
+    }
+
+    @Override
+    public UserProfileRespondDto getUserProfileByUserId(Long userId) {
+        User user = findUserById(userId);
+        return userMapper.toDto(user.getUserProfile());
     }
 
     @Override

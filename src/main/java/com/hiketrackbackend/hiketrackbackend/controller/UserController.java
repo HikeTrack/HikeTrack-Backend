@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
@@ -51,6 +52,12 @@ public class UserController {
     @Tag(name = "User Management", description = "Endpoints for managing users")
     public UserRespondWithProfileDto getLoggedInUser(HttpServletRequest request) {
         return userService.getLoggedInUser(request);
+    }
+
+    @GetMapping("/{userId}")
+    @Operation(summary = "Get User Profile", description = "Get open data about user")
+    public UserProfileRespondDto getUserProfileById(@PathVariable @Positive Long userId) {
+        return userService.getUserProfileByUserId(userId);
     }
 
     @Operation(summary = "Logout user", description = "Logout the currently logged-in user.")
