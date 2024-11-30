@@ -56,7 +56,7 @@ public class UserController {
         return userService.getLoggedInUser(request);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/profile/{userId}")
     @Operation(summary = "Get User Profile", description = "Get open data about user")
     public UserProfileRespondDto getUserProfileById(@PathVariable @Positive Long userId) {
         return userService.getUserProfileByUserId(userId);
@@ -77,7 +77,8 @@ public class UserController {
     public UserUpdateRespondDto updateUser(
             @RequestPart("data") String dataString,
             @PathVariable @Positive Long id,
-            @RequestPart("photo") @Valid @ValidImageFile MultipartFile photo
+            @RequestPart(value = "photo", required = false)
+            @Valid @ValidImageFile MultipartFile photo
     ) {
         UserUpdateRequestDto requestDto;
         try {
