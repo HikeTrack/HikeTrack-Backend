@@ -403,13 +403,13 @@ public class TourServiceImplTest {
         Tour tour = new Tour();
         tour.setId(1L);
         List<Tour> tours = List.of(tour);
-        TourRespondWithoutDetailsAndReviews tourDto = new TourRespondWithoutDetailsAndReviews();
+        TourRespondWithoutDetailsAndReviewsAndRating tourDto = new TourRespondWithoutDetailsAndReviewsAndRating();
         tourDto.setId(1L);
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
-        when(tourMapper.toDtoWithoutDetailsAndReviews(tour)).thenReturn(tourDto);
+        when(tourMapper.toDtoWithoutDetailsAndReviewsAndRating(tour)).thenReturn(tourDto);
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).getId());
@@ -424,7 +424,7 @@ public class TourServiceImplTest {
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(0, result.size());
     }
@@ -461,13 +461,13 @@ public class TourServiceImplTest {
         Tour tour = new Tour();
         tour.setId(1L);
         List<Tour> tours = List.of(tour);
-        TourRespondWithoutDetailsAndReviews tourDto = new TourRespondWithoutDetailsAndReviews();
+        TourRespondWithoutDetailsAndReviewsAndRating tourDto = new TourRespondWithoutDetailsAndReviewsAndRating();
         tourDto.setId(1L);
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
-        when(tourMapper.toDtoWithoutDetailsAndReviews(tour)).thenReturn(tourDto);
+        when(tourMapper.toDtoWithoutDetailsAndReviewsAndRating(tour)).thenReturn(tourDto);
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).getId());
@@ -482,7 +482,7 @@ public class TourServiceImplTest {
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(0, result.size());
     }

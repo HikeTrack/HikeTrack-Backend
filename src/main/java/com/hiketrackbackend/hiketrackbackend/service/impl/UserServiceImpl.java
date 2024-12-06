@@ -3,6 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
@@ -25,6 +26,7 @@ import com.hiketrackbackend.hiketrackbackend.service.notification.EmailUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -124,7 +126,7 @@ public class UserServiceImpl implements UserService {
         UserProfile userProfile = user.getUserProfile();
         userMapper.updateUserProfileFromDto(
                 requestDto.getUserProfileRequestDto(), user.getUserProfile());
-        if (file != null) {
+        if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
             updateUserProfilePhoto(userProfile, file);
         }
 
@@ -148,6 +150,12 @@ public class UserServiceImpl implements UserService {
         String username = jwtUtil.getUsername(token);
         User user = findUserByEmail(username);
         return userMapper.toRespondDto(user);
+    }
+
+    @Override
+    public UserProfileRespondDto getUserProfileByUserId(Long userId) {
+        User user = findUserById(userId);
+        return userMapper.toDto(user.getUserProfile());
     }
 
     @Override

@@ -124,13 +124,13 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public List<TourRespondWithoutDetailsAndReviews> getAllToursMadeByGuide(
+    public List<TourRespondWithoutDetailsAndReviewsAndRating> getAllToursMadeByGuide(
             Long userId,
             Pageable pageable
     ) {
         return tourRepository.findAllTourByUserId(userId, pageable)
                 .stream()
-                .map(tourMapper::toDtoWithoutDetailsAndReviews)
+                .map(tourMapper::toDtoWithoutDetailsAndReviewsAndRating)
                 .toList();
     }
 

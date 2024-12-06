@@ -49,13 +49,15 @@ public class SecurityConfig {
                                         antMatcher("/oauth2/**"),
                                         antMatcher("/swagger-ui/**"),
                                         antMatcher("/v3/api-docs/**"),
-                                        antMatcher("/users/request"),
                                         antMatcher("/socials/subscribe"),
                                         antMatcher("/reviews/tour/{tourId}"),
                                         antMatcher("/socials/unsubscribe"),
-                                        antMatcher("/tour_details/photo/*"),
+                                        antMatcher("/tokens/access_token/**"),
+                                        antMatcher("/users/request"),
+                                        antMatcher("/users/{userId}"),
                                         antMatcher("/tour_details/all_detail_photos/*"),
-                                        antMatcher("/tokens/access_token/**")
+                                        antMatcher("/tour_details/photo/*"),
+                                        antMatcher("/tours/guide/{guideId}")
                                 )
                                 .permitAll()
                                 .requestMatchers(antMatcher(HttpMethod.GET, "/countries/**"),
