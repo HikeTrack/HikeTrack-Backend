@@ -26,6 +26,7 @@ import com.hiketrackbackend.hiketrackbackend.service.notification.EmailUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -125,7 +126,7 @@ public class UserServiceImpl implements UserService {
         UserProfile userProfile = user.getUserProfile();
         userMapper.updateUserProfileFromDto(
                 requestDto.getUserProfileRequestDto(), user.getUserProfile());
-        if (file != null) {
+        if (file != null && !Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
             updateUserProfilePhoto(userProfile, file);
         }
 

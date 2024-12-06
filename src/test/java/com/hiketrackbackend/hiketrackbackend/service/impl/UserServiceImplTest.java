@@ -221,6 +221,7 @@ public class UserServiceImplTest {
         responseDto.setFirstName("John");
         responseDto.setLastName("Doe");
         when(userMapper.toUpdateRespondDto(user)).thenReturn(responseDto);
+        when(file.getOriginalFilename()).thenReturn("example.jpg");
 
         List<String> urls = Collections.singletonList("http://example.com/photo.jpg");
         when(s3Service.uploadFileToS3(anyString(), anyList())).thenReturn(urls);
