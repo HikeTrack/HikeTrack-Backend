@@ -13,5 +13,6 @@ public class UserProfileRespondDto {
     private String phoneNumber;
     private String aboutMe;
     private LocalDate registrationDate;
-    private String userPhoto;
+    private LocalDate dateOfBirth;
+    private String photo;
 }

@@ -1,6 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.model.tour.details;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -35,7 +36,7 @@ public class TourDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "tourDetails", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tourDetails", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<TourDetailsFile> additionalPhotos = new HashSet<>();
 
     @Column(nullable = false)

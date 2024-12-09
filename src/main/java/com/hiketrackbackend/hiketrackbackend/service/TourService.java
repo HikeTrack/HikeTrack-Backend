@@ -37,7 +37,7 @@ public interface TourService {
 
     void deleteTourByIdAndUserId(Long tourId, Long userId);
 
-    List<TourRespondWithoutDetailsAndReviews> getAllToursMadeByGuide(
+    List<TourRespondWithoutDetailsAndReviewsAndRating> getAllToursMadeByGuide(
             Long userId, Pageable pageable
     );
 }

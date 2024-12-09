@@ -347,10 +347,10 @@ public class TourControllerTest {
     public void testSearchToursWithValidParameters() throws Exception {
        mockMvc.perform(get("/tours/search")
                 .param("difficulty", "Easy")
-                .param("length", "10000"))
+                .param("country", "China"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].difficulty").value("Easy"))
                 .andExpect(jsonPath("$[1].difficulty").value("Easy"));
     }

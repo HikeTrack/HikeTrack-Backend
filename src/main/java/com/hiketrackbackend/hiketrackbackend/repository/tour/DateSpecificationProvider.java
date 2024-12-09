@@ -4,14 +4,13 @@ import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.repository.SpecificationProvider;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DateSpecificationProvider implements SpecificationProvider<Tour> {
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final String NAME_PARAMETER = "date";
 
     @Override
@@ -20,13 +19,15 @@ public class DateSpecificationProvider implements SpecificationProvider<Tour> {
     }
 
     @Override
-    public Specification<Tour> getSpecification(String[] params) {
-        return (root, query, criteriaBuilder) -> {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            List<LocalDateTime> dates = Arrays.stream(params)
-                    .map(param -> LocalDateTime.parse(param, formatter))
-                    .collect(Collectors.toList());
-            return root.get(NAME_PARAMETER).in(dates);
-        };
+    public Specification<Tour> getSpecification(String[] startParam, String[] endParam) {
+        LocalDateTime startDate = LocalDateTime.parse(startParam[0], FORMATTER);
+        LocalDateTime endDate = LocalDateTime.parse(endParam[0], FORMATTER);
+
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.between(
+                        root.get(NAME_PARAMETER),
+                        startDate,
+                        endDate
+                );
     }
 }

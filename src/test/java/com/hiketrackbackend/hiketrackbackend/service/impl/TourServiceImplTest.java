@@ -320,16 +320,17 @@ public class TourServiceImplTest {
     @Test
     @DisplayName("Search by all params")
     public void testSearchWhenRepositoryReturnsListOfToursThenReturnListOfTours() {
-        TourSearchParameters params = new TourSearchParameters(
-                new String[]{"routeType1", "routeType2"},
-                new String[]{"difficulty1", "difficulty2"},
-                new String[]{"length1", "length2"},
-                new String[]{"activity1", "activity2"},
-                new String[]{"date1", "date2"},
-                new String[]{"duration1", "duration2"},
-                new String[]{"price1", "price2"},
-                new String[]{"country1", "country2"}
-        );
+//        TourSearchParameters params = new TourSearchParameters(
+//                new String[]{"routeType1", "routeType2"},
+//                new String[]{"difficulty1", "difficulty2"},
+//                new String[]{"length1", "length2"},
+//                new String[]{"activity1", "activity2"},
+//                new String[]{"date1", "date2"},
+//                new String[]{"duration1", "duration2"},
+//                new String[]{"price1", "price2"},
+//                new String[]{"country1", "country2"}
+//        );
+        TourSearchParameters params = createSearchParams();
         Pageable pageable = PageRequest.of(0, 10);
         List<Tour> tours = List.of(tour);
         Specification<Tour> specification = mock(Specification.class);
@@ -348,16 +349,7 @@ public class TourServiceImplTest {
     @Test
     @DisplayName("Search with all params and empty DB")
     public void testSearchWhenRepositoryReturnsEmptyListThenReturnEmptyList() {
-        TourSearchParameters params = new TourSearchParameters(
-                new String[]{"routeType1", "routeType2"},
-                new String[]{"difficulty1", "difficulty2"},
-                new String[]{"length1", "length2"},
-                new String[]{"activity1", "activity2"},
-                new String[]{"date1", "date2"},
-                new String[]{"duration1", "duration2"},
-                new String[]{"price1", "price2"},
-                new String[]{"country1", "country2"}
-        );
+        TourSearchParameters params = createSearchParams();
         Pageable pageable = PageRequest.of(0, 10);
         Specification<Tour> specification = mock(Specification.class);
 
@@ -403,13 +395,13 @@ public class TourServiceImplTest {
         Tour tour = new Tour();
         tour.setId(1L);
         List<Tour> tours = List.of(tour);
-        TourRespondWithoutDetailsAndReviews tourDto = new TourRespondWithoutDetailsAndReviews();
+        TourRespondWithoutDetailsAndReviewsAndRating tourDto = new TourRespondWithoutDetailsAndReviewsAndRating();
         tourDto.setId(1L);
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
-        when(tourMapper.toDtoWithoutDetailsAndReviews(tour)).thenReturn(tourDto);
+        when(tourMapper.toDtoWithoutDetailsAndReviewsAndRating(tour)).thenReturn(tourDto);
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).getId());
@@ -424,7 +416,7 @@ public class TourServiceImplTest {
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(0, result.size());
     }
@@ -461,13 +453,13 @@ public class TourServiceImplTest {
         Tour tour = new Tour();
         tour.setId(1L);
         List<Tour> tours = List.of(tour);
-        TourRespondWithoutDetailsAndReviews tourDto = new TourRespondWithoutDetailsAndReviews();
+        TourRespondWithoutDetailsAndReviewsAndRating tourDto = new TourRespondWithoutDetailsAndReviewsAndRating();
         tourDto.setId(1L);
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
-        when(tourMapper.toDtoWithoutDetailsAndReviews(tour)).thenReturn(tourDto);
+        when(tourMapper.toDtoWithoutDetailsAndReviewsAndRating(tour)).thenReturn(tourDto);
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).getId());
@@ -482,8 +474,25 @@ public class TourServiceImplTest {
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(0, result.size());
+    }
+
+    private TourSearchParameters createSearchParams() {
+        return new TourSearchParameters(
+                new String[]{"routeType1"},
+                new String[]{"difficulty1"},
+                new String[]{"100"},
+                new String[]{"200"},
+                new String[]{"activity1"},
+                new String[]{"2022.02.02:08:08:00"},
+                new String[]{"2022.02.02:09:08:00"},
+                new String[]{"1000"},
+                new String[]{"2000"},
+                new String[]{"500"},
+                new String[]{"1000"},
+                new String[]{"country1"}
+        );
     }
 }

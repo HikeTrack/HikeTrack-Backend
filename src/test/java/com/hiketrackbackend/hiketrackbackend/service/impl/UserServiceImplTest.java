@@ -1,6 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.service.impl;
 
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
@@ -29,13 +30,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.anyString;
@@ -43,6 +45,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -218,6 +221,7 @@ public class UserServiceImplTest {
         responseDto.setFirstName("John");
         responseDto.setLastName("Doe");
         when(userMapper.toUpdateRespondDto(user)).thenReturn(responseDto);
+        when(file.getOriginalFilename()).thenReturn("example.jpg");
 
         List<String> urls = Collections.singletonList("http://example.com/photo.jpg");
         when(s3Service.uploadFileToS3(anyString(), anyList())).thenReturn(urls);
@@ -309,5 +313,41 @@ public class UserServiceImplTest {
 
         verify(userRepository).findById(1L);
         verify(userRepository, never()).deleteById(1L);
+    }
+
+    @Test
+    @DisplayName("Get profile with valid user ID")
+    void getUserProfileByUserId_shouldReturnUserProfileRespondDto_whenUserExists() {
+        Long userId = 1L;
+        User mockUser = new User();
+        UserProfile mockProfile = new UserProfile();
+        UserProfileRespondDto mockResponseDto = new UserProfileRespondDto();
+
+        mockUser.setUserProfile(mockProfile);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
+        when(userMapper.toDto(mockProfile)).thenReturn(mockResponseDto);
+
+        UserProfileRespondDto result = userService.getUserProfileByUserId(userId);
+
+        assertNotNull(result);
+        assertEquals(mockResponseDto, result);
+        verify(userRepository).findById(userId);
+        verify(userMapper).toDto(mockProfile);
+    }
+
+    @Test
+    @DisplayName("Get profile when user not exist in db")
+    void getUserProfileByUserId_shouldThrowException_whenUserDoesNotExist() {
+        Long userId = 1L;
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class,
+                () -> userService.getUserProfileByUserId(userId),
+                "User with id " + userId + " not found");
+
+        verify(userRepository).findById(userId);
+        verifyNoInteractions(userMapper);
     }
 }
