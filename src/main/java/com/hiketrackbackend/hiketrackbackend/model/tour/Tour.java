@@ -55,7 +55,7 @@ public class Tour {
     private ZonedDateTime date;
 
     @OneToMany(mappedBy = "tour", fetch = FetchType.LAZY)
-    private List<Rating> ratings = new ArrayList<>();
+    private Set<Rating> ratings = new HashSet<>();
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

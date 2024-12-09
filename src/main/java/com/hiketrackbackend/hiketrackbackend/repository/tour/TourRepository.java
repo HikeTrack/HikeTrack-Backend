@@ -26,6 +26,7 @@ public interface TourRepository extends JpaRepository<Tour, Long>, JpaSpecificat
 
     @Query("SELECT t FROM Tour t "
             + "LEFT JOIN FETCH t.tourDetails td "
+            + "LEFT JOIN FETCH td.additionalPhotos "
             + "LEFT JOIN FETCH t.ratings r "
             + "WHERE t.id = :id")
     Optional<Tour> findTourById(Long id);

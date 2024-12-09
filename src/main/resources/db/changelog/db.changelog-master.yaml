@@ -22,12 +22,14 @@ databaseChangeLog:
   - include:
       file: db/changelog/changeset/12-create-bookmarks-table.yaml
   - include:
-      file: db/changelog/changeset/06-insert-data-to-db.yaml
-  - include:
       file: db/changelog/changeset/13-add-column-to-user-profile-table.yaml
   - include:
       file: db/changelog/changeset/14-create-tour-details-file-table.yaml
   - include:
+      file: db/changelog/changeset/06-insert-data-to-db.yaml
+  - include:
       file: db/changelog/changeset/15-create-rating-table.yaml
   - include:
       file: db/changelog/changeset/16-create-social-subscription-table.yaml
+  - include:
+      file: db/changelog/changeset/18-insert-data-to-files.yaml

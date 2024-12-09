@@ -4,6 +4,7 @@ import com.hiketrackbackend.hiketrackbackend.config.MapperConfig;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRequestDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
@@ -25,6 +26,8 @@ public interface UserMapper {
     UserRegistrationRespondDto toDto(User user);
 
     UserDevMsgRespondDto toDto(String message);
+
+    UserProfileRespondDto toDto(UserProfile userProfile);
 
     @Mapping(target = "userProfileRespondDto", source = "userProfile")
     UserRespondWithProfileDto toRespondDto(User user);

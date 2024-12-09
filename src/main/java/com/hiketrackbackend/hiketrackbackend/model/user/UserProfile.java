@@ -29,7 +29,8 @@ public class UserProfile {
     private LocalDate registrationDate;
 
     @Column(nullable = false)
-    private String photo = "default link";
+    private String photo = "https://elasticbeanstalk-eu-"
+            + "central-1-954976302863.s3.amazonaws.com/user_profile/defaultAvatar.svg";
 
     @PrePersist
     protected void onCreate() {

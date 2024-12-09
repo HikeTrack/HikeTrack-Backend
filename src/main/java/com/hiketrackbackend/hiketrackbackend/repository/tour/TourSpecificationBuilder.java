@@ -34,30 +34,45 @@ public class TourSpecificationBuilder implements SpecificationBuilder<Tour, Tour
                     .getSpecificationProvider(DIFFICULTY_KEYWORD)
                     .getSpecification(searchParameters.difficulty()));
         }
-        if (searchParameters.length() != null && searchParameters.length().length > 0) {
+        if ((searchParameters.minLength() != null
+                && searchParameters.minLength().length > 0)
+                && (searchParameters.maxLength() != null
+                && searchParameters.maxLength().length > 0)
+        ) {
             spec = spec.and(tourSpecificationProviderManager
                     .getSpecificationProvider(LENGTH_KEYWORD)
-                    .getSpecification(searchParameters.length()));
+                    .getSpecification(searchParameters.minLength(), searchParameters.maxLength()));
         }
         if (searchParameters.activity() != null && searchParameters.activity().length > 0) {
             spec = spec.and(tourSpecificationProviderManager
                     .getSpecificationProvider(ACTIVITY_KEYWORD)
                     .getSpecification(searchParameters.activity()));
         }
-        if (searchParameters.date() != null && searchParameters.date().length > 0) {
+        if ((searchParameters.startDate() != null && searchParameters.startDate().length > 0)
+                && (searchParameters.endDate() != null && searchParameters.endDate().length > 0)) {
             spec = spec.and(tourSpecificationProviderManager
                     .getSpecificationProvider(DATE_KEYWORD)
-                    .getSpecification(searchParameters.date()));
+                    .getSpecification(searchParameters.startDate(), searchParameters.endDate()));
         }
-        if (searchParameters.duration() != null && searchParameters.duration().length > 0) {
+        if ((searchParameters.minDuration() != null
+                && searchParameters.minDuration().length > 0)
+                && (searchParameters.maxDuration() != null
+                && searchParameters.maxDuration().length > 0)
+        ) {
             spec = spec.and(tourSpecificationProviderManager
                     .getSpecificationProvider(DURATION_KEYWORD)
-                    .getSpecification(searchParameters.duration()));
+                    .getSpecification(
+                            searchParameters.minDuration(),
+                            searchParameters.maxDuration())
+            );
         }
-        if (searchParameters.price() != null && searchParameters.price().length > 0) {
+        if ((searchParameters.minPrice() != null
+                && searchParameters.minPrice().length > 0)
+                && (searchParameters.maxPrice() != null
+                && searchParameters.maxPrice().length > 0)) {
             spec = spec.and(tourSpecificationProviderManager
                     .getSpecificationProvider(PRICE_KEYWORD)
-                    .getSpecification(searchParameters.price()));
+                    .getSpecification(searchParameters.minPrice(), searchParameters.maxPrice()));
         }
         if (searchParameters.country() != null && searchParameters.country().length > 0) {
             spec = spec.and(tourSpecificationProviderManager

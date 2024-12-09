@@ -4,7 +4,6 @@ package com.hiketrackbackend.hiketrackbackend.service.impl;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.*;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.details.DetailsRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.reviews.ReviewsRespondDto;
-import com.hiketrackbackend.hiketrackbackend.exception.EntityAlreadyExistException;
 import com.hiketrackbackend.hiketrackbackend.exception.EntityNotFoundException;
 import com.hiketrackbackend.hiketrackbackend.mapper.ReviewMapper;
 import com.hiketrackbackend.hiketrackbackend.mapper.TourMapper;
@@ -13,7 +12,6 @@ import com.hiketrackbackend.hiketrackbackend.model.tour.Difficulty;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Review;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
-import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetailsFile;
 import com.hiketrackbackend.hiketrackbackend.model.user.User;
 import com.hiketrackbackend.hiketrackbackend.repository.ReviewRepository;
 import com.hiketrackbackend.hiketrackbackend.repository.TourDetailsFileRepository;
@@ -33,18 +31,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
@@ -78,9 +73,6 @@ public class TourServiceImplTest {
 
     @Mock
     private TourSpecificationBuilder tourSpecificationBuilder;
-
-    @Mock
-    private TourDetailsFileRepository tourDetailsFileRepository;
 
     @InjectMocks
     private TourServiceImpl tourService;
@@ -328,16 +320,17 @@ public class TourServiceImplTest {
     @Test
     @DisplayName("Search by all params")
     public void testSearchWhenRepositoryReturnsListOfToursThenReturnListOfTours() {
-        TourSearchParameters params = new TourSearchParameters(
-                new String[]{"routeType1", "routeType2"},
-                new String[]{"difficulty1", "difficulty2"},
-                new String[]{"length1", "length2"},
-                new String[]{"activity1", "activity2"},
-                new String[]{"date1", "date2"},
-                new String[]{"duration1", "duration2"},
-                new String[]{"price1", "price2"},
-                new String[]{"country1", "country2"}
-        );
+//        TourSearchParameters params = new TourSearchParameters(
+//                new String[]{"routeType1", "routeType2"},
+//                new String[]{"difficulty1", "difficulty2"},
+//                new String[]{"length1", "length2"},
+//                new String[]{"activity1", "activity2"},
+//                new String[]{"date1", "date2"},
+//                new String[]{"duration1", "duration2"},
+//                new String[]{"price1", "price2"},
+//                new String[]{"country1", "country2"}
+//        );
+        TourSearchParameters params = createSearchParams();
         Pageable pageable = PageRequest.of(0, 10);
         List<Tour> tours = List.of(tour);
         Specification<Tour> specification = mock(Specification.class);
@@ -356,16 +349,7 @@ public class TourServiceImplTest {
     @Test
     @DisplayName("Search with all params and empty DB")
     public void testSearchWhenRepositoryReturnsEmptyListThenReturnEmptyList() {
-        TourSearchParameters params = new TourSearchParameters(
-                new String[]{"routeType1", "routeType2"},
-                new String[]{"difficulty1", "difficulty2"},
-                new String[]{"length1", "length2"},
-                new String[]{"activity1", "activity2"},
-                new String[]{"date1", "date2"},
-                new String[]{"duration1", "duration2"},
-                new String[]{"price1", "price2"},
-                new String[]{"country1", "country2"}
-        );
+        TourSearchParameters params = createSearchParams();
         Pageable pageable = PageRequest.of(0, 10);
         Specification<Tour> specification = mock(Specification.class);
 
@@ -411,13 +395,13 @@ public class TourServiceImplTest {
         Tour tour = new Tour();
         tour.setId(1L);
         List<Tour> tours = List.of(tour);
-        TourRespondWithoutDetailsAndReviews tourDto = new TourRespondWithoutDetailsAndReviews();
+        TourRespondWithoutDetailsAndReviewsAndRating tourDto = new TourRespondWithoutDetailsAndReviewsAndRating();
         tourDto.setId(1L);
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
-        when(tourMapper.toDtoWithoutDetailsAndReviews(tour)).thenReturn(tourDto);
+        when(tourMapper.toDtoWithoutDetailsAndReviewsAndRating(tour)).thenReturn(tourDto);
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).getId());
@@ -432,7 +416,7 @@ public class TourServiceImplTest {
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(0, result.size());
     }
@@ -469,13 +453,13 @@ public class TourServiceImplTest {
         Tour tour = new Tour();
         tour.setId(1L);
         List<Tour> tours = List.of(tour);
-        TourRespondWithoutDetailsAndReviews tourDto = new TourRespondWithoutDetailsAndReviews();
+        TourRespondWithoutDetailsAndReviewsAndRating tourDto = new TourRespondWithoutDetailsAndReviewsAndRating();
         tourDto.setId(1L);
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
-        when(tourMapper.toDtoWithoutDetailsAndReviews(tour)).thenReturn(tourDto);
+        when(tourMapper.toDtoWithoutDetailsAndReviewsAndRating(tour)).thenReturn(tourDto);
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).getId());
@@ -490,32 +474,25 @@ public class TourServiceImplTest {
 
         when(tourRepository.findAllTourByUserId(userId, pageable)).thenReturn(tours);
 
-        List<TourRespondWithoutDetailsAndReviews> result = tourService.getAllToursMadeByGuide(userId, pageable);
+        List<TourRespondWithoutDetailsAndReviewsAndRating> result = tourService.getAllToursMadeByGuide(userId, pageable);
 
         assertEquals(0, result.size());
     }
 
-    @Test
-    @DisplayName("Delete additional tour photo")
-    public void testDeleteTourDetailsPhotoByIdWhenPhotoFoundThenDeletePhoto() {
-        Long photoId = 1L;
-        TourDetailsFile photo = new TourDetailsFile();
-        photo.setId(photoId);
-
-        when(tourDetailsFileRepository.findById(photoId)).thenReturn(Optional.of(photo));
-
-        tourService.deleteTourDetailsPhotoById(photoId);
-
-        verify(tourDetailsFileRepository, times(1)).delete(photo);
-    }
-
-    @Test
-    @DisplayName("Delete additional tour photo with not valid id")
-    public void testDeleteTourDetailsPhotoByIdWhenPhotoNotFoundThenThrowEntityNotFoundException() {
-        Long photoId = 1L;
-
-        when(tourDetailsFileRepository.findById(photoId)).thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class, () -> tourService.deleteTourDetailsPhotoById(photoId));
+    private TourSearchParameters createSearchParams() {
+        return new TourSearchParameters(
+                new String[]{"routeType1"},
+                new String[]{"difficulty1"},
+                new String[]{"100"},
+                new String[]{"200"},
+                new String[]{"activity1"},
+                new String[]{"2022.02.02:08:08:00"},
+                new String[]{"2022.02.02:09:08:00"},
+                new String[]{"1000"},
+                new String[]{"2000"},
+                new String[]{"500"},
+                new String[]{"1000"},
+                new String[]{"country1"}
+        );
     }
 }

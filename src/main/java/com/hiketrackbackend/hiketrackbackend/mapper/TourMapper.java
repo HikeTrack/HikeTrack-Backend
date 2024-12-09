@@ -9,7 +9,7 @@ import com.hiketrackbackend.hiketrackbackend.dto.tour.TourRespondWithoutReviews;
 import com.hiketrackbackend.hiketrackbackend.dto.tour.TourUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Rating;
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
-import java.util.List;
+import java.util.Set;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -54,7 +54,7 @@ public interface TourMapper {
     }
 
     private void applyRating(Tour tour, Object respondDto) {
-        List<Rating> ratings = tour.getRatings();
+        Set<Rating> ratings = tour.getRatings();
         Long totalAmountOfMarks = ratings.isEmpty() ? 0L : (long) ratings.size();
         Long averageRating = ratings.isEmpty() ? 0L :
                 ratings.stream().mapToLong(Rating::getRating).sum() / ratings.size();
