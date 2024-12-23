@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRespondDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdateRespondDto;
 import com.hiketrackbackend.hiketrackbackend.security.AuthenticationService;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -53,6 +56,12 @@ public class UserController {
         return userService.getLoggedInUser(request);
     }
 
+    @GetMapping("/profile/{userId}")
+    @Operation(summary = "Get User Profile", description = "Get open data about user")
+    public UserProfileRespondDto getUserProfileById(@PathVariable @Positive Long userId) {
+        return userService.getUserProfileByUserId(userId);
+    }
+
     @Operation(summary = "Logout user", description = "Logout the currently logged-in user.")
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) {
@@ -68,7 +77,8 @@ public class UserController {
     public UserUpdateRespondDto updateUser(
             @RequestPart("data") String dataString,
             @PathVariable @Positive Long id,
-            @RequestPart("photo") @Valid @ValidImageFile MultipartFile photo
+            @RequestPart(value = "photo", required = false)
+            @Valid @ValidImageFile MultipartFile photo
     ) {
         UserUpdateRequestDto requestDto;
         try {
@@ -77,6 +87,16 @@ public class UserController {
             throw new IllegalArgumentException("Invalid data format: " + e.getMessage());
         }
         return userService.updateUser(requestDto, id, photo);
+    }
+
+    @Operation(summary = "Update password", description = "Update users password by user ID")
+    @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #id == authentication.principal.id")
+    @PutMapping("/password_update/{id}")
+    public UserDevMsgRespondDto updateUserPassword(
+            @RequestBody UserUpdatePasswordRequestDto requestDto,
+            @PathVariable @Positive Long id
+    ) {
+        return userService.updatePassword(requestDto, id);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'GUIDE', 'ADMIN') && #userId == authentication.principal.id")

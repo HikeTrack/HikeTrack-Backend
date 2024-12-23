@@ -3,6 +3,7 @@ package com.hiketrackbackend.hiketrackbackend.service;
 import com.hiketrackbackend.hiketrackbackend.dto.UserDevMsgRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.UserRespondWithProfileDto;
+import com.hiketrackbackend.hiketrackbackend.dto.user.profile.UserProfileRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRequestDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.registration.UserRegistrationRespondDto;
 import com.hiketrackbackend.hiketrackbackend.dto.user.update.UserUpdatePasswordRequestDto;
@@ -22,6 +23,8 @@ public interface UserService {
     UserUpdateRespondDto updateUser(UserUpdateRequestDto requestDto, Long id, MultipartFile file);
 
     UserRespondWithProfileDto getLoggedInUser(HttpServletRequest request);
+
+    UserProfileRespondDto getUserProfileByUserId(Long userId);
 
     void deleteUser(Long id);
 

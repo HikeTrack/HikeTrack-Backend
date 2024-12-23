@@ -5,7 +5,6 @@ import com.hiketrackbackend.hiketrackbackend.model.tour.details.TourDetails;
 import com.hiketrackbackend.hiketrackbackend.repository.SpecificationProvider;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
-import java.util.Arrays;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +18,21 @@ public class DurationSpecificationProvider implements SpecificationProvider<Tour
     }
 
     @Override
-    public Specification<Tour> getSpecification(String[] params) {
-        return (root, query, criteriaBuilder) -> {
-            Join<Tour, TourDetails> detailsJoin = root.join("tourDetails", JoinType.LEFT);
-            return detailsJoin.get(NAME_PARAMETER).in(Arrays.stream(params).toArray());
-        };
+    public Specification<Tour> getSpecification(String[] minParam, String[] maxParam) {
+        try {
+            int minDuration = Integer.parseInt(minParam[0]);
+            int maxDuration = Integer.parseInt(maxParam[0]);
+
+            return (root, query, criteriaBuilder) -> {
+                Join<Tour, TourDetails> detailsJoin = root.join("tourDetails", JoinType.LEFT);
+                return criteriaBuilder.between(
+                        detailsJoin.get(NAME_PARAMETER), minDuration, maxDuration
+                );
+            };
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                    "Number should be used for search param in duration specification"
+            );
+        }
     }
 }

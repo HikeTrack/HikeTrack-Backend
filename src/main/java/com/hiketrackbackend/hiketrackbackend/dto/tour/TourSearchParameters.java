@@ -3,11 +3,15 @@ package com.hiketrackbackend.hiketrackbackend.dto.tour;
 public record TourSearchParameters(
         String[] routeType,
         String[] difficulty,
-        String[] length,
+        String[] minLength,
+        String[] maxLength,
         String[] activity,
-        String[] date,
-        String[] duration,
-        String[] price,
+        String[] startDate,
+        String[] endDate,
+        String[] minDuration,
+        String[] maxDuration,
+        String[] minPrice,
+        String[] maxPrice,
         String[] country
 ) {
 }

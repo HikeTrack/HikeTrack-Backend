@@ -1,6 +1,7 @@
 package com.hiketrackbackend.hiketrackbackend.model.tour.details;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,8 +15,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
@@ -35,8 +36,8 @@ public class TourDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "tourDetails", fetch = FetchType.LAZY)
-    private List<TourDetailsFile> additionalPhotos = new ArrayList<>();
+    @OneToMany(mappedBy = "tourDetails", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<TourDetailsFile> additionalPhotos = new HashSet<>();
 
     @Column(nullable = false)
     private int elevationGain;

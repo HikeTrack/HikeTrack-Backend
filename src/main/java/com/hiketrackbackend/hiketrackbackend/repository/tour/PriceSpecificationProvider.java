@@ -2,7 +2,6 @@ package com.hiketrackbackend.hiketrackbackend.repository.tour;
 
 import com.hiketrackbackend.hiketrackbackend.model.tour.Tour;
 import com.hiketrackbackend.hiketrackbackend.repository.SpecificationProvider;
-import java.util.Arrays;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +15,17 @@ public class PriceSpecificationProvider implements SpecificationProvider<Tour> {
     }
 
     @Override
-    public Specification<Tour> getSpecification(String[] params) {
-        return (root, query, criteriaBuilder) -> root.get(NAME_PARAMETER)
-                .in(Arrays.stream(params).toArray());
+    public Specification<Tour> getSpecification(String[] minParam, String[] maxParam) {
+        try {
+            double minPrice = Double.parseDouble(minParam[0]);
+            double maxPrice = Double.parseDouble(maxParam[0]);
+
+            return (root, query, criteriaBuilder) ->
+                    criteriaBuilder.between(root.get(NAME_PARAMETER), minPrice, maxPrice);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                    "Number should be used for search param in price specification"
+            );
+        }
     }
 }
